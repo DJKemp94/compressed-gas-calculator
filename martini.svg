@@ -1,0 +1,358 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 340" width="100%" height="100%">
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#1A1A24" />
+      <stop offset="70%" stop-color="#0D0D14" />
+      <stop offset="100%" stop-color="#0A0A10" />
+    </linearGradient>
+
+    <!-- Bar counter surface gradient -->
+    <linearGradient id="counterGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#3D3545" />
+      <stop offset="5%" stop-color="#352D3D" />
+      <stop offset="100%" stop-color="#1A1620" />
+    </linearGradient>
+
+    <!-- Counter top face (the flat top surface seen in perspective) -->
+    <linearGradient id="counterTop" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#4A4055" />
+      <stop offset="100%" stop-color="#3D3545" />
+    </linearGradient>
+
+    <!-- Ambient back glow -->
+    <radialGradient id="ambientGlow" cx="50%" cy="55%" r="55%">
+      <stop offset="0%" stop-color="#FF1493" stop-opacity="0.22" />
+      <stop offset="40%" stop-color="#FF1493" stop-opacity="0.10" />
+      <stop offset="70%" stop-color="#C71585" stop-opacity="0.04" />
+      <stop offset="100%" stop-color="#FF1493" stop-opacity="0" />
+    </radialGradient>
+
+    <!-- Counter edge highlight -->
+    <linearGradient id="counterEdge" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="rgba(255,255,255,0)" />
+      <stop offset="20%" stop-color="rgba(255,255,255,0.06)" />
+      <stop offset="50%" stop-color="rgba(255,255,255,0.12)" />
+      <stop offset="80%" stop-color="rgba(255,255,255,0.06)" />
+      <stop offset="100%" stop-color="rgba(255,255,255,0)" />
+    </linearGradient>
+
+    <!-- Reflection gradient -->
+    <linearGradient id="reflectionFade" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="white" stop-opacity="0.15" />
+      <stop offset="100%" stop-color="white" stop-opacity="0" />
+    </linearGradient>
+
+    <filter id="fogBlur" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="7"/>
+    </filter>
+  </defs>
+
+  <rect width="100%" height="100%" fill="url(#bgGrad)"/>
+
+  <!-- Ambient pink glow behind glass -->
+  <ellipse cx="150" cy="180" rx="140" ry="160" fill="url(#ambientGlow)"/>
+
+  <!-- Bar counter -->
+  <!-- Counter top face (thin perspective strip) -->
+  <rect x="0" y="278" width="300" height="6" fill="url(#counterTop)"/>
+  <!-- Counter top edge highlight -->
+  <line x1="0" y1="278" x2="300" y2="278" stroke="rgba(255,255,255,0.15)" stroke-width="1"/>
+  <!-- Counter front face -->
+  <rect x="0" y="284" width="300" height="56" fill="url(#counterGrad)"/>
+  <!-- Subtle specular highlight on counter top -->
+  <ellipse cx="150" cy="281" rx="80" ry="2.5" fill="rgba(255,255,255,0.04)"/>
+
+  <!-- Glass reflection on counter surface -->
+  <g opacity="0.12">
+    <clipPath id="counterClip">
+      <rect x="0" y="284" width="300" height="56"/>
+    </clipPath>
+    <g clip-path="url(#counterClip)" transform="translate(50,0)">
+      <g transform="translate(0,540) scale(1,-1)">
+        <path d="M 49 80 L 100 160 L 151 80 Z" fill="#FF1493" opacity="0.3"/>
+        <path d="M 100 160 L 100 270" stroke="rgba(255,255,255,0.3)" stroke-width="4"/>
+        <ellipse cx="100" cy="270" rx="40" ry="10" fill="rgba(255,255,255,0.2)"/>
+      </g>
+    </g>
+  </g>
+
+  <!-- === MARTINI GLASS (centered in 300px viewBox) === -->
+  <g transform="translate(50,0)">
+
+  <path d="M 30 50 A 70 12 0 0 1 170 50" fill="none" stroke="rgba(255,255,255,0.2)" stroke-width="2"/>
+
+  <path d="M 49 80 A 51 9 0 0 1 151 80" fill="#C71585"/>
+
+  <path d="M 49 80 L 100 160 L 151 80 Z" fill="#FF1493" opacity="0.85"/>
+
+  <path d="M 49 80 A 51 9 0 0 0 151 80" fill="#FF69B4"/>
+
+  <!-- Dry ice glow filter -->
+  <defs>
+    <filter id="iceGlow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="2" result="glow"/>
+      <feMerge>
+        <feMergeNode in="glow"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+
+  <!-- Chain draped over rim - teabag style -->
+  <!-- Outside portion: weight/tag hangs down outside the glass -->
+  <g fill="none" stroke="rgba(200,220,240,0.7)" stroke-width="0.6">
+    <!-- Chain links hanging down outside of glass -->
+    <ellipse cx="176" cy="56" rx="1.2" ry="2.8"/>
+    <ellipse cx="176" cy="61" rx="1" ry="2.5"/>
+    <ellipse cx="176" cy="66" rx="1.2" ry="2.8"/>
+    <ellipse cx="176" cy="71" rx="1" ry="2.5"/>
+    <!-- Weighted end / tag -->
+    <rect x="168" y="74" width="16" height="12" rx="2" ry="2" stroke-width="0.9" fill="rgba(200,220,240,0.08)"/>
+    <line x1="172" y1="80" x2="180" y2="80" opacity="0.4"/>
+    <line x1="172" y1="83" x2="178" y2="83" opacity="0.3"/>
+  </g>
+
+  <!-- The chain drapes over the rim -->
+  <g fill="none" stroke="rgba(200,220,240,0.65)" stroke-width="0.7">
+    <!-- Short arc sitting on top of the rim edge (~x=170) -->
+    <path d="M 176,54 Q 176,47 170,47 Q 164,47 164,54"/>
+  </g>
+
+  <!-- Entire cage assembly - bobs gently as one unit -->
+  <g>
+    <animateTransform attributeName="transform" type="translate" values="0,0; 1,1.5; -0.5,-0.5; 0.5,1; -1,0.5; 0,0" dur="6s" repeatCount="indefinite"/>
+
+    <!-- Chain links angling from rim drape (x≈164) down to cage (x≈100) -->
+    <g fill="none" stroke="rgba(200,220,240,0.55)" stroke-width="0.6">
+      <ellipse cx="162" cy="58" rx="1.2" ry="2.8"/>
+      <ellipse cx="158" cy="63" rx="1" ry="2.5"/>
+      <ellipse cx="153" cy="68" rx="1.2" ry="2.8"/>
+      <ellipse cx="148" cy="73" rx="1" ry="2.5"/>
+      <ellipse cx="142" cy="78" rx="1.2" ry="2.8"/>
+      <ellipse cx="136" cy="83" rx="1" ry="2.5"/>
+      <ellipse cx="130" cy="88" rx="1.2" ry="2.8"/>
+      <ellipse cx="124" cy="93" rx="1" ry="2.5"/>
+      <ellipse cx="118" cy="98" rx="1.2" ry="2.8"/>
+      <ellipse cx="112" cy="103" rx="1" ry="2.5"/>
+      <ellipse cx="106" cy="108" rx="1.2" ry="2.8"/>
+    </g>
+
+    <!-- Wire cage - back bars (behind rocks) -->
+    <g fill="none" stroke="rgba(200,220,240,0.5)" stroke-width="0.6">
+      <path d="M 92,114 Q 88,130 96,146" opacity="0.25"/>
+      <path d="M 100,112 Q 100,130 100,146" opacity="0.25"/>
+      <path d="M 108,114 Q 112,130 104,146" opacity="0.25"/>
+      <path d="M 86,128 Q 100,123 114,128" opacity="0.2"/>
+    </g>
+
+    <!-- Dry ice rocks (bob with cage + individual jiggle) -->
+    <g filter="url(#iceGlow)">
+      <polygon fill="#D0F0FF" stroke="#FFFFFF" stroke-width="0.8" opacity="0.85">
+        <animate attributeName="points" values="85,120 90,114 96,117 94,124 87,125; 86,119 91,113 97,116 95,123 88,124; 85,121 90,115 96,118 94,125 87,126; 85,120 90,114 96,117 94,124 87,125" dur="3.5s" repeatCount="indefinite" begin="0s"/>
+      </polygon>
+      <polygon fill="#E0F8FF" stroke="#FFFFFF" stroke-width="0.8" opacity="0.85">
+        <animate attributeName="points" values="104,118 110,113 115,117 113,124 107,125; 103,119 109,114 114,118 112,125 106,126; 105,117 111,112 116,116 114,123 108,124; 104,118 110,113 115,117 113,124 107,125" dur="4s" repeatCount="indefinite" begin="0.5s"/>
+      </polygon>
+      <polygon fill="#CCEEFF" stroke="#FFFFFF" stroke-width="0.7" opacity="0.8">
+        <animate attributeName="points" values="95,132 100,127 105,130 103,136 97,136; 96,131 101,126 106,129 104,135 98,135; 94,133 99,128 104,131 102,137 96,137; 95,132 100,127 105,130 103,136 97,136" dur="3.8s" repeatCount="indefinite" begin="0.3s"/>
+      </polygon>
+      <polygon fill="#B8E8FF" stroke="#FFFFFF" stroke-width="0.6" opacity="0.75">
+        <animate attributeName="points" values="91,130 94,126 97,129 94,133; 92,129 95,125 98,128 95,132; 90,131 93,127 96,130 93,134; 91,130 94,126 97,129 94,133" dur="3.2s" repeatCount="indefinite" begin="0.8s"/>
+      </polygon>
+      <polygon fill="#D8F4FF" stroke="#FFFFFF" stroke-width="0.6" opacity="0.7">
+        <animate attributeName="points" values="105,129 108,125 110,128 107,133; 106,128 109,124 111,127 108,132; 104,130 107,126 109,129 106,134; 105,129 108,125 110,128 107,133" dur="3.6s" repeatCount="indefinite" begin="1.1s"/>
+      </polygon>
+      <polygon fill="#E0FFFF" stroke="#FFFFFF" stroke-width="0.5" opacity="0.7">
+        <animate attributeName="points" values="98,140 100,137 103,139 101,143; 99,139 101,136 104,138 102,142; 97,141 99,138 102,140 100,144; 98,140 100,137 103,139 101,143" dur="4.2s" repeatCount="indefinite" begin="0.6s"/>
+      </polygon>
+    </g>
+
+    <!-- Wire cage - front bars and rings -->
+    <g fill="none" stroke="rgba(200,220,240,0.5)" stroke-width="0.6">
+      <ellipse cx="100" cy="113" rx="17" ry="4"/>
+      <path d="M 83,113 Q 80,130 100,148" opacity="0.5"/>
+      <path d="M 117,113 Q 120,130 100,148" opacity="0.5"/>
+      <path d="M 92,109 Q 86,130 98,147" opacity="0.4"/>
+      <path d="M 108,109 Q 114,130 102,147" opacity="0.4"/>
+      <path d="M 86,128 Q 100,133 114,128" opacity="0.45"/>
+      <ellipse cx="100" cy="147" rx="3" ry="1.5" opacity="0.4"/>
+    </g>
+
+  </g><!-- end cage assembly -->
+
+  <!-- Effervescence bubbles rising from dry ice -->
+  <g fill="#FFFFFF">
+    <!-- Fast tiny bubbles -->
+    <circle cx="95" cy="140" r="1" opacity="0">
+      <animate attributeName="cy" values="140; 80" dur="0.8s" repeatCount="indefinite" begin="0s"/>
+      <animate attributeName="cx" values="95; 93; 96" dur="0.8s" repeatCount="indefinite" begin="0s"/>
+      <animate attributeName="opacity" values="0; 0.9; 0.9; 0" keyTimes="0; 0.05; 0.85; 1" dur="0.8s" repeatCount="indefinite" begin="0s"/>
+    </circle>
+    <circle cx="105" cy="138" r="1.2" opacity="0">
+      <animate attributeName="cy" values="138; 80" dur="0.9s" repeatCount="indefinite" begin="0.15s"/>
+      <animate attributeName="cx" values="105; 107; 104" dur="0.9s" repeatCount="indefinite" begin="0.15s"/>
+      <animate attributeName="opacity" values="0; 0.9; 0.9; 0" keyTimes="0; 0.05; 0.85; 1" dur="0.9s" repeatCount="indefinite" begin="0.15s"/>
+    </circle>
+    <circle cx="100" cy="145" r="0.8" opacity="0">
+      <animate attributeName="cy" values="145; 80" dur="0.7s" repeatCount="indefinite" begin="0.3s"/>
+      <animate attributeName="cx" values="100; 99; 101" dur="0.7s" repeatCount="indefinite" begin="0.3s"/>
+      <animate attributeName="opacity" values="0; 0.8; 0.8; 0" keyTimes="0; 0.05; 0.85; 1" dur="0.7s" repeatCount="indefinite" begin="0.3s"/>
+    </circle>
+    <!-- Medium bubbles -->
+    <circle cx="93" cy="142" r="1.8" opacity="0">
+      <animate attributeName="cy" values="142; 80" dur="1.2s" repeatCount="indefinite" begin="0.1s"/>
+      <animate attributeName="cx" values="93; 90; 94; 91" dur="1.2s" repeatCount="indefinite" begin="0.1s"/>
+      <animate attributeName="opacity" values="0; 0.7; 0.7; 0" keyTimes="0; 0.05; 0.9; 1" dur="1.2s" repeatCount="indefinite" begin="0.1s"/>
+    </circle>
+    <circle cx="107" cy="140" r="2" opacity="0">
+      <animate attributeName="cy" values="140; 80" dur="1.3s" repeatCount="indefinite" begin="0.4s"/>
+      <animate attributeName="cx" values="107; 110; 106; 109" dur="1.3s" repeatCount="indefinite" begin="0.4s"/>
+      <animate attributeName="opacity" values="0; 0.7; 0.7; 0" keyTimes="0; 0.05; 0.9; 1" dur="1.3s" repeatCount="indefinite" begin="0.4s"/>
+    </circle>
+    <circle cx="100" cy="148" r="1.5" opacity="0">
+      <animate attributeName="cy" values="148; 80" dur="1.1s" repeatCount="indefinite" begin="0.6s"/>
+      <animate attributeName="cx" values="100; 98; 102" dur="1.1s" repeatCount="indefinite" begin="0.6s"/>
+      <animate attributeName="opacity" values="0; 0.8; 0.8; 0" keyTimes="0; 0.05; 0.9; 1" dur="1.1s" repeatCount="indefinite" begin="0.6s"/>
+    </circle>
+    <!-- Larger slow bubbles -->
+    <circle cx="98" cy="143" r="2.5" opacity="0">
+      <animate attributeName="cy" values="143; 80" dur="1.6s" repeatCount="indefinite" begin="0.2s"/>
+      <animate attributeName="cx" values="98; 94; 97; 95" dur="1.6s" repeatCount="indefinite" begin="0.2s"/>
+      <animate attributeName="opacity" values="0; 0.6; 0.6; 0" keyTimes="0; 0.05; 0.9; 1" dur="1.6s" repeatCount="indefinite" begin="0.2s"/>
+    </circle>
+    <circle cx="103" cy="146" r="2.2" opacity="0">
+      <animate attributeName="cy" values="146; 80" dur="1.5s" repeatCount="indefinite" begin="0.7s"/>
+      <animate attributeName="cx" values="103; 106; 102; 105" dur="1.5s" repeatCount="indefinite" begin="0.7s"/>
+      <animate attributeName="opacity" values="0; 0.6; 0.6; 0" keyTimes="0; 0.05; 0.9; 1" dur="1.5s" repeatCount="indefinite" begin="0.7s"/>
+    </circle>
+    <!-- Extra tiny rapid bubbles for density -->
+    <circle cx="97" cy="150" r="0.7" opacity="0">
+      <animate attributeName="cy" values="150; 80" dur="0.6s" repeatCount="indefinite" begin="0.05s"/>
+      <animate attributeName="opacity" values="0; 0.9; 0.9; 0" keyTimes="0; 0.05; 0.8; 1" dur="0.6s" repeatCount="indefinite" begin="0.05s"/>
+    </circle>
+    <circle cx="102" cy="148" r="0.6" opacity="0">
+      <animate attributeName="cy" values="148; 80" dur="0.65s" repeatCount="indefinite" begin="0.35s"/>
+      <animate attributeName="opacity" values="0; 0.9; 0.9; 0" keyTimes="0; 0.05; 0.8; 1" dur="0.65s" repeatCount="indefinite" begin="0.35s"/>
+    </circle>
+    <circle cx="91" cy="144" r="0.8" opacity="0">
+      <animate attributeName="cy" values="144; 80" dur="0.75s" repeatCount="indefinite" begin="0.5s"/>
+      <animate attributeName="cx" values="91; 89; 92" dur="0.75s" repeatCount="indefinite" begin="0.5s"/>
+      <animate attributeName="opacity" values="0; 0.85; 0.85; 0" keyTimes="0; 0.05; 0.8; 1" dur="0.75s" repeatCount="indefinite" begin="0.5s"/>
+    </circle>
+    <circle cx="109" cy="139" r="0.9" opacity="0">
+      <animate attributeName="cy" values="139; 80" dur="0.7s" repeatCount="indefinite" begin="0.8s"/>
+      <animate attributeName="cx" values="109; 111; 108" dur="0.7s" repeatCount="indefinite" begin="0.8s"/>
+      <animate attributeName="opacity" values="0; 0.85; 0.85; 0" keyTimes="0; 0.05; 0.8; 1" dur="0.7s" repeatCount="indefinite" begin="0.8s"/>
+    </circle>
+    <circle cx="96" cy="147" r="1.2" opacity="0">
+      <animate attributeName="cy" values="147; 80" dur="1.0s" repeatCount="indefinite" begin="0.45s"/>
+      <animate attributeName="cx" values="96; 94; 97" dur="1.0s" repeatCount="indefinite" begin="0.45s"/>
+      <animate attributeName="opacity" values="0; 0.8; 0.8; 0" keyTimes="0; 0.05; 0.85; 1" dur="1.0s" repeatCount="indefinite" begin="0.45s"/>
+    </circle>
+    <circle cx="104" cy="144" r="1.0" opacity="0">
+      <animate attributeName="cy" values="144; 80" dur="0.85s" repeatCount="indefinite" begin="0.55s"/>
+      <animate attributeName="cx" values="104; 106; 103" dur="0.85s" repeatCount="indefinite" begin="0.55s"/>
+      <animate attributeName="opacity" values="0; 0.8; 0.8; 0" keyTimes="0; 0.05; 0.85; 1" dur="0.85s" repeatCount="indefinite" begin="0.55s"/>
+    </circle>
+  </g>
+
+  <path d="M 30 50 L 100 160 L 170 50" fill="rgba(255,255,255,0.03)" stroke="rgba(255,255,255,0.5)" stroke-width="2"/>
+  <path d="M 100 160 L 100 270" stroke="rgba(255,255,255,0.6)" stroke-width="4" stroke-linecap="round"/>
+  
+  <ellipse cx="100" cy="270" rx="40" ry="10" fill="rgba(255,255,255,0.05)" stroke="rgba(255,255,255,0.4)" stroke-width="2"/>
+
+  <path d="M 30 50 A 70 12 0 0 0 170 50" fill="none" stroke="rgba(255,255,255,0.8)" stroke-width="2"/>
+
+  <g filter="url(#fogBlur)" fill="#E6F2FF">
+    
+    <!-- Rising fog clouds - left side -->
+    <circle cx="100" cy="80" r="8" opacity="0">
+      <animate attributeName="cx" values="90; 30; 5" dur="4.5s" repeatCount="indefinite" begin="0s"/>
+      <animate attributeName="cy" values="80; 42; 100" dur="4.5s" repeatCount="indefinite" begin="0s"/>
+      <animate attributeName="r" values="8; 28; 38" dur="4.5s" repeatCount="indefinite" begin="0s"/>
+      <animate attributeName="opacity" values="0; 0.8; 0" keyTimes="0; 0.35; 1" dur="4.5s" repeatCount="indefinite" begin="0s"/>
+    </circle>
+
+    <!-- Rising fog clouds - right side -->
+    <circle cx="100" cy="80" r="8" opacity="0">
+      <animate attributeName="cx" values="110; 170; 195" dur="5s" repeatCount="indefinite" begin="0.5s"/>
+      <animate attributeName="cy" values="80; 42; 110" dur="5s" repeatCount="indefinite" begin="0.5s"/>
+      <animate attributeName="r" values="8; 30; 40" dur="5s" repeatCount="indefinite" begin="0.5s"/>
+      <animate attributeName="opacity" values="0; 0.8; 0" keyTimes="0; 0.35; 1" dur="5s" repeatCount="indefinite" begin="0.5s"/>
+    </circle>
+
+    <!-- Upper left puff -->
+    <circle cx="100" cy="80" r="6" opacity="0">
+      <animate attributeName="cx" values="95; 60; 35" dur="3.5s" repeatCount="indefinite" begin="1s"/>
+      <animate attributeName="cy" values="80; 48; 38" dur="3.5s" repeatCount="indefinite" begin="1s"/>
+      <animate attributeName="r" values="6; 22; 30" dur="3.5s" repeatCount="indefinite" begin="1s"/>
+      <animate attributeName="opacity" values="0; 0.85; 0" keyTimes="0; 0.45; 1" dur="3.5s" repeatCount="indefinite" begin="1s"/>
+    </circle>
+
+    <!-- Upper right puff -->
+    <circle cx="100" cy="80" r="6" opacity="0">
+      <animate attributeName="cx" values="105; 140; 165" dur="3.8s" repeatCount="indefinite" begin="1.5s"/>
+      <animate attributeName="cy" values="80; 48; 35" dur="3.8s" repeatCount="indefinite" begin="1.5s"/>
+      <animate attributeName="r" values="6; 24; 32" dur="3.8s" repeatCount="indefinite" begin="1.5s"/>
+      <animate attributeName="opacity" values="0; 0.85; 0" keyTimes="0; 0.45; 1" dur="3.8s" repeatCount="indefinite" begin="1.5s"/>
+    </circle>
+
+    <!-- Cascading fog - left, sinks down past glass -->
+    <circle cx="100" cy="80" r="6" opacity="0">
+      <animate attributeName="cx" values="85; 25; 10" dur="5s" repeatCount="indefinite" begin="0.3s"/>
+      <animate attributeName="cy" values="80; 60; 180" dur="5s" repeatCount="indefinite" begin="0.3s"/>
+      <animate attributeName="r" values="6; 22; 35" dur="5s" repeatCount="indefinite" begin="0.3s"/>
+      <animate attributeName="opacity" values="0; 0.7; 0.5; 0" keyTimes="0; 0.3; 0.7; 1" dur="5s" repeatCount="indefinite" begin="0.3s"/>
+    </circle>
+
+    <!-- Cascading fog - right, sinks down past glass -->
+    <circle cx="100" cy="80" r="6" opacity="0">
+      <animate attributeName="cx" values="115; 175; 190" dur="5.5s" repeatCount="indefinite" begin="1.8s"/>
+      <animate attributeName="cy" values="80; 60; 190" dur="5.5s" repeatCount="indefinite" begin="1.8s"/>
+      <animate attributeName="r" values="6; 24; 36" dur="5.5s" repeatCount="indefinite" begin="1.8s"/>
+      <animate attributeName="opacity" values="0; 0.7; 0.5; 0" keyTimes="0; 0.3; 0.7; 1" dur="5.5s" repeatCount="indefinite" begin="1.8s"/>
+    </circle>
+
+    <!-- Central lingering haze around rim -->
+    <circle cx="100" cy="80" r="12" opacity="0">
+      <animate attributeName="cx" values="100; 115; 85; 100" dur="5s" repeatCount="indefinite" begin="0.8s"/>
+      <animate attributeName="cy" values="78; 72; 74; 78" dur="5s" repeatCount="indefinite" begin="0.8s"/>
+      <animate attributeName="r" values="14; 32; 32; 14" dur="5s" repeatCount="indefinite" begin="0.8s"/>
+      <animate attributeName="opacity" values="0; 0.9; 0.9; 0" keyTimes="0; 0.2; 0.8; 1" dur="5s" repeatCount="indefinite" begin="0.8s"/>
+    </circle>
+
+    <!-- Extra left cascade -->
+    <circle cx="100" cy="80" r="5" opacity="0">
+      <animate attributeName="cx" values="92; 40; 20" dur="4.2s" repeatCount="indefinite" begin="2.2s"/>
+      <animate attributeName="cy" values="80; 55; 160" dur="4.2s" repeatCount="indefinite" begin="2.2s"/>
+      <animate attributeName="r" values="5; 20; 30" dur="4.2s" repeatCount="indefinite" begin="2.2s"/>
+      <animate attributeName="opacity" values="0; 0.7; 0.4; 0" keyTimes="0; 0.3; 0.7; 1" dur="4.2s" repeatCount="indefinite" begin="2.2s"/>
+    </circle>
+
+    <!-- Extra right cascade -->
+    <circle cx="100" cy="80" r="5" opacity="0">
+      <animate attributeName="cx" values="108; 160; 185" dur="4.8s" repeatCount="indefinite" begin="2.8s"/>
+      <animate attributeName="cy" values="80; 55; 170" dur="4.8s" repeatCount="indefinite" begin="2.8s"/>
+      <animate attributeName="r" values="5; 22; 32" dur="4.8s" repeatCount="indefinite" begin="2.8s"/>
+      <animate attributeName="opacity" values="0; 0.7; 0.4; 0" keyTimes="0; 0.3; 0.7; 1" dur="4.8s" repeatCount="indefinite" begin="2.8s"/>
+    </circle>
+
+    <!-- Small quick puff - left -->
+    <circle cx="100" cy="80" r="5" opacity="0">
+      <animate attributeName="cx" values="93; 50; 30" dur="3s" repeatCount="indefinite" begin="3.2s"/>
+      <animate attributeName="cy" values="80; 50; 55" dur="3s" repeatCount="indefinite" begin="3.2s"/>
+      <animate attributeName="r" values="5; 18; 25" dur="3s" repeatCount="indefinite" begin="3.2s"/>
+      <animate attributeName="opacity" values="0; 0.8; 0" keyTimes="0; 0.4; 1" dur="3s" repeatCount="indefinite" begin="3.2s"/>
+    </circle>
+
+    <!-- Small quick puff - right -->
+    <circle cx="100" cy="80" r="5" opacity="0">
+      <animate attributeName="cx" values="107; 150; 170" dur="3.2s" repeatCount="indefinite" begin="3.6s"/>
+      <animate attributeName="cy" values="80; 50; 50" dur="3.2s" repeatCount="indefinite" begin="3.6s"/>
+      <animate attributeName="r" values="5; 18; 26" dur="3.2s" repeatCount="indefinite" begin="3.6s"/>
+      <animate attributeName="opacity" values="0; 0.8; 0" keyTimes="0; 0.4; 1" dur="3.2s" repeatCount="indefinite" begin="3.6s"/>
+    </circle>
+  </g>
+
+  </g><!-- end glass transform -->
+</svg>

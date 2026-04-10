@@ -1,0 +1,130 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="90 -40 260 480" width="100%" height="100%">
+  <defs>
+    <linearGradient id="metalBody" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#546e7a"/>
+      <stop offset="15%" stop-color="#cfd8dc"/>
+      <stop offset="50%" stop-color="#eceff1"/>
+      <stop offset="85%" stop-color="#90a4ae"/>
+      <stop offset="100%" stop-color="#37474f"/>
+    </linearGradient>
+
+    <linearGradient id="metalDark" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#37474f"/>
+      <stop offset="50%" stop-color="#90a4ae"/>
+      <stop offset="100%" stop-color="#263238"/>
+    </linearGradient>
+  </defs>
+
+  <style>
+    /* Aggressive Rolling Fog Animations */
+    .fog-layer-1 { animation: rollFast 3s ease-in-out infinite alternate; fill: #e1f5fe; opacity: 0.9; transform-origin: 200px 420px; }
+    .fog-layer-2 { animation: rollReverse 2.5s ease-in-out infinite alternate; fill: #b3e5fc; opacity: 0.6; transform-origin: 200px 420px; }
+    .fog-layer-3 { animation: billowUp 2s ease-in-out infinite alternate; fill: #ffffff; opacity: 0.8; transform-origin: 200px 430px; }
+
+    @keyframes rollFast {
+      0% { transform: translateX(-40px) scale(0.9); }
+      100% { transform: translateX(40px) scale(1.15); }
+    }
+    @keyframes rollReverse {
+      0% { transform: translateX(35px) scale(1.1); }
+      100% { transform: translateX(-35px) scale(0.85); }
+    }
+    @keyframes billowUp {
+      0% { transform: translateY(10px) scale(0.95); }
+      100% { transform: translateY(-20px) scale(1.1); }
+    }
+
+    /* Pressurized Venting Gas (Top) */
+    .vent { fill: #ffffff; animation: shootGas 1.2s cubic-bezier(0.1, 0.8, 0.3, 1) infinite; transform-origin: 200px 100px; }
+    .v1 { animation-delay: 0s; }
+    .v2 { animation-delay: 0.2s; }
+    .v3 { animation-delay: 0.4s; }
+    .v4 { animation-delay: 0.6s; }
+    .v5 { animation-delay: 0.8s; }
+
+    @keyframes shootGas {
+      0% { transform: translateY(0) scale(0.3); opacity: 1; }
+      40% { opacity: 0.9; }
+      100% { transform: translateY(-130px) scale(3.5) translateX(-25px); opacity: 0; }
+    }
+
+    /* Floating Frost Particles */
+    .frost { fill: #81d4fa; animation: floatFrost 1.5s linear infinite; }
+    .f1 { animation-delay: 0.1s; animation-duration: 1.2s; }
+    .f2 { animation-delay: 0.5s; animation-duration: 1.8s; }
+    .f3 { animation-delay: 0.8s; animation-duration: 1.4s; }
+    .f4 { animation-delay: 0.3s; animation-duration: 1.6s; }
+    .f5 { animation-delay: 0.7s; animation-duration: 1.3s; }
+
+    @keyframes floatFrost {
+      0% { transform: translateY(0) scale(1); opacity: 0; }
+      20% { opacity: 1; }
+      80% { opacity: 1; }
+      100% { transform: translateY(-60px) scale(0.5); opacity: 0; }
+    }
+  </style>
+
+  <g class="fog-layer-2">
+    <ellipse cx="200" cy="420" rx="160" ry="35" />
+    <ellipse cx="100" cy="410" rx="100" ry="30" />
+    <ellipse cx="300" cy="415" rx="110" ry="32" />
+  </g>
+
+  <rect x="145" y="405" width="16" height="20" rx="4" fill="#263238" />
+  <circle cx="153" cy="425" r="8" fill="#546e7a" />
+  <rect x="239" y="405" width="16" height="20" rx="4" fill="#263238" />
+  <circle cx="247" cy="425" r="8" fill="#546e7a" />
+
+  <path d="M 110 395 L 290 395 L 270 410 L 130 410 Z" fill="url(#metalDark)" />
+  <rect x="130" y="410" width="140" height="6" fill="#263238" />
+
+  <rect x="130" y="160" width="140" height="235" fill="url(#metalBody)" />
+  <path d="M 130 160 C 130 120, 270 120, 270 160 Z" fill="url(#metalBody)" />
+
+  <rect x="130" y="240" width="140" height="4" fill="#78909c" opacity="0.8" />
+  <rect x="130" y="320" width="140" height="4" fill="#78909c" opacity="0.8" />
+
+  <rect x="130" y="170" width="140" height="15" fill="#ffffff" opacity="0.8" />
+  <text x="200" y="181" font-family="sans-serif" font-size="10" font-weight="bold" fill="#37474f" text-anchor="middle" letter-spacing="2">NITROGEN</text>
+
+  <path d="M 130 220 L 100 220 L 100 395 L 130 395" fill="none" stroke="url(#metalDark)" stroke-width="8" stroke-linejoin="round" />
+  <line x1="100" y1="290" x2="130" y2="290" stroke="url(#metalDark)" stroke-width="6" />
+
+  <rect x="185" y="105" width="30" height="35" fill="url(#metalDark)" />
+  <path d="M 215 130 L 250 110 L 250 90" fill="none" stroke="url(#metalBody)" stroke-width="6" stroke-linejoin="round" />
+  <path d="M 185 125 L 160 110 L 160 90" fill="none" stroke="url(#metalBody)" stroke-width="5" stroke-linejoin="round" />
+  <circle cx="160" cy="90" r="8" fill="#546e7a" />
+  <circle cx="250" cy="90" r="10" fill="#37474f" />
+  
+  <path d="M 200 105 Q 230 60 270 150" fill="none" stroke="#263238" stroke-width="4" stroke-linecap="round" />
+  <path d="M 260 120 L 280 165" fill="none" stroke="#1976d2" stroke-width="6" stroke-linecap="round" stroke-dasharray="2 2"/>
+
+  <ellipse cx="200" cy="80" rx="55" ry="12" fill="none" stroke="url(#metalBody)" stroke-width="6" />
+  <path d="M 180 80 L 180 110 M 220 80 L 220 110" fill="none" stroke="url(#metalBody)" stroke-width="5" />
+
+  <circle class="vent v1" cx="200" cy="100" r="10" />
+  <circle class="vent v2" cx="195" cy="100" r="12" />
+  <circle class="vent v3" cx="205" cy="100" r="14" />
+  <circle class="vent v4" cx="190" cy="100" r="11" />
+  <circle class="vent v5" cx="210" cy="100" r="13" />
+
+  <g class="fog-layer-1">
+    <ellipse cx="200" cy="430" rx="150" ry="28" />
+    <circle cx="130" cy="425" r="35" />
+    <circle cx="270" cy="425" r="40" />
+    <ellipse cx="90" cy="415" rx="70" ry="25" />
+    <ellipse cx="310" cy="420" rx="80" ry="28" />
+  </g>
+  
+  <g class="fog-layer-3">
+    <circle cx="170" cy="435" r="30" />
+    <circle cx="230" cy="430" r="35" />
+    <ellipse cx="200" cy="440" rx="120" ry="18" />
+  </g>
+
+  <circle class="frost f1" cx="110" cy="380" r="2.5" />
+  <circle class="frost f2" cx="290" cy="400" r="3" />
+  <circle class="frost f3" cx="140" cy="410" r="2" />
+  <circle class="frost f4" cx="260" cy="390" r="3.5" />
+  <circle class="frost f5" cx="80"  cy="420" r="2" />
+</svg>

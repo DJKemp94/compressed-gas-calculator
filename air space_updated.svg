@@ -1,0 +1,206 @@
+<svg viewBox="0 0 800 600" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <style>
+      .stream {
+        fill: none;
+        stroke-linecap: round;
+      }
+      .p-fast {
+        stroke: #00b4d8;
+        stroke-width: 7;
+        stroke-dasharray: 0.1 39.9;
+        animation: flow-fast 3s linear infinite;
+        opacity: 0.9;
+      }
+      .p-med {
+        stroke: #48cae4;
+        stroke-width: 5.5;
+        stroke-dasharray: 0.1 49.9;
+        animation: flow-med 4.5s linear infinite;
+        opacity: 0.75;
+      }
+      .p-slow {
+        stroke: #90e0ef;
+        stroke-width: 4;
+        stroke-dasharray: 0.1 59.9;
+        animation: flow-slow 6s linear infinite;
+        opacity: 0.65;
+      }
+      @keyframes flow-fast { to { stroke-dashoffset: -160; } }
+      @keyframes flow-med  { to { stroke-dashoffset: -200; } }
+      @keyframes flow-slow { to { stroke-dashoffset: -240; } }
+
+      .flame-outer {
+        transform-origin: 0px 0px;
+        animation: flicker-outer 0.15s ease-in-out infinite alternate;
+      }
+      .flame-inner {
+        transform-origin: 0px 0px;
+        animation: flicker-inner 0.08s ease-in-out infinite alternate;
+      }
+      @keyframes flicker-outer {
+        0%   { transform: scaleY(0.95) scaleX(1.05); opacity: 0.7; }
+        100% { transform: scaleY(1.1)  scaleX(0.95); opacity: 0.9; }
+      }
+      @keyframes flicker-inner {
+        0%   { transform: scaleY(0.9);  opacity: 0.9; }
+        100% { transform: scaleY(1.15); opacity: 1;   }
+      }
+    </style>
+
+    <linearGradient id="chemPink" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%"   stop-color="#ff00cc" stop-opacity="0.8"/>
+      <stop offset="100%" stop-color="#cc0099" stop-opacity="0.9"/>
+    </linearGradient>
+    <linearGradient id="chemGreen" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%"   stop-color="#00ff00" stop-opacity="0.8"/>
+      <stop offset="100%" stop-color="#00cc00" stop-opacity="0.9"/>
+    </linearGradient>
+    <linearGradient id="chemBlue" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%"   stop-color="#00ffff" stop-opacity="0.8"/>
+      <stop offset="100%" stop-color="#00cccc" stop-opacity="0.9"/>
+    </linearGradient>
+
+    <clipPath id="roomClip">
+      <path d="M 100,350 L 400,500 L 700,350 L 400,200 L 400,0 L 100,150 Z"/>
+    </clipPath>
+  </defs>
+
+  <g id="room-structure">
+    <path d="M 100,350 L 400,500 L 700,350 L 400,200 Z" fill="#f0f2f5"/>
+    <path d="M 160,320 L 460,470 M 220,290 L 520,440 M 280,260 L 580,410 M 340,230 L 640,380" stroke="#e8eaed" stroke-width="1.5" fill="none"/>
+    <path d="M 160,380 L 460,230 M 220,410 L 520,260 M 280,440 L 580,290 M 340,470 L 640,320" stroke="#e8eaed" stroke-width="1.5" fill="none"/>
+    <path d="M 100,350 L 400,200 L 400,0   L 100,150 Z" fill="#e8eaed"/>
+    <path d="M 400,200 L 700,350 L 700,150 L 400,0   Z" fill="#f8f9fa"/>
+    <path d="M 100,350 L 400,500 L 700,350 L 700,370 L 400,520 L 100,370 Z" fill="#cbd0d5"/>
+  </g>
+
+  <g id="vent" transform="translate(90, 0 )">
+    <polygon points="140,110  240,60  240,100  140,150" fill="#c8ccd0"/>
+    <line x1="143" y1="118" x2="237" y2="68" stroke="#9aa0a6" stroke-width="2"/>
+    <line x1="143" y1="126" x2="237" y2="76" stroke="#9aa0a6" stroke-width="2"/>
+    <line x1="143" y1="134" x2="237" y2="84" stroke="#9aa0a6" stroke-width="2"/>
+    <line x1="143" y1="142" x2="237" y2="92" stroke="#9aa0a6" stroke-width="2"/>
+    <polygon points="140,110  240,60  240,100  140,150" fill="none" stroke="#b0b4b8" stroke-width="1.5"/>
+  </g>
+
+  <g id="left-cabinets" transform="translate(210, 180)">
+    <path d="M 0,120 L 40,140 L 40,40 L 0,20 Z" fill="#bdc1c6"/>
+    <path d="M 40,140 L 120,100 L 120,0 L 40,40 Z" fill="#dadce0"/>
+    <path d="M 0,20 L 40,40 L 120,0 L 80,-20 Z" fill="#f1f3f4"/>
+    <line x1="80" y1="20" x2="80" y2="120" stroke="#bdc1c6" stroke-width="1"/>
+    <line x1="74" y1="66" x2="74" y2="82" stroke="#5f6368" stroke-width="2" stroke-linecap="round"/>
+    <line x1="86" y1="60" x2="86" y2="76" stroke="#5f6368" stroke-width="2" stroke-linecap="round"/>
+  </g>
+
+  <g id="fume-hood" transform="translate(500, 95)">
+
+    <g clip-path="url(#roomClip)">
+      <path d="M 0,-10 L 0,-200 L 30,-215 L 30,-25 Z" fill="#bdc1c6"/>
+      <path d="M 30,-25 L 30,-215 L 50,-205 L 50,-15 Z" fill="#9aa0a6"/>
+    </g>
+
+    <path d="M -30,-10 L 80,45  L 120,25 L 10,-30 Z" fill="#e8eaed"/>
+    <path d="M -30,-10 L -30,50 L 80,105 L 80,45 Z"  fill="#dadce0"/>
+    <path d="M 80,45  L 120,25 L 120,85 L 80,105 Z"  fill="#c8ccd0"/>
+
+    <path d="M -30,120 L 80,175 L 120,155 L 10,100 Z" fill="#3c4043"/>
+    <path d="M -30,120 L -30,180 L 80,235 L 80,175 Z" fill="#bdc1c6"/>
+    <path d="M 80,175 L 120,155 L 120,215 L 80,235 Z" fill="#9aa0a6"/>
+
+    <path d="M 10,100 L 120,155 L 120,25 L 10,-30 Z" fill="#dadce0"/>
+    <path d="M -30,120 L 10,100 L 10,-30 L -30,-10 Z" fill="#f1f3f4"/>
+
+    <path d="M 20,70 L 90,105 L 90,85 L 20,50 Z" fill="#9aa0a6"/>
+    <path d="M 30,75 L 70,95 M 40,70 L 70,83" stroke="#5f6368" stroke-width="1"/>
+
+    <g transform="translate(40, 120)">
+      <path d="M 0,10 L 30,25 L 50,15 L 20,0 Z" fill="#5f6368"/>
+      <path d="M 5,10 L 5,0  L 25,-5 L 25,5 Z"  fill="#9aa0a6"/>
+      <path d="M 25,12 L 35,17 L 32,2 L 28,2 Z"  fill="url(#chemBlue)" opacity="0.7"/>
+      <circle cx="30" cy="12" r="7" fill="url(#chemBlue)" opacity="0.6"/>
+    </g>
+
+    <path d="M -30,50 L 80,105 L 80,175 L -30,120 Z" fill="#aee0eb" opacity="0.25" stroke="#ffffff" stroke-width="1.5"/>
+    <path d="M -30,120 L 80,175 L 80,178 L -30,123 Z" fill="#9aa0a6"/>
+    <path d="M 80,105 L 120,85  L 120,155 L 80,175 Z" fill="#aee0eb" opacity="0.18" stroke="#ffffff" stroke-width="1"/>
+  </g>
+
+  <g id="stool" transform="translate(500, 280)">
+    <ellipse cx="0" cy="0" rx="20" ry="10" fill="#bdc1c6" stroke="#9aa0a6" stroke-width="1"/>
+    <ellipse cx="0" cy="3" rx="20" ry="10" fill="#9aa0a6"/>
+    <path d="M -10,5 L -15,35 M 10,5 L 15,35 M 0,8 L 0,40" stroke="#9aa0a6" stroke-width="3" stroke-linecap="round"/>
+    <path d="M -12,25 L 12,25 M 0,25 L 0,28" stroke="#bdc1c6" stroke-width="2"/>
+    <ellipse cx="-15" cy="35" rx="3" ry="1.5" fill="#5f6368"/>
+    <ellipse cx="15" cy="35" rx="3" ry="1.5" fill="#5f6368"/>
+    <ellipse cx="0" cy="40" rx="3" ry="1.5" fill="#5f6368"/>
+  </g>
+
+  <g id="biohazard-bin" transform="translate(400, 230)">
+    <path d="M -16,-40 L -16,0 A 16 8 0 0 0 16,0 L 16,-40 Z" fill="#f1c40f"/>
+    <path d="M 0,-32 L 0,8 A 16 8 0 0 0 16,0 L 16,-40 Z" fill="#e67e22" opacity="0.4"/>
+    
+    <ellipse cx="0" cy="-40" rx="16" ry="8" fill="#f1c40f"/>
+    <ellipse cx="0" cy="-42" rx="17" ry="8.5" fill="#f39c12"/>
+    <ellipse cx="0" cy="-44" rx="17" ry="8.5" fill="#f1c40f"/>
+    
+    <path d="M -6,6 L -10,13 L 10,13 L 6,6 Z" fill="#bdc1c6"/>
+    
+    <g transform="translate(0, -20) scale(0.4)">
+        <circle cx="0" cy="-12" r="10" stroke="#3c4043" stroke-width="4" fill="none"/>
+        <circle cx="-10" cy="6" r="10" stroke="#3c4043" stroke-width="4" fill="none"/>
+        <circle cx="10" cy="6" r="10" stroke="#3c4043" stroke-width="4" fill="none"/>
+        <circle cx="0" cy="0" r="6" fill="#3c4043"/>
+    </g>
+  </g>
+
+  <g id="particles-background">
+    <path class="stream p-fast" d="M 260,90  C 320,100 380,120 460,160"/>
+    <path class="stream p-med"  d="M 270,100 C 330,150 400,150 480,180"/>
+    <path class="stream p-slow" d="M 250,80  C 350,60  420,100 470,140"/>
+    <path class="stream p-fast" d="M 280,110 C 320,180 400,190 470,190"/>
+    <path class="stream p-med"  d="M 290,90  C 350,100 420,110 490,150"/>
+    <path class="stream p-slow" d="M 240,100 C 280,140 330,160 450,170"/>
+  </g>
+
+  <g id="center-bench-group" transform="translate(170, 304)">
+    <path d="M 0,40 L 160,120 L 220,90 L 60,10 Z" fill="#3c4043"/>
+    <path d="M 0,40 L 160,120 L 160,160 L 0,80 Z" fill="#c8ccd0"/>
+    <path d="M 160,120 L 220,90 L 220,130 L 160,160 Z" fill="#bdc1c6"/>
+
+    <g transform="translate(50, 25)">
+      <path d="M 0,20 L 20,30 L 16,10 L 4,10 Z" fill="url(#chemPink)" opacity="0.8"/>
+      <path d="M -5,30 L 25,30 L 18,-10 L 2,-10 Z" fill="none" stroke="#ffffff" stroke-width="1.5" opacity="0.5"/>
+    </g>
+    <g transform="translate(80, 50)">
+      <path d="M 0,15 L 15,22.5 L 12,8 L 3,8 Z" fill="url(#chemGreen)" opacity="0.8"/>
+      <path d="M -3,22.5 L 18,22.5 L 14,-5 L 1,-5 Z" fill="none" stroke="#ffffff" stroke-width="1.5" opacity="0.5"/>
+    </g>
+    <g transform="translate(140, 40)">
+      <rect x="0" y="30" width="30" height="5" transform="skewY(30)" fill="#5f6368"/>
+      <line x1="15" y1="30" x2="15" y2="-40" stroke="#9aa0a6" stroke-width="3"/>
+      <line x1="15" y1="0"  x2="-5" y2="10"  stroke="#5f6368" stroke-width="2"/>
+      <rect x="-8" y="-20" width="4" height="40" fill="url(#chemBlue)" opacity="0.6"/>
+    </g>
+
+    <g transform="translate(110, 60)">
+      <rect x="0" y="20" width="15" height="5" transform="skewY(30)" fill="#5f6368"/>
+      <rect x="5" y="5" width="5" height="20" fill="#9aa0a6"/>
+      <g transform="translate(7.5, 5)">
+        <path class="flame-outer" d="M -4,0 Q -6,-12 0,-20 Q 6,-12 4,0 Z" fill="#00b4d8" opacity="0.6"/>
+        <path class="flame-inner" d="M -2,0 Q -3,-8  0,-14 Q 3,-8  2,0 Z" fill="#e0ffff"/>
+      </g>
+    </g>
+  </g>
+
+  <g id="particles-foreground">
+    <path class="stream p-med"  d="M 350,280 C 400,260 460,240 530,250"/>
+    <path class="stream p-slow" d="M 355,290 C 410,270 470,255 535,260"/>
+    <path class="stream p-fast" d="M 345,270 C 390,250 455,230 528,242"/>
+    <path class="stream p-slow" d="M 340,285 C 380,265 445,245 525,255"/>
+    <path class="stream p-fast" d="M 360,275 C 420,255 480,240 540,248"/>
+    <path class="stream p-med"  d="M 350,265 C 405,245 465,232 532,245"/>
+    <path class="stream p-slow" d="M 355,282 C 415,260 475,248 538,258"/>
+  </g>
+
+</svg>

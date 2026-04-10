@@ -1,0 +1,1252 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gas Safety Calculator</title>
+
+
+  <style>
+    :root {
+      --primary-color: #002060;
+      --secondary-color: #4cae4c;
+      --accent-color: #ffeb3b;
+      --text-color: #333;
+      --bg-color: #e7ecf0;
+      --card-bg: #fff;
+      --input-border: #ddd;
+      --input-focus: #007bff;
+      --error-color: #dc3545;
+      --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      --radius: 8px;
+    }
+
+    body {
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      background-color: var(--bg-color);
+      color: var(--text-color);
+      line-height: 1.6;
+      padding: 20px;
+      margin: 0;
+    }
+
+    .container {
+      max-width: 800px;
+      margin: 2rem auto;
+      padding: 0 15px;
+    }
+
+    .header,
+    .content {
+      background: var(--card-bg);
+      padding: 2rem;
+      margin-bottom: 20px;
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      transition: transform 0.2s ease;
+    }
+
+    .header {
+      border-top: 5px solid var(--primary-color);
+    }
+
+    h1 {
+      margin: 0;
+      font-size: 1.8rem;
+      color: var(--primary-color);
+    }
+
+    h2 {
+      font-size: 1.4rem;
+      color: var(--primary-color);
+      border-bottom: 2px solid #f0f0f0;
+      padding-bottom: 10px;
+      margin-bottom: 20px;
+    }
+
+    h3 {
+      font-size: 1.2rem;
+      margin-top: 0;
+    }
+
+    /* Form Layouts */
+    .input-group {
+      margin-bottom: 20px;
+    }
+
+    .input-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+      margin-bottom: 15px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 500;
+      color: #555;
+    }
+
+    input[type='number'],
+    input[type='text'],
+    select {
+      width: 100%;
+      padding: 12px;
+      border: 2px solid var(--input-border);
+      border-radius: 6px;
+      font-size: 16px;
+      transition: border-color 0.2s;
+      box-sizing: border-box;
+    }
+
+    input:focus,
+    select:focus {
+      outline: none;
+      border-color: var(--input-focus);
+      box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
+    }
+
+    /* Checkbox & Radio styling wrapper */
+    .checkbox-wrapper,
+    .radio-wrapper {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 10px;
+      padding: 10px;
+      border: 1px solid transparent;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    .radio-wrapper:hover {
+      background: #f8f9fa;
+      border-color: #eee;
+    }
+
+    input[type="checkbox"],
+    input[type="radio"] {
+      width: 20px;
+      height: 20px;
+      margin: 0;
+      cursor: pointer;
+    }
+
+    button {
+      background-color: var(--primary-color);
+      color: white;
+      border: none;
+      padding: 12px 24px;
+      font-size: 16px;
+      font-weight: 600;
+      border-radius: 6px;
+      cursor: pointer;
+      width: 100%;
+      transition: background-color 0.2s, transform 0.1s;
+    }
+
+    button:hover {
+      background-color: #003399;
+      /* Slightly lighter shade */
+    }
+
+    button:active {
+      transform: translateY(1px);
+    }
+
+    /* Specific Button Styles */
+    #toggleInstructions {
+      background-color: #6c757d;
+      width: auto;
+    }
+
+    #btnGenerateReport {
+      background-color: var(--secondary-color);
+    }
+
+    .button-row {
+      margin-top: 20px;
+    }
+
+    .result {
+      background-color: #e3f2fd;
+      padding: 15px;
+      margin-top: 20px;
+      border-left: 5px solid #2196f3;
+      border-radius: 4px;
+      font-size: 1.1em;
+      display: none;
+    }
+
+    .error-msg {
+      background-color: #f8d7da;
+      color: #721c24;
+      padding: 10px;
+      border-radius: 6px;
+      border: 1px solid #f5c6cb;
+      margin-top: 10px;
+      display: none;
+      /* Hidden by default */
+    }
+
+    table {
+      border-collapse: collapse;
+      width: 100%;
+      margin: 15px 0;
+      box-shadow: 0 0 0 1px #eee;
+      border-radius: 6px;
+      overflow: hidden;
+    }
+
+    th,
+    td {
+      padding: 12px 15px;
+      text-align: left;
+      border-bottom: 1px solid #eee;
+    }
+
+    th {
+      background-color: var(--primary-color);
+      color: white;
+      text-transform: uppercase;
+      font-size: 0.85rem;
+      letter-spacing: 0.5px;
+    }
+
+    tr:last-child td {
+      border-bottom: none;
+    }
+
+    #explanationIcon {
+      font-size: 0.8em;
+      cursor: pointer;
+      display: inline-flex;
+      justify-content: center;
+      align-items: center;
+      width: 24px;
+      height: 24px;
+      background-color: #e0e0e0;
+      color: #555;
+      border-radius: 50%;
+      margin-left: 10px;
+      vertical-align: middle;
+      transition: all 0.2s;
+    }
+
+    #explanationIcon:hover {
+      background-color: var(--primary-color);
+      color: white;
+    }
+
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 1000;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      overflow: auto;
+      background-color: rgba(0, 0, 0, 0.5);
+      backdrop-filter: blur(2px);
+    }
+
+    .modal-content {
+      background-color: #fff;
+      margin: 10% auto;
+      padding: 2rem;
+      border-radius: var(--radius);
+      width: 90%;
+      max-width: 600px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+      animation: slideIn 0.3s ease-out;
+    }
+
+    @keyframes slideIn {
+      from {
+        transform: translateY(-20px);
+        opacity: 0;
+      }
+
+      to {
+        transform: translateY(0);
+        opacity: 1;
+      }
+    }
+
+    #clearDataButton {
+      position: fixed;
+      bottom: 30px;
+      right: 30px;
+      padding: 15px 25px;
+      background-color: var(--accent-color);
+      color: #000;
+      font-weight: bold;
+      border-radius: 50px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+      width: auto;
+      z-index: 99;
+    }
+
+    #clearDataButton:hover {
+      background-color: #fdd835;
+      transform: scale(1.05);
+    }
+
+    .close {
+      color: #aaa;
+      float: right;
+      font-size: 28px;
+      font-weight: bold;
+      cursor: pointer;
+      line-height: 1;
+    }
+
+    .close:hover {
+      color: #000;
+    }
+
+    @media (max-width: 600px) {
+      .input-row {
+        grid-template-columns: 1fr;
+      }
+
+      .container {
+        margin: 10px auto;
+      }
+
+      .header,
+      .content {
+        padding: 1.5rem;
+      }
+    }
+  </style>
+</head>
+
+
+<body>
+
+  <button id="clearDataButton">Clear All and Start Again</button>
+
+  <div class="container">
+
+    <div class="header">
+      <h1>Gas Safety Calculator<span id="explanationIcon">&#9432;</span>
+      </h1>
+      <p
+        style="text-align: left; margin: 10px 0 0; padding: 0; color: #666; font-size: 18px; line-height: 1.5; max-width: 700px; font-weight: 300;">
+        Estimate gas concentrations from cylinder releases or slow leaks and assess whether detection systems are
+        required.</p>
+    </div>
+
+    <!-- Info Modal -->
+    <div id="explanationModal" class="modal">
+      <div class="modal-content">
+        <span class="close">&times;</span>
+        <strong>What does this calculator do?</strong>
+        <p>This calculator estimates the concentration of a gas released into a room and assesses whether gas detection
+          may be required. It supports five scenarios:</p>
+        <ul>
+          <li><strong>Known Volume:</strong> You already know the volume of gas (m&sup3;) and want to calculate the
+            resulting concentration.</li>
+          <li><strong>Compressed Gas:</strong> Calculates the gas volume from cylinder pressure and water capacity, then
+            determines the concentration.</li>
+          <li><strong>Liquefied Gas:</strong> Calculates the gas volume from the weight of the contents and the specific
+            volume, then determines the concentration.</li>
+          <li><strong>Cryogenic Vessel:</strong> Calculates gas volume from the liquid volume using expansion ratios for
+            Liquid Nitrogen or Liquid Helium.</li>
+          <li><strong>Slow Leak:</strong> Estimates the steady-state concentration from a continuous gas leak in a
+            ventilated room.</li>
+        </ul>
+        <p>For <strong>asphyxiant</strong> gases, it calculates the resulting oxygen level &mdash; if O&#8322; falls
+          below 19.5%, there is a risk of oxygen deficiency. For <strong>toxic</strong> gases, it calculates the
+          concentration in ppm for comparison with Workplace Exposure Limits. For <strong>flammable</strong> gases, it
+          calculates the percentage concentration for comparison with the Lower Explosive Limit (LEL).</p>
+        <p>Results represent a <strong>worst-case scenario</strong> (total release, perfect mixing) and suggest whether
+          a detection system may be necessary.</p>
+      </div>
+    </div>
+
+    <!-- Instructions toggle -->
+    <div class="content">
+      <button id="toggleInstructions">Show/Hide Detailed Instructions</button>
+    </div>
+
+
+    <div class="content" id="detailedInstructions" style="display: none;">
+      <h3>Instructions</h3>
+      <p style="color:red;"><strong>Important: This calculator estimates gas concentrations for a worst-case scenario.
+          It must not be used as a replacement for a full risk assessment. You must consider all hazards related to each
+          gas, including risks from local exposure outside of gas-air mixing.</strong></p>
+
+      <h3>How to use:</h3>
+      <ol>
+        <li>Enter the <strong>Area/Gas Details</strong> (building, room, gas name) &mdash; these appear on the printed
+          report.</li>
+        <li>Select the <strong>calculation type</strong> that matches your situation:
+          <ul>
+            <li><strong>Known Volume:</strong> You already know the gas volume in m&sup3;.</li>
+            <li><strong>Compressed Gas:</strong> You have a compressed gas cylinder and need to calculate the volume
+              from pressure and water capacity.</li>
+            <li><strong>Liquefied Gas:</strong> You have a liquefied gas cylinder and need to calculate the volume from
+              weight and specific volume.</li>
+            <li><strong>Cryogenic Vessel:</strong> You have a dewar/tank of Liquid Nitrogen (LN2) or Liquid Helium
+              (LHe).</li>
+            <li><strong>Slow Leak:</strong> You want to estimate steady-state concentration from a continuous leak in a
+              ventilated room.</li>
+          </ul>
+        </li>
+        <li>Enter the <strong>Room Volume</strong> (free air volume), select the <strong>Gas Hazard Type</strong>, and
+          click <strong>Calculate Concentration</strong>.</li>
+        <li>Click <strong>Generate Report</strong> for a print-friendly summary.</li>
+      </ol>
+
+      <h3>What you need to know:</h3>
+      <table>
+        <tr>
+          <th>Calculation Type</th>
+          <th>Required Information</th>
+        </tr>
+        <tr>
+          <td>Compressed Gas</td>
+          <td>Pressure (bar), water capacity of cylinder (Litres)</td>
+        </tr>
+        <tr>
+          <td>Liquefied Gas</td>
+          <td>Weight of contents (kg), specific volume (m&sup3;/kg)*</td>
+        </tr>
+        <tr>
+          <td>Cryogenic Vessel</td>
+          <td>Liquid volume (Litres), gas type (LN2 or LHe)</td>
+        </tr>
+        <tr>
+          <td>Slow Leak</td>
+          <td>Leak rate (m&sup3;/hr), air changes per hour (ACH)</td>
+        </tr>
+      </table>
+      <p><small>* Specific volume is the volume per kg of substance. See <a href="https://www.engineeringtoolbox.com/"
+            target="_blank">Engineering Toolbox</a>.</small></p>
+
+      <h3>Understanding results:</h3>
+      <ul>
+        <li><strong>Asphyxiant gases:</strong> The calculator shows the resulting O&#8322; level. Below 19.5% indicates
+          risk of oxygen deficiency; below 18% is dangerous.</li>
+        <li><strong>Toxic gases:</strong> The result is shown in ppm. Compare to the Workplace Exposure Limit (WEL) in
+          <a href="https://www.hse.gov.uk/pubns/priced/eh40.pdf" target="_blank">EH40</a>.
+        </li>
+        <li><strong>Flammable gases:</strong> The result is shown as a %. Compare to the <a
+            href="https://www.engineeringtoolbox.com/explosive-concentration-limits-d_423.html" target="_blank">Lower
+            Explosive Limit (LEL)</a>. Detection is required if the value exceeds 25% of the LEL.</li>
+        <li><strong>Oxygen/CO&#8322; enrichment:</strong> Detection is required above 23.5% for O&#8322; or above 0.5%
+          for
+          CO&#8322;.</li>
+      </ul>
+      <p><strong>Free air volume:</strong> This is the room volume minus space occupied by furniture and equipment. If
+        you do not know this value, tick the checkbox to apply a 40% reduction as a conservative estimate.</p>
+    </div>
+
+    <!-- Area / Gas Details -->
+
+    <div class="content">
+      <h2>Area/Gas Details:</h2>
+      <p>Please enter the details for the area you are carrying out these calculations for. These will appear on the
+        printed report.</p>
+
+      <div class="input-row">
+        <div>
+          <label for="lab_location">Building and lab number:</label>
+          <input type="text" id="lab_location" placeholder="e.g. Building 42, Room 101">
+        </div>
+        <div>
+          <label for="gas_name">Name of the gas:</label>
+          <input type="text" id="gas_name" placeholder="e.g. Hydrogen, Helium, Ammonia">
+        </div>
+      </div>
+
+
+    </div>
+
+    <!-- Cylinder Type Selection -->
+    <!-- Cylinder Type Selection -->
+    <div class="content">
+      <h2>Calculation Type:</h2>
+      <p>Please select the situation you want to perform your calculation for:</p>
+
+      <label class="radio-wrapper">
+        <input type="radio" name="calcOption" value="calc1">
+        <span>I have a gas cylinder and <strong>already know the volume</strong> of the contents.</span>
+      </label>
+      <label class="radio-wrapper">
+        <input type="radio" name="calcOption" value="calc2">
+        <span>I have a <strong>compressed</strong> gas cylinder, but do not know the volume of the contents.</span>
+      </label>
+      <label class="radio-wrapper">
+        <input type="radio" name="calcOption" value="calc3">
+        <span>I have a <strong>liquefied</strong> gas cylinder, but do not know the volume of the contents.</span>
+      </label>
+      <label class="radio-wrapper">
+        <input type="radio" name="calcOption" value="calc4">
+        <span>I have a <strong>Cryogenic</strong> vessel (Dewar/Tank).</span>
+      </label>
+      <label class="radio-wrapper">
+        <input type="radio" name="calcOption" value="calc5">
+        <span>I want to calculate for a <strong>Slow Leak</strong> / Constant Release with Ventilation.</span>
+      </label>
+    </div>
+
+    <!-- Section 1: Compressed Gas -->
+
+    <div class="content" id="calculation1" style="display: none;">
+      <h2>1. Calculate volume of gas released (compressed gas)</h2>
+      <p>You must know the pressure of the gas in the cylinder (e.g. 270 bar) and the water volume of the cylinder (e.g.
+        50 L).</p>
+
+      <div class="input-row">
+        <div>
+          <label for="initialPressure">Initial pressure [bar]:</label>
+          <input type="number" id="initialPressure" placeholder="e.g. 230" min="0">
+        </div>
+        <div>
+          <label for="cylinderVolume">Cylinder water capacity [L]:</label>
+          <input type="number" id="cylinderVolume" placeholder="e.g. 50" min="0">
+        </div>
+      </div>
+
+      <div id="calc1Error" class="error-msg" style="display:none;"></div>
+      <button type="button" id="btnCalculate1">Calculate Volume</button>
+      <div class="result" id="result1">Volume of gas in cylinder will appear here.</div>
+      <p style="text-align:center; font-size:0.9em; margin-top:10px; color:#666;">Proceed to Step 3 &mdash; your
+        calculated value will be pre-populated below.</p>
+    </div>
+
+    <!-- Section 2: Liquefied Gas -->
+
+    <div class="content" id="gasVolumeCalculator" style="display: none;">
+      <h2>2. Gas Volume Calculator (liquefied gas)</h2>
+      <p>If you know the mass of the contents but not the volume, use this to calculate the volume of gas first.</p>
+
+      <div class="input-row">
+        <div>
+          <label for="weight">Weight of contents (kg):</label>
+          <input type="number" id="weight" step="0.001" min="0" placeholder="e.g. 10">
+        </div>
+        <div>
+          <label for="specificVolume">Specific Volume (m&#179;/kg):</label>
+          <input type="number" id="specificVolume" step="0.00001" min="0" placeholder="from Datasheet">
+        </div>
+      </div>
+
+      <div id="calc2Error" class="error-msg" style="display:none;"></div>
+      <button type="button" id="btnCalculateVolume">Calculate Volume</button>
+      <div class="result" id="result">Volume of gas in cylinder will appear here.</div>
+      <p style="text-align:center; font-size:0.9em; margin-top:10px; color:#666;">Proceed to Step 3 &mdash; your
+        calculated value will be pre-populated below.</p>
+    </div>
+
+    <!-- Section 2b: Cryogenic Gas -->
+    <div class="content" id="cryogenicCalculator" style="display: none;">
+      <h2>2. Gas Volume Calculator (Cryogenic)</h2>
+      <p>Calculate the gas volume produced by the expansion of a cryogenic liquid.</p>
+
+      <div class="input-row">
+        <div>
+          <label for="cryoType">Cryogen Type:</label>
+          <select id="cryoType">
+            <option value="LN2">Liquid Nitrogen (LN2)</option>
+            <option value="LHe">Liquid Helium (LHe)</option>
+          </select>
+        </div>
+        <div>
+          <label for="liquidVolume">Liquid Volume (Litres):</label>
+          <input type="number" id="liquidVolume" step="0.1" min="0" placeholder="e.g. 25">
+        </div>
+      </div>
+
+      <div id="calcBFError" class="error-msg" style="display:none;"></div>
+      <button type="button" id="btnCalculateCryo">Calculate Volume</button>
+      <div class="result" id="resultCryo" style="display:none;"></div>
+      <p style="text-align:center; font-size:0.9em; margin-top:10px; color:#666;">Proceed to Step 3 &mdash; your
+        calculated value will be pre-populated below.</p>
+    </div>
+
+    <!-- Section 3: Concentration in Room -->
+    <div class="content" id="calculation3" style="display: none;">
+      <h2>3. Calculate concentration of gas in room</h2>
+      <p id="calc3ProdText">Enter the volume of the room and select the gas type, then click Calculate.</p>
+
+      <div class="input-row">
+        <div>
+          <label for="roomVolume">Free Air Volume of room [m&#179;]:</label>
+          <input type="number" id="roomVolume" placeholder="e.g. 50" min="0">
+          <div style="margin-top: 10px;">
+            <input type="checkbox" id="volumeCheckbox">
+            <label for="volumeCheckbox">Apply 40% reduction for conservative estimate (if free air volume
+              unknown)</label>
+          </div>
+        </div>
+      </div>
+
+      <div class="input-row" id="gasVolInputContainer">
+        <div>
+          <label for="volumeGas">Volume of gas [m&#179;]:</label>
+          <input type="number" id="volumeGas" placeholder="e.g. 5.2" min="0">
+        </div>
+      </div>
+
+      <div class="input-row" id="slowLeakInputs" style="display: none;">
+        <div>
+          <label for="leakRate">Leak Rate (m&#179;/hr): <br><span
+              style="font-size:0.8em; color:#666; font-weight:normal;">(e.g. 0.001=Small, 0.1=Medium,
+              >1=Large)</span></label>
+          <input type="number" id="leakRate" step="0.001" min="0" placeholder="e.g. 0.1">
+        </div>
+        <div>
+          <label for="ach">Air Changes per Hour (ACH):</label>
+          <input type="number" id="ach" step="0.1" min="0" placeholder="e.g. 6">
+        </div>
+        <div style="flex-basis: 100%; height: 0;"></div> <!-- Force Line Break if needed -->
+        <p style="font-size:0.9em; color:#666; width:100%;"><em>Note: This assumes perfect mixing of the gas within the
+            room.</em></p>
+      </div>
+
+      <div class="input-row">
+        <div>
+          <label for="gasType">Gas being used and Hazard Type:</label>
+          <select id="gasType">
+            <option value="asphyxiant">Asphyxiant (O&#8322; Depletion)</option>
+            <option value="carbon-dioxide">Carbon Dioxide (Enrichment)</option>
+            <option value="oxygen">Oxygen (Enrichment)</option>
+            <option value="flammable">Flammable</option>
+            <option value="toxic">Toxic</option>
+          </select>
+        </div>
+      </div>
+
+      <div id="calc3Error" class="error-msg" style="display:none;"></div>
+
+      <div class="input-row button-row">
+        <button type="button" id="btnCalculate2">Calculate Concentration</button>
+        <button id="btnGenerateReport">Generate Report</button>
+      </div>
+
+      <div class="result" id="result2">Concentration of gas in room will appear here.</div>
+    </div><!-- end .container -->
+
+
+    <script>
+      document.addEventListener('DOMContentLoaded', () => {
+        // PROPER VARIABLES & CONSTANTS
+        let calculatedValues = {};
+
+        const detailedInstructions = document.getElementById('detailedInstructions');
+        const explanationModal = document.getElementById('explanationModal');
+        const volumeGasInput = document.getElementById("volumeGas");
+        const result1 = document.getElementById("result1");
+        const result2 = document.getElementById("result2");
+        const result = document.getElementById("result");
+        const calc1Error = document.getElementById("calc1Error");
+        const calc2Error = document.getElementById("calc2Error");
+        const calc3Error = document.getElementById("calc3Error");
+        const resultCryo = document.getElementById("resultCryo");
+        const calcBFError = document.getElementById("calcBFError");
+        const resultLeak = document.getElementById("resultLeak"); // This will be removed or repurposed
+
+        // HELPER: RESET UI
+        const resetUI = () => {
+          ['calculation1', 'gasVolumeCalculator', 'cryogenicCalculator'].forEach(id => {
+            const el = document.getElementById(id);
+            if (el) el.style.display = 'none';
+          });
+          ['calc1Error', 'calc2Error', 'calc3Error', 'calcBFError'].forEach(id => {
+            const el = document.getElementById(id);
+            if (el) { el.style.display = 'none'; el.innerText = ''; }
+          });
+
+          // Reset specific inputs for Section 3
+          const slowLeakInputs = document.getElementById("slowLeakInputs");
+          const gasVolInputContainer = document.getElementById("gasVolInputContainer");
+          const calc3ProdText = document.getElementById("calc3ProdText");
+
+          if (slowLeakInputs) slowLeakInputs.style.display = 'none';
+          if (gasVolInputContainer) gasVolInputContainer.style.display = 'block'; // Default show
+          if (calc3ProdText) calc3ProdText.innerText = "Enter the volume of the room and select the gas type, then click Calculate.";
+
+          // Reset checkbox state
+          const volCheckbox = document.getElementById("volumeCheckbox");
+          if (volCheckbox) volCheckbox.disabled = false;
+        };
+
+        // EVENT LISTENER: Toggle Instructions
+        document.getElementById('toggleInstructions').addEventListener('click', (e) => {
+          e.preventDefault();
+          const isHidden = getComputedStyle(detailedInstructions).display === 'none';
+          detailedInstructions.style.display = isHidden ? 'block' : 'none';
+        });
+
+        // EVENT LISTENER: Clear Data
+        document.getElementById('clearDataButton').addEventListener('click', () => {
+          document.querySelectorAll('input').forEach(input => {
+            if (input.type === 'checkbox' || input.type === 'radio') {
+              input.checked = false;
+            } else if (input.type === 'number' || input.type === 'text') {
+              input.value = '';
+            }
+          });
+          document.querySelectorAll('select').forEach(select => {
+            select.selectedIndex = 0;
+          });
+          volumeGasInput.disabled = false;
+          document.querySelectorAll('.result').forEach(el => {
+            el.innerHTML = '';
+            el.style.display = 'none';
+          });
+
+          resetUI();
+          document.getElementById('calculation3').style.display = 'none'; // Hide section 3 on clear
+
+          calculatedValues = {};
+          window.scrollTo(0, 0);
+        });
+
+        // EVENT LISTENER: Radio Buttons (Cylinder Info)
+        document.querySelectorAll('input[name="calcOption"]').forEach(radio => {
+          radio.addEventListener('change', (e) => {
+            resetUI();
+            const val = e.target.value;
+            const volCheckbox = document.getElementById("volumeCheckbox");
+            document.getElementById('calculation3').style.display = 'block'; // Always show section 3
+
+            // Reset Section 3 specific displays
+            document.getElementById('slowLeakInputs').style.display = 'none';
+            document.getElementById('gasVolInputContainer').style.display = 'block';
+            document.getElementById('calc3ProdText').innerText = "Enter the volume of the room and select the gas type, then click Calculate.";
+            volumeGasInput.disabled = false; // Re-enable by default
+
+            if (val === 'calc1') {
+              // Already know volume, so volumeGasInput is enabled for manual entry
+            } else if (val === 'calc2') {
+              document.getElementById('calculation1').style.display = 'block';
+              volumeGasInput.disabled = true; // Will be populated by calc1
+            } else if (val === 'calc3') {
+              document.getElementById('gasVolumeCalculator').style.display = 'block';
+              volumeGasInput.disabled = true; // Will be populated by calc2
+            } else if (val === 'calc4') {
+              document.getElementById('cryogenicCalculator').style.display = 'block';
+              volumeGasInput.disabled = true; // Will be populated by cryo calc
+            } else if (val === 'calc5') {
+              document.getElementById('slowLeakInputs').style.display = 'block';
+              document.getElementById('gasVolInputContainer').style.display = 'none'; // Hide gas volume input for slow leak
+              document.getElementById('calc3ProdText').innerText = "Enter the Room Volume, Leak Rate and ACH, then click Calculate.";
+              // Disable Room Volume reduction for steady state as it uses ACH
+              if (volCheckbox) {
+                volCheckbox.checked = false;
+                volCheckbox.disabled = true;
+              }
+            } else {
+              if (volCheckbox) {
+                volCheckbox.checked = false; // Ensure it's unchecked if not calc5
+                volCheckbox.disabled = false;
+              }
+            }
+          });
+        });
+
+        // EVENT LISTENER: Calculate 1 (Compressed Gas)
+        document.getElementById('btnCalculate1').addEventListener('click', () => {
+          const cylpressure = parseFloat(document.getElementById("initialPressure").value);
+          const cylvolume = parseFloat(document.getElementById("cylinderVolume").value);
+
+          if (isNaN(cylpressure) || cylpressure <= 0 || isNaN(cylvolume) || cylvolume <= 0) {
+            calc1Error.innerHTML = "Please enter valid positive values for both pressure and cylinder volume.";
+            calc1Error.style.display = 'block';
+            return;
+          }
+          calc1Error.style.display = 'none';
+
+          const atmospressure = 1.013;
+          const volumeGas = Math.round(((cylpressure * (cylvolume / 1000)) / atmospressure) * 100) / 100;
+
+          result1.innerHTML = `Volume of gas in cylinder = <strong>${volumeGas} m&#179;</strong>`;
+          result1.style.display = 'block';
+          volumeGasInput.value = volumeGas;
+          volumeGasInput.disabled = true;
+
+          calculatedValues = { ...calculatedValues, cylpressure, cylvolume, volumeGas };
+        });
+
+        // EVENT LISTENER: Calculate Volume (Liquefied Gas)
+        document.getElementById('btnCalculateVolume').addEventListener('click', () => {
+          const weight = parseFloat(document.getElementById('weight').value);
+          const specificVolume = parseFloat(document.getElementById('specificVolume').value);
+
+          if (isNaN(weight) || weight <= 0 || isNaN(specificVolume) || specificVolume <= 0) {
+            calc2Error.innerHTML = "Please enter valid positive values for both weight and specific volume.";
+            calc2Error.style.display = 'block';
+            return;
+          }
+          calc2Error.style.display = 'none';
+
+          const volume = weight * specificVolume;
+          result.innerHTML = `Volume of gas in cylinder = <b>${volume.toFixed(2)} m&#179;</b>`;
+          result.style.display = 'block';
+          volumeGasInput.value = volume.toFixed(5);
+          volumeGasInput.disabled = true;
+
+          calculatedValues = { ...calculatedValues, weight, specificVolume, volume };
+        });
+
+        // EVENT LISTENER: Calculate Cryogen
+        document.getElementById('btnCalculateCryo').addEventListener('click', () => {
+          const liquidVol = parseFloat(document.getElementById('liquidVolume').value);
+          const cryoType = document.getElementById('cryoType').value;
+
+          if (isNaN(liquidVol) || liquidVol <= 0) {
+            calcBFError.innerHTML = "Please enter a valid positive value for Liquid Volume.";
+            calcBFError.style.display = 'block';
+            return;
+          }
+          calcBFError.style.display = 'none';
+
+          // Expansion Ratios
+          // LN2: ~696 (at 20C)
+          // LHe: ~757 (at 20C)
+          let expansionRatio = 696;
+          if (cryoType === 'LHe') expansionRatio = 757;
+
+          // Formula: (Litres * Ratio) / 1000 = m3
+          const gasVol = (liquidVol * expansionRatio) / 1000;
+
+          resultCryo.innerHTML = `Volume of gas generated = <b>${gasVol.toFixed(3)} m&#179;</b>`;
+          resultCryo.style.display = 'block';
+
+          volumeGasInput.value = gasVol.toFixed(5);
+          volumeGasInput.disabled = true;
+
+          // Pre-set gas type in section 3
+          const gasSelect = document.getElementById('gasType');
+          if (cryoType === 'LN2') {
+            // Nitrogen is an Asphyxiant
+            for (let i = 0; i < gasSelect.options.length; i++) {
+              if (gasSelect.options[i].value === 'asphyxiant') gasSelect.selectedIndex = i;
+            }
+          } else if (cryoType === 'LHe') {
+            // Helium is an Asphyxiant
+            for (let i = 0; i < gasSelect.options.length; i++) {
+              if (gasSelect.options[i].value === 'asphyxiant') gasSelect.selectedIndex = i;
+            }
+          }
+
+          calculatedValues = { ...calculatedValues, liquidVol, cryoType, expansionRatio, gasVol };
+        });
+
+        // EVENT LISTENER: Calculate 2 (Concentration OR Slow Leak)
+        document.getElementById('btnCalculate2').addEventListener('click', () => {
+          // Determine Mode
+          const isSlowLeak = document.querySelector('input[name="calcOption"]:checked').value === 'calc5';
+
+          const roomVolInput = document.getElementById("roomVolume");
+          const roomCheckbox = document.getElementById("volumeCheckbox");
+          let roomvolume = parseFloat(roomVolInput.value);
+
+          if (isNaN(roomvolume) || roomvolume <= 0) {
+            calc3Error.innerHTML = "Please enter a valid positive room volume.";
+            calc3Error.style.display = 'block';
+            return;
+          }
+
+          // Adjust room volume if checkbox is checked (only for non-slow leak)
+          if (!isSlowLeak && roomCheckbox && roomCheckbox.checked) {
+            roomvolume = roomvolume * 0.60;
+          }
+
+          let concgas = 0;
+          let volgas = 0;
+          let Q = 0; // Ventilation rate
+          let leakRate = 0;
+
+          if (isSlowLeak) {
+            // --- SLOW LEAK CALCULATION ---
+            leakRate = parseFloat(document.getElementById('leakRate').value);
+            const ach = parseFloat(document.getElementById('ach').value);
+
+            if (isNaN(leakRate) || leakRate <= 0) {
+              calc3Error.innerHTML = "Please enter a valid positive value for Leak Rate.";
+              calc3Error.style.display = 'block'; return;
+            }
+            if (isNaN(ach) || ach <= 0) {
+              calc3Error.innerHTML = "Please enter a valid positive value for ACH.";
+              calc3Error.style.display = 'block'; return;
+            }
+
+            // Q (Ventilation Rate m3/hr) = RoomVol * ACH
+            Q = roomvolume * ach;
+
+            // Steady State Concentration (Fraction) = LeakRate / Q
+            // Concentration % = (LeakRate / Q) * 100
+            concgas = (leakRate / Q) * 100;
+
+            // For report purposes, we might want to store "Effective Gas Volume"
+            volgas = leakRate / ach;
+
+            // Store extra data for report
+            calculatedValues.leakRate = leakRate;
+            calculatedValues.ach = ach;
+            calculatedValues.Q = Q;
+
+          } else {
+            // --- STANDARD CALCULATION ---
+            const volumeGasInput = document.getElementById("volumeGas");
+            volgas = parseFloat(volumeGasInput.value);
+
+            if (isNaN(volgas) || volgas <= 0) {
+              calc3Error.innerHTML = "Please enter a valid positive gas volume (or calculate it in Step 1 or 2).";
+              calc3Error.style.display = 'block';
+              return;
+            }
+
+            // Concentration % = (VolGas / RoomVol) * 100
+            concgas = (volgas / roomvolume) * 100;
+
+            // Check for gas volume exceeding room volume
+            if (volgas >= roomvolume) {
+              calc3Error.innerHTML = "Warning: The gas volume equals or exceeds the room volume. This represents complete displacement of all air in the room. Results are shown for 100% gas concentration.";
+              calc3Error.style.display = 'block';
+              volgas = roomvolume;
+            }
+            if (volgas < 0) volgas = 0;
+          }
+
+          calc3Error.style.display = 'none';
+
+          const gasTypeVal = document.getElementById("gasType").value;
+          let message = "";
+          let messageColor = "";
+
+          // --- Concentration Display Logic ---
+          if (gasTypeVal === "oxygen") {
+            if (isSlowLeak) {
+              // For O2 enrichment via slow leak
+              const o2Fraction = (concgas / 100);
+              concgas = 20.9 + (o2Fraction * 100);
+            } else {
+              const displacegas = 0.21 * volgas;
+              concgas = (((roomvolume * 0.21) + volgas - displacegas) / roomvolume) * 100;
+            }
+            concgas = Math.round(concgas * 100) / 100;
+            result2.innerHTML = `Concentration of O&#8322; in room: <strong>${concgas.toFixed(2)}%</strong>`;
+          } else if (gasTypeVal === "toxic") {
+            if (isSlowLeak) {
+              concgas = Math.round(concgas * 10000 * 100) / 100; // Convert % to ppm
+            } else {
+              concgas = Math.round(((volgas / roomvolume) * 1000000) * 100) / 100;
+            }
+            result2.innerHTML = `Concentration of gas in room: <strong>${concgas} ppm</strong>`;
+          } else if (gasTypeVal === "asphyxiant") {
+            if (isSlowLeak) {
+              concgas = 20.9 * (1 - (leakRate / Q));
+            } else {
+              const vrvg = roomvolume - volgas;
+              const vo = vrvg * 0.2095;
+              concgas = (vo * 100) / roomvolume;
+            }
+            concgas = Math.round(concgas * 100) / 100;
+            result2.innerHTML = `Concentration of O&#8322; in room: <strong>${concgas.toFixed(2)}%</strong>`;
+          } else {
+            // carbon-dioxide, flammable, or generic %
+            concgas = Math.round(concgas * 100) / 100;
+            if (concgas > 100) concgas = 100;
+            result2.innerHTML = `Concentration of gas in room: <strong>${concgas}%</strong>`;
+          }
+
+          // Clamp negative values
+          if (concgas < 0) concgas = 0;
+
+          // Re-render result if clamped (ensures displayed value matches)
+          if (gasTypeVal === "oxygen" || gasTypeVal === "asphyxiant") {
+            result2.innerHTML = `Concentration of O&#8322; in room: <strong>${concgas.toFixed(2)}%</strong>`;
+          } else if (gasTypeVal === "toxic") {
+            result2.innerHTML = `Concentration of gas in room: <strong>${concgas} ppm</strong>`;
+          } else {
+            if (concgas > 100) concgas = 100;
+            result2.innerHTML = `Concentration of gas in room: <strong>${concgas}%</strong>`;
+          }
+
+          // --- Safety Message Logic ---
+          if (gasTypeVal === "carbon-dioxide") {
+            if (concgas > 0.5) {
+              message = "<b>CO&#8322; Detection required</b>"; messageColor = "red";
+            } else {
+              message = "<b>CO&#8322; Detection is not likely to be required</b>"; messageColor = "green";
+            }
+          } else if (gasTypeVal === "oxygen") {
+            if (concgas > 23.5) {
+              message = "<b>O&#8322; Detection required</b>"; messageColor = "red";
+            } else {
+              message = "<b>O&#8322; Detection is not likely to be required</b>"; messageColor = "green";
+            }
+          } else if (gasTypeVal === "asphyxiant") {
+            if (concgas < 18) {
+              message = "<b>O&#8322; Detection necessary</b>"; messageColor = "red";
+            } else if (concgas <= 19.5) {
+              message = "<b>Further assessment of risk necessary</b>"; messageColor = "orange";
+            } else {
+              message = "<b>No detection required</b>"; messageColor = "green";
+            }
+          } else if (gasTypeVal === "flammable") {
+            message = "<br><b>Please compare this to the <a href='https://www.engineeringtoolbox.com/explosive-concentration-limits-d_423.html'>LEL for your gas</a> to confirm whether detection is required.<br>Note: Detection is required if the calculated percentage is greater than 25% of the LEL for the gas.</b><br>Common examples of LELs include:<ul><li>Acetylene: 2%</li><li>Hydrogen: 4%</li><li>Methane: 5%</li></ul>";
+          } else if (gasTypeVal === "toxic") {
+            message = "<br><b>Please compare this to the <a href='https://www.hse.gov.uk/pubns/priced/eh40.pdf'>WEL for your gas</a> (Page 9 of EH40 onwards). Detection is needed if the calculated value exceeds the WEL.<br>Note: Detection is required if the calculated ppm is over the WEL for the gas.</b><br>Common examples of WELs include:<ul><li>Ammonia: 25 ppm</li><li>Carbon Monoxide: 30 ppm</li><li>Hydrogen Sulphide: 5 ppm</li></ul>";
+          }
+
+          if (message !== "") {
+            result2.innerHTML += `<br><span style='color:${messageColor};'>${message}</span>`;
+          }
+          result2.style.display = 'block';
+
+          // Update global values for report
+          calculatedValues = { ...calculatedValues, roomvolume, volgas, concgas, gasType: gasTypeVal, message, messageColor };
+          if (isSlowLeak) {
+            calculatedValues.effectiveGasVol = volgas;
+          }
+        });
+
+        // EVENT LISTENER: Generate Report
+        document.getElementById('btnGenerateReport').addEventListener('click', () => {
+          const reportWindow = window.open("", "Calculation Report", "width=900,height=700");
+          if (!reportWindow) {
+            alert("Your browser blocked the report popup. Please allow popups for this page and try again.");
+            return;
+          }
+
+          const gasTypeVal = document.getElementById("gasType").value;
+          const concDisplay = calculatedValues.concgas !== undefined
+            ? (gasTypeVal === "toxic" ? `${calculatedValues.concgas} ppm` : `${calculatedValues.concgas}%`)
+            : "No value calculated";
+
+          // Helper to format values
+          const formatVal = (val, unit) => val ? `${val} ${unit}` : null;
+
+          const dateStr = new Date().toLocaleString();
+
+          // --- Build Report Content ---
+          let reportContent = `<div class='header'>
+          <h1>Gas Safety Calculation Report</h1>
+          <p style="margin: 5px 0; font-size: 14px; color: #555;"><strong>Date Generated:</strong> ${dateStr}</p>
+          <p class="disclaimer">Generated using the University of Nottingham Gas Calculator. Methods are based on guidance from the British Compressed Gas Association. The University of Nottingham and its Health and Safety Department does not claim responsibility for any issues encountered directly as a result of recommendations from this calculator.</p>
+        </div>`;
+
+          // 1. Location Details (Only if provided)
+          const labLoc = document.getElementById("lab_location").value.trim();
+          const gasName = document.getElementById("gas_name").value.trim();
+
+          if (labLoc || gasName) {
+            reportContent += `<div class='section'><h2>Location Details</h2><div class="grid-container">`;
+            if (labLoc) reportContent += `<div class="grid-item"><strong>Building/Lab:</strong> ${labLoc}</div>`;
+            if (gasName) reportContent += `<div class="grid-item"><strong>Gas Name:</strong> ${gasName}</div>`;
+            reportContent += `</div></div>`;
+          }
+
+          // 2. Gas Details
+          reportContent += `<div class='section'><h2>Gas Details</h2><div class="grid-container">`;
+          reportContent += `<div class="grid-item"><strong>Gas Type:</strong> ${gasTypeVal}</div>`;
+          if (volumeGasInput.value) {
+            reportContent += `<div class="grid-item"><strong>Total Gas Volume:</strong> ${volumeGasInput.value} m&#179;</div>`;
+          }
+          reportContent += `</div></div>`;
+
+          // 3. Room Details
+          const roomVol = document.getElementById("roomVolume").value;
+          if (roomVol) {
+            reportContent += `<div class='section'><h2>Room Details</h2><div class="grid-container">`;
+            reportContent += `<div class="grid-item"><strong>Room Volume:</strong> ${roomVol} m&#179;</div>`;
+            if (document.getElementById("volumeCheckbox").checked) {
+              reportContent += `<div class="grid-item"><strong>Volume Reduced:</strong> Yes (40% reduction applied for safety)</div>`;
+            }
+            reportContent += `</div></div>`;
+          }
+
+          // 4. Input Method Details (Compressed OR Liquefied)
+          if (calculatedValues.cylpressure) {
+            // Compressed Gas
+            reportContent += `<div class='section'><h2>Compressed Gas Inputs</h2><div class="grid-container">`;
+            reportContent += `<div class="grid-item"><strong>Initial Pressure:</strong> ${calculatedValues.cylpressure} bar</div>`;
+            reportContent += `<div class="grid-item"><strong>Cylinder Capacity:</strong> ${calculatedValues.cylvolume} L</div>`;
+            reportContent += `</div></div>`;
+          } else if (calculatedValues.weight) {
+            // Liquefied Gas
+            reportContent += `<div class='section'><h2>Liquefied Gas Inputs</h2><div class="grid-container">`;
+            reportContent += `<div class="grid-item"><strong>Weight of Contents:</strong> ${calculatedValues.weight} kg</div>`;
+            reportContent += `<div class="grid-item"><strong>Specific Volume:</strong> ${calculatedValues.specificVolume} m&#179;/kg</div>`;
+            reportContent += `</div></div>`;
+          } else if (calculatedValues.cryoType) {
+            // Cryogenic
+            reportContent += `<div class='section'><h2>Cryogenic Details</h2><div class="grid-container">`;
+            reportContent += `<div class="grid-item"><strong>Cryogen:</strong> ${calculatedValues.cryoType === 'LN2' ? 'Liquid Nitrogen' : 'Liquid Helium'}</div>`;
+            reportContent += `<div class="grid-item"><strong>Liquid Volume:</strong> ${calculatedValues.liquidVol} Litres</div>`;
+            reportContent += `<div class="grid-item"><strong>Expansion Ratio:</strong> 1:${calculatedValues.expansionRatio}</div>`;
+            reportContent += `<div class="grid-item"><strong>Gas Volume Generated:</strong> ${calculatedValues.gasVol.toFixed(3)} m&#179;</div>`;
+            reportContent += `</div>`;
+
+            reportContent += `<div style="background:#eef; padding:10px; margin-top:10px; border-left:4px solid #002060;">
+            <strong>BCGA Guidance / Hazard Warning:</strong><br>
+            Cryogenic liquids expand rapidly (approx 1:700). 
+            <ul>
+                <li><strong>Asphyxiation:</strong> This rapid expansion can quickly displace oxygen, leading to asphyxiation.</li>
+                <li><strong>Cold Burns:</strong> Contact with liquid or cold gas can cause severe cold burns/frostbite.</li>
+                <li><strong>Fog:</strong> A release may create a dense fog, reducing visibility.</li>
+            </ul>
+           </div>`;
+            reportContent += `</div>`;
+          } else if (calculatedValues.leakRate) {
+            // Slow Leak
+            reportContent += `<div class='section'><h2>Slow Leak / Ventilation Details</h2><div class="grid-container">`;
+            reportContent += `<div class="grid-item"><strong>Leak Rate:</strong> ${calculatedValues.leakRate} m&#179;/hr</div>`;
+            reportContent += `<div class="grid-item"><strong>Air Changes per Hour (ACH):</strong> ${calculatedValues.ach}</div>`;
+            reportContent += `<div class="grid-item"><strong>Ventilation Rate (Q):</strong> ${calculatedValues.Q.toFixed(1)} m&#179;/hr</div>`;
+            reportContent += `<div class="grid-item"><strong>Steady State Concentration:</strong> ${(calculatedValues.effectiveGasVol / roomVol * 100).toFixed(4)} % (Volume Fraction)</div>`;
+            reportContent += `</div>`;
+            reportContent += `<p><em>Note: Calculation assumes perfect mixing (Steady State).</em></p>`;
+            reportContent += `</div>`;
+          }
+
+
+          // 5. Results
+          reportContent += `<div class='section results-section'><h2>Results &amp; Recommendations</h2>`;
+          reportContent += `<p class="result-value">Calculated Concentration: <strong>${concDisplay}</strong></p>`;
+
+          if (calculatedValues.message) {
+            reportContent += `<div class="recommendation-box" style="border-left-color: ${calculatedValues.messageColor || '#ccc'};">
+                <strong style="color: ${calculatedValues.messageColor || '#333'};">Recommendation:</strong>
+                <div>${calculatedValues.message}</div>
+            </div>`;
+          } else {
+            reportContent += `<p><em>No recommendation could be generated. Please ensure all calculations are complete.</em></p>`;
+          }
+
+          // Further Guidance for Amber/Red
+          if (calculatedValues.messageColor === 'orange' || calculatedValues.messageColor === 'red') {
+            reportContent += `<div class='section' style='border-left: 5px solid ${calculatedValues.messageColor};'>
+                <h3>Risk Control Guidance (Hierarchy of Controls)</h3>
+                <p>Since a potential risk has been identified, consider the following controls in order of effectiveness (BCGA CP4):</p>
+                <ol>
+                    <li><strong>Elimination:</strong> Remove the hazard calculation if possible (e.g. smaller cylinder, eliminate gas use).</li>
+                    <li><strong>Substitution:</strong> Replace with a less hazardous gas or safer system.</li>
+                    <li><strong>Engineering Controls:</strong>
+                        <ul>
+                            <li>Increase Ventilation (Air Changes per Hour).</li>
+                            <li>Install Fixed Oxygen/Gas Detection Systems (Interlocked to shut off supply).</li>
+                            <li>Remote storage (pipe in from outside).</li>
+                        </ul>
+                    </li>
+                    <li><strong>Administrative Controls:</strong> Training, Safe Systems of Work (SSoW), Permit to Work, Restricted Access.</li>
+                    <li><strong>PPE:</strong> Personal Monitors, Breathing Apparatus (Last resort).</li>
+                </ol>
+             </div>`;
+          }
+
+          reportContent += `</div>`;
+
+          // 6. Methodology
+          reportContent += `<div class='section'><h2>Methodology</h2>`;
+          reportContent += `<div class="formula-box">`;
+
+          // Volume Formula
+          if (calculatedValues.cylpressure) {
+            reportContent += `<p><strong>Gas Volume Calculation:</strong><br><em>V<sub>gas</sub> = (P<sub>cyl</sub> &times; V<sub>water</sub>) / 1.013</em></p>`;
+          } else if (calculatedValues.weight) {
+            reportContent += `<p><strong>Gas Volume Calculation:</strong><br><em>V<sub>gas</sub> = Weight &times; Specific Volume</em></p>`;
+          } else if (calculatedValues.cryoType) {
+            reportContent += `<p><strong>Gas Volume Calculation:</strong><br><em>V<sub>gas</sub> = (V<sub>liquid</sub> &times; Expansion Ratio) / 1000</em></p>`;
+          } else if (calculatedValues.leakRate) {
+            reportContent += `<p><strong>Steady State Concentration:</strong><br><em>C = Leak Rate / (Room Vol &times; ACH)</em> (Dilution Ventilation)</p>`;
+          }
+
+          // Concentration Formula
+          if (gasTypeVal === "oxygen" || gasTypeVal === "asphyxiant") {
+            reportContent += `<p><strong>O<sub>2</sub> Calculation:</strong><br><em>O<sub>2</sub>% = 20.95% &times; (V<sub>room</sub> - V_{gas}) / V<sub>room</sub></em> (Assuming air is 20.95% Oxygen)</p>`;
+          } else if (gasTypeVal === "toxic") {
+            reportContent += `<p><strong>Concentration (ppm):</strong><br><em>ppm = (V<sub>gas</sub> / V<sub>room</sub>) &times; 1,000,000</em></p>`;
+          } else {
+            reportContent += `<p><strong>Concentration (%):</strong><br><em>% = (V<sub>gas</sub> / V<sub>room</sub>) &times; 100</em></p>`;
+          }
+          reportContent += `</div></div>`;
+
+          // 7. References
+          reportContent += `<div class='section no-print-border'><h2>References</h2>
+        <ul>
+            <li><strong>EH40 Workplace Exposure Limits:</strong> <a href='https://www.hse.gov.uk/pubns/priced/eh40.pdf'>https://www.hse.gov.uk/pubns/priced/eh40.pdf</a></li>
+            <li><strong>Engineering Toolbox (LEL/Specific Volumes):</strong> <a href='https://www.engineeringtoolbox.com/'>https://www.engineeringtoolbox.com/</a></li>
+        </ul>
+        </div>`;
+
+
+          // --- Full HTML ---
+          const html = `
+          <!DOCTYPE html>
+          <html lang="en">
+          <head>
+            <meta charset='UTF-8'>
+            <title>Gas Safety Report</title>
+            <style>
+              body { font-family: 'Segoe UI', Arial, sans-serif; color: #333; background: #f4f4f4; margin: 0; padding: 40px; }
+              .header { background: #fff; padding: 20px; border-radius: 8px; margin-bottom: 20px; border-bottom: 4px solid #002060; }
+              h1 { color: #002060; margin: 0 0 10px 0; font-size: 24px; }
+              .disclaimer { font-size: 11px; color: #777; margin: 0; line-height: 1.4; }
+              .section { background: white; padding: 20px; border-radius: 8px; margin-bottom: 15px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
+              h2 { color: #0056b3; margin-top: 0; font-size: 18px; border-bottom: 1px solid #eee; padding-bottom: 10px; margin-bottom: 15px; }
+              
+              /* Grid Layout for Details */
+              .grid-container { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; }
+              .grid-item { font-size: 14px; }
+              .grid-item strong { display: block; color: #555; font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 2px; }
+              
+              /* Results Styling */
+              .results-section { border: 2px solid #002060; }
+              .result-value { font-size: 18px; margin-bottom: 15px; }
+              .recommendation-box { background: #f9f9f9; padding: 15px; border-left: 5px solid #ccc; font-size: 15px; line-height: 1.5; }
+              .recommendation-box ul { margin: 10px 0 0 20px; padding: 0; }
+
+              /* Print Button */
+              .no-print { text-align: center; margin-top: 30px; }
+              button { padding: 12px 25px; background: #002060; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 16px; font-weight: bold; }
+              button:hover { background: #4cae4c; }
+
+              @media print {
+                body { background: white; padding: 0; }
+                .section { box-shadow: none; border: 1px solid #ddd; page-break-inside: avoid; }
+                .no-print { display: none; }
+              }
+            </style>
+          </head>
+          <body>
+            ${reportContent}
+            <div class="no-print">
+                <button onclick="window.print()">&#128438; Print Report</button>
+            </div>
+          </body>
+          </html>`;
+
+          reportWindow.document.write(html);
+          reportWindow.document.close();
+        });
+
+
+        // MODAL Logic (Vanilla JS)
+        document.getElementById("explanationIcon").addEventListener('click', () => {
+          explanationModal.style.display = 'block';
+        });
+        document.querySelector(".close").addEventListener('click', () => {
+          explanationModal.style.display = 'none';
+        });
+        window.addEventListener('click', (event) => {
+          if (event.target === explanationModal) {
+            explanationModal.style.display = 'none';
+          }
+        });
+      });
+    </script>
+</body>
+
+</html>

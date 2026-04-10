@@ -1,0 +1,115 @@
+<svg viewBox="0 0 400 650" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="cylinderGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#4B6E8C"/>
+      <stop offset="25%" stop-color="#6F92B3"/>
+      <stop offset="50%" stop-color="#88A8C6"/>
+      <stop offset="85%" stop-color="#3A5D7D"/>
+      <stop offset="100%" stop-color="#2D4A66"/>
+    </linearGradient>
+
+    <linearGradient id="dangerGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#8C4B4B"/>
+      <stop offset="25%" stop-color="#B36F6F"/>
+      <stop offset="50%" stop-color="#C68888"/>
+      <stop offset="85%" stop-color="#7D3A3A"/>
+      <stop offset="100%" stop-color="#662D2D"/>
+    </linearGradient>
+
+    <linearGradient id="valveGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#A67B27"/>
+      <stop offset="50%" stop-color="#E5BE5C"/>
+      <stop offset="100%" stop-color="#C09235"/>
+    </linearGradient>
+
+    <radialGradient id="particleGrad" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="rgba(255,255,255,0.9)"/>
+      <stop offset="100%" stop-color="rgba(255,255,255,0)"/>
+    </radialGradient>
+
+    <clipPath id="cylinderClip">
+      <path d="M 140 180 C 140 120, 170 110, 185 110 L 215 110 C 230 110, 260 120, 260 180 L 260 520 C 260 550, 240 560, 200 560 C 160 560, 140 550, 140 520 Z"/>
+    </clipPath>
+  </defs>
+
+  <g>
+    <animateTransform attributeName="transform" type="translate"
+        values="0 0; 0 0; 2 -1; -2 1; 3 -2; -3 2; 5 -3; -5 3; 0 0; 0 0"
+        keyTimes="0; 0.53; 0.55; 0.57; 0.59; 0.61; 0.63; 0.65; 0.67; 1"
+        dur="15s" repeatCount="indefinite"/>
+
+    <path d="M 140 180 C 140 120, 170 110, 185 110 L 215 110 C 230 110, 260 120, 260 180 L 260 520 C 260 550, 240 560, 200 560 C 160 560, 140 550, 140 520 Z" fill="url(#cylinderGrad)" stroke="#233547" stroke-width="3"/>
+
+    <path d="M 140 180 C 140 120, 170 110, 185 110 L 215 110 C 230 110, 260 120, 260 180 L 260 520 C 260 550, 240 560, 200 560 C 160 560, 140 550, 140 520 Z" fill="url(#dangerGrad)" stroke="#233547" stroke-width="3" opacity="0">
+       <animate attributeName="opacity" values="0; 0; 1; 0; 0" keyTimes="0; 0.53; 0.66; 0.67; 1" dur="15s" repeatCount="indefinite" />
+    </path>
+
+    <g clip-path="url(#cylinderClip)">
+      <circle r="8" fill="url(#particleGrad)"><animate attributeName="cx" values="150; 250; 160; 240; 150" dur="15s" repeatCount="indefinite"/><animate attributeName="cy" values="450; 200; 100; 350; 450" dur="19s" repeatCount="indefinite"/></circle>
+      <circle r="10" fill="url(#particleGrad)"><animate attributeName="cx" values="200; 145; 255; 180; 200" dur="12s" repeatCount="indefinite"/><animate attributeName="cy" values="150; 480; 300; 120; 150" dur="17s" repeatCount="indefinite"/></circle>
+      <circle r="9" fill="url(#particleGrad)"><animate attributeName="cx" values="250; 150; 200; 160; 250" dur="14s" repeatCount="indefinite"/><animate attributeName="cy" values="400; 180; 480; 100; 400" dur="11s" repeatCount="indefinite"/></circle>
+      <circle r="6" fill="#FFFFFF" opacity="0.6"><animate attributeName="cx" values="240; 160; 220; 150; 240" dur="10s" repeatCount="indefinite"/><animate attributeName="cy" values="300; 150; 500; 250; 300" dur="14s" repeatCount="indefinite"/></circle>
+      <circle r="7" fill="#FFFFFF" opacity="0.5"><animate attributeName="cx" values="170; 230; 180; 250; 170" dur="18s" repeatCount="indefinite"/><animate attributeName="cy" values="100; 400; 200; 480; 100" dur="22s" repeatCount="indefinite"/></circle>
+      <circle r="6" fill="#FFFFFF" opacity="0.4"><animate attributeName="cx" values="160; 240; 150; 250; 160" dur="11s" repeatCount="indefinite"/><animate attributeName="cy" values="250; 450; 350; 150; 250" dur="16s" repeatCount="indefinite"/></circle>
+      <circle r="4" fill="#FFFFFF" opacity="0.7"><animate attributeName="cx" values="180; 220; 190; 230; 180" dur="7s" repeatCount="indefinite"/><animate attributeName="cy" values="200; 300; 400; 250; 200" dur="9s" repeatCount="indefinite"/></circle>
+      <circle r="5" fill="#FFFFFF" opacity="0.8"><animate attributeName="cx" values="210; 160; 240; 170; 210" dur="8s" repeatCount="indefinite"/><animate attributeName="cy" values="450; 200; 150; 380; 450" dur="13s" repeatCount="indefinite"/></circle>
+      <circle r="5" fill="#FFFFFF" opacity="0.5"><animate attributeName="cx" values="190; 250; 150; 200; 190" dur="9s" repeatCount="indefinite"/><animate attributeName="cy" values="120; 280; 420; 300; 120" dur="15s" repeatCount="indefinite"/></circle>
+      <circle r="4" fill="#FFFFFF" opacity="0.6"><animate attributeName="cx" values="230; 180; 250; 160; 230" dur="10s" repeatCount="indefinite"/><animate attributeName="cy" values="350; 120; 250; 450; 350" dur="12s" repeatCount="indefinite"/></circle>
+    </g>
+
+    <path d="M 160 170 C 160 130, 175 120, 185 115 L 185 530 C 175 520, 160 510, 160 490 Z" fill="#FFFFFF" opacity="0.15"/>
+
+    <rect x="185" y="95" width="30" height="15" fill="url(#valveGrad)" stroke="#7A5A1B" stroke-width="1.5" rx="2"/>
+    <path d="M 190 75 L 210 75 L 215 95 L 185 95 Z" fill="url(#valveGrad)" stroke="#7A5A1B" stroke-width="1.5"/>
+    <rect x="195" y="60" width="10" height="15" fill="url(#valveGrad)" stroke="#7A5A1B" stroke-width="1.5"/>
+    <rect x="180" y="50" width="40" height="10" fill="#3D454D" stroke="#1E2328" stroke-width="1.5" rx="3"/>
+    <rect x="165" y="80" width="20" height="10" fill="url(#valveGrad)" stroke="#7A5A1B" stroke-width="1.5" rx="2"/>
+
+    <g transform="translate(215, 85)">
+      <circle cx="0" cy="0" r="5" fill="#FFFFFF" opacity="0">
+        <animate attributeName="opacity" values="0; 0; 1; 0; 0" keyTimes="0; 0.65; 0.67; 0.85; 1" dur="15s" repeatCount="indefinite" />
+        <animate attributeName="r" values="5; 5; 350; 400; 400" keyTimes="0; 0.65; 0.68; 0.85; 1" dur="15s" repeatCount="indefinite" />
+        <animate attributeName="cx" values="0; 0; 100; 400; 400" keyTimes="0; 0.65; 0.68; 0.85; 1" dur="15s" repeatCount="indefinite" />
+      </circle>
+      <circle cx="0" cy="0" r="5" fill="#E8EDF2" opacity="0">
+        <animate attributeName="opacity" values="0; 0; 0.9; 0; 0" keyTimes="0; 0.66; 0.68; 0.9; 1" dur="15s" repeatCount="indefinite" />
+        <animate attributeName="r" values="5; 5; 300; 450; 450" keyTimes="0; 0.66; 0.69; 0.9; 1" dur="15s" repeatCount="indefinite" />
+        <animate attributeName="cx" values="0; 0; 150; 450; 450" keyTimes="0; 0.66; 0.69; 0.9; 1" dur="15s" repeatCount="indefinite" />
+      </circle>
+      <circle cx="0" cy="0" r="5" fill="#D3D9E0" opacity="0">
+        <animate attributeName="opacity" values="0; 0; 0.7; 0; 0" keyTimes="0; 0.66; 0.7; 0.95; 1" dur="15s" repeatCount="indefinite" />
+        <animate attributeName="r" values="5; 5; 250; 450; 450" keyTimes="0; 0.66; 0.7; 0.95; 1" dur="15s" repeatCount="indefinite" />
+        <animate attributeName="cx" values="0; 0; 50; 350; 350" keyTimes="0; 0.66; 0.7; 0.95; 1" dur="15s" repeatCount="indefinite" />
+        <animate attributeName="cy" values="0; 0; -50; 50; 50" keyTimes="0; 0.66; 0.7; 0.95; 1" dur="15s" repeatCount="indefinite" />
+      </circle>
+    </g>
+
+    <g>
+      <animateTransform attributeName="transform" type="translate"
+        values="0 0; 0 0; 350 -100; 350 -100"
+        keyTimes="0; 0.66; 0.75; 1"
+        dur="15s" repeatCount="indefinite" />
+      <g>
+        <animateTransform attributeName="transform" type="rotate"
+          values="0 235 85; 0 235 85; 720 235 85; 720 235 85"
+          keyTimes="0; 0.66; 0.75; 1"
+          dur="15s" repeatCount="indefinite"/>
+
+        <rect x="215" y="82" width="10" height="6" fill="url(#valveGrad)" stroke="#7A5A1B" stroke-width="1"/>
+        <circle cx="235" cy="85" r="14" fill="#F8F9FA" stroke="#9AA6B5" stroke-width="3"/>
+        
+        <line x1="235" y1="74" x2="235" y2="78" stroke="#3D454D" stroke-width="1.5"/>
+        <line x1="225" y1="78" x2="228" y2="81" stroke="#3D454D" stroke-width="1"/>
+        <line x1="245" y1="78" x2="242" y2="81" stroke="#3D454D" stroke-width="1"/>
+        
+        <line x1="235" y1="85" x2="243" y2="79" stroke="#E63946" stroke-width="1.5" stroke-linecap="round">
+          <animateTransform attributeName="transform" type="rotate"
+            values="0 235 85; 0 235 85; 170 235 85; 170 235 85; 0 235 85"
+            keyTimes="0; 0.53; 0.65; 0.66; 1"
+            dur="15s" repeatCount="indefinite" />
+        </line>
+        <circle cx="235" cy="85" r="2.5" fill="#3D454D"/>
+      </g>
+    </g>
+  </g>
+</svg>

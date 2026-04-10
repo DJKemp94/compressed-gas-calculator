@@ -1,0 +1,3796 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gas/Cryogen Safety Calculator – University of Nottingham</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Merriweather:wght@700;900&family=Source+Sans+3:wght@300;400;600;700&display=swap"
+    rel="stylesheet">
+  <style>
+    :root {
+      --uon-navy: #002060;
+      --uon-mid: #003087;
+      --uon-light: #5b7eb5;
+      --uon-green: #4cae4c;
+      --uon-amber: #ffeb3b;
+      --uon-teal: #007a7a;
+      --uon-fog: #e8edf4;
+      --uon-smoke: #f2f5f9;
+      --text: #1a2a3a;
+      --muted: #5a6a7a;
+      --card: #ffffff;
+      --radius: 10px;
+      --shadow-sm: 0 2px 8px rgba(0, 32, 96, 0.08);
+      --shadow-md: 0 6px 20px rgba(0, 32, 96, 0.12);
+      --shadow-lg: 0 16px 40px rgba(0, 32, 96, 0.16);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Source Sans 3', system-ui, sans-serif;
+      background: var(--uon-fog);
+      color: var(--text);
+      line-height: 1.65;
+      margin: 0;
+      padding: 0 0 80px;
+    }
+
+    /* HERO */
+    .hero {
+      background: linear-gradient(135deg, var(--uon-navy) 0%, var(--uon-mid) 60%, #0a4090 100%);
+      color: white;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero-inner {
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 36px 24px 32px;
+      display: flex;
+      align-items: center;
+      gap: 28px;
+      position: relative;
+      z-index: 2;
+    }
+
+    .hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image:
+        radial-gradient(circle at 80% 20%, rgba(255, 255, 255, 0.06) 0%, transparent 50%),
+        radial-gradient(circle at 10% 80%, rgba(76, 174, 76, 0.15) 0%, transparent 40%);
+      z-index: 1;
+    }
+
+    .hero-bg-svg {
+      position: absolute;
+      right: -20px;
+      top: -10px;
+      width: 400px;
+      opacity: 0.1;
+      z-index: 1;
+    }
+
+    .hero-icon {
+      flex-shrink: 0;
+      width: 72px;
+      height: 72px;
+    }
+
+    .hero-text h1 {
+      font-family: 'Merriweather', Georgia, serif;
+      font-size: 1.85rem;
+      font-weight: 900;
+      margin: 0 0 4px;
+      letter-spacing: -0.5px;
+      line-height: 1.2;
+    }
+
+    .hero-text p {
+      margin: 6px 0 0;
+      font-size: 1.05rem;
+      font-weight: 300;
+      opacity: 0.88;
+      max-width: 560px;
+    }
+
+    .uon-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(255, 255, 255, 0.12);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 50px;
+      padding: 4px 14px 4px 8px;
+      font-size: 0.78rem;
+      font-weight: 600;
+      letter-spacing: 0.3px;
+      margin-bottom: 10px;
+      backdrop-filter: blur(4px);
+    }
+
+    #explanationIcon {
+      display: inline-flex;
+      justify-content: center;
+      align-items: center;
+      width: 22px;
+      height: 22px;
+      background: rgba(255, 255, 255, 0.2);
+      color: white;
+      border-radius: 50%;
+      font-size: 0.75em;
+      margin-left: 10px;
+      vertical-align: middle;
+      cursor: pointer;
+      transition: all 0.2s;
+      border: 1px solid rgba(255, 255, 255, 0.3);
+    }
+
+    #explanationIcon:hover {
+      background: var(--uon-green);
+      border-color: var(--uon-green);
+    }
+
+    /* STEPS BAR */
+    .steps-bar {
+      background: white;
+      border-bottom: 1px solid #e0e6ef;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .steps-inner {
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 0 24px;
+      display: flex;
+    }
+
+    .step-item {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 14px 16px;
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: var(--muted);
+      border-bottom: 3px solid transparent;
+      transition: all 0.3s;
+    }
+
+    .step-item.active {
+      color: var(--uon-navy);
+      border-bottom-color: var(--uon-green);
+    }
+
+    .step-num {
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      background: var(--uon-fog);
+      color: var(--muted);
+      font-size: 0.78rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      transition: all 0.3s;
+    }
+
+    .step-item.active .step-num {
+      background: var(--uon-navy);
+      color: white;
+    }
+
+    /* CONTAINER */
+    .container {
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 24px 24px 0;
+    }
+
+    /* CARDS */
+    .card {
+      background: var(--card);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow-sm);
+      margin-bottom: 18px;
+      overflow: hidden;
+      border: 1px solid rgba(0, 32, 96, 0.06);
+      transition: box-shadow 0.2s;
+    }
+
+    .card:hover {
+      box-shadow: var(--shadow-md);
+    }
+
+    .card-header {
+      padding: 20px 24px 16px;
+      border-bottom: 1px solid var(--uon-fog);
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .card-header-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 10px;
+      background: var(--uon-fog);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .card-header h2 {
+      font-family: 'Merriweather', Georgia, serif;
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--uon-navy);
+      margin: 0;
+    }
+
+    .card-header p {
+      font-size: 0.83rem;
+      color: var(--muted);
+      margin: 2px 0 0;
+    }
+
+    .card-body {
+      padding: 20px 24px 24px;
+    }
+
+    /* ILLUSTRATION STRIP - Overhauled for larger SVGs */
+    .illus-strip {
+      background: linear-gradient(90deg, var(--uon-fog) 0%, white 100%);
+      border-bottom: 1px solid #e6ecf4;
+      padding: 20px 24px;
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .illus-strip svg {
+      flex-shrink: 0;
+      height: auto;
+      max-height: 80px;
+      max-width: 100%;
+    }
+
+    .illus-strip-text {
+      font-size: 0.88rem;
+      color: var(--muted);
+      line-height: 1.5;
+    }
+
+    .illus-strip-text strong {
+      color: var(--text);
+    }
+
+    /* TWO-COLUMN ILLUSTRATION LAYOUT FOR CARDS */
+    .card-split {
+      display: flex;
+      flex-direction: row;
+      border-top: 1px solid #e6ecf4;
+    }
+
+    .card-form {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .card-illustration {
+      flex: 1;
+      background: linear-gradient(180deg, var(--uon-fog) 0%, white 100%);
+      border-left: 1px solid #e6ecf4;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding-top: 24px;
+      overflow: hidden;
+    }
+
+    .card-illustration svg {
+      width: 100%;
+      height: auto;
+      max-height: 300px;
+      display: block;
+      margin: 0 auto;
+    }
+
+    .card-illustration img {
+      width: 100%;
+      height: auto;
+      max-height: 300px;
+      object-fit: contain;
+      display: block;
+      margin: 0 auto;
+    }
+
+    .card-illustration .illus-strip-text {
+      padding: 16px 24px;
+      width: 100%;
+      text-align: center;
+      background: rgba(255, 255, 255, 0.7);
+      border-top: 1px dashed rgba(0, 32, 96, 0.1);
+      margin-top: auto;
+    }
+
+    @media (max-width: 768px) {
+      .card-split {
+        flex-direction: column-reverse;
+        /* Form on top, illustration below on mobile */
+      }
+
+      .card-illustration {
+        border-left: none;
+        border-top: 1px solid #e6ecf4;
+      }
+    }
+
+    /* 4-QUADRANT GRID for Calculation 3 */
+    .card-quad-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      grid-template-rows: auto auto;
+      border-top: 1px solid #e6ecf4;
+    }
+
+    .quad-top-left {
+      grid-column: 1;
+      grid-row: 1;
+      border-right: 1px solid #e6ecf4;
+      border-bottom: 1px solid #e6ecf4;
+    }
+
+    .quad-top-right {
+      grid-column: 2;
+      grid-row: 1;
+      background: linear-gradient(180deg, var(--uon-fog) 0%, white 100%);
+      border-bottom: 1px solid #e6ecf4;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+
+    .quad-bottom-left {
+      grid-column: 1;
+      grid-row: 2;
+      border-right: 1px solid #e6ecf4;
+      border-top: 1px dashed rgba(0, 32, 96, 0.1);
+      background: #fafbfc;
+    }
+
+    .quad-bottom-right {
+      grid-column: 2;
+      grid-row: 2;
+      background: linear-gradient(180deg, var(--uon-fog) 0%, white 100%);
+      border-top: 1px dashed rgba(0, 32, 96, 0.1);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+
+    .quad-illustration {
+      min-height: 280px;
+      padding-top: 24px;
+    }
+
+    .quad-illustration svg {
+      width: 100%;
+      height: auto;
+      max-height: 265px;
+      display: block;
+      margin: 0 auto;
+    }
+
+    .quad-illus-text {
+      padding: 12px 16px;
+      font-size: 0.85rem;
+      color: var(--muted);
+      line-height: 1.5;
+      text-align: center;
+      background: rgba(255, 255, 255, 0.7);
+      border-top: 1px dashed rgba(0, 32, 96, 0.1);
+      width: 100%;
+    }
+
+    .quad-illus-text strong {
+      color: var(--text);
+    }
+
+    .quad-bottom-full {
+      grid-column: 1 / -1;
+      grid-row: 3;
+      border-top: 1px solid #e6ecf4;
+    }
+
+    @media (max-width: 768px) {
+      .card-quad-grid {
+        grid-template-columns: 1fr;
+        grid-template-rows: auto;
+      }
+
+      .quad-top-left,
+      .quad-top-right,
+      .quad-bottom-left,
+      .quad-bottom-right,
+      .quad-bottom-full {
+        grid-column: 1;
+        grid-row: auto;
+        border-right: none;
+      }
+    }
+
+    /* INSTRUCTIONS */
+    .instructions-panel {
+      display: none;
+      animation: fadeSlide 0.3s ease;
+    }
+
+    @keyframes fadeSlide {
+      from {
+        opacity: 0;
+        transform: translateY(-8px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .instructions-panel table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 14px 0;
+      font-size: 0.9rem;
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 0 0 1px #e0e8f0;
+    }
+
+    .instructions-panel th {
+      background: var(--uon-navy);
+      color: white;
+      padding: 10px 14px;
+      font-size: 0.78rem;
+      letter-spacing: 0.4px;
+      text-transform: uppercase;
+      text-align: left;
+    }
+
+    .instructions-panel td {
+      padding: 10px 14px;
+      border-bottom: 1px solid #eef2f8;
+    }
+
+    .instructions-panel tr:last-child td {
+      border-bottom: none;
+    }
+
+    .instructions-panel tr:nth-child(even) td {
+      background: var(--uon-smoke);
+    }
+
+    /* FORMS */
+    label {
+      display: block;
+      font-size: 0.88rem;
+      font-weight: 600;
+      color: var(--text);
+      margin-bottom: 6px;
+    }
+
+    label small {
+      font-weight: 400;
+      color: var(--muted);
+      display: block;
+      font-size: 0.78rem;
+      margin-top: 1px;
+    }
+
+    input[type='number'],
+    input[type='text'],
+    select {
+      width: 100%;
+      padding: 11px 14px;
+      border: 2px solid #d6e0ef;
+      border-radius: 8px;
+      font-size: 0.95rem;
+      font-family: 'Source Sans 3', sans-serif;
+      color: var(--text);
+      background: white;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+    input:focus,
+    select:focus {
+      outline: none;
+      border-color: var(--uon-mid);
+      box-shadow: 0 0 0 3px rgba(0, 48, 135, 0.1);
+    }
+
+    .input-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 18px;
+      margin-bottom: 16px;
+    }
+
+    .input-group {
+      margin-bottom: 16px;
+    }
+
+    /* RADIO OPTIONS */
+    .radio-options {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .radio-card {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 14px 16px;
+      border: 2px solid #dce6f0;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: all 0.2s;
+      background: white;
+    }
+
+    .radio-card:hover {
+      border-color: var(--uon-light);
+      background: var(--uon-smoke);
+    }
+
+    .radio-card input[type="radio"] {
+      width: 18px;
+      height: 18px;
+      flex-shrink: 0;
+      accent-color: var(--uon-navy);
+    }
+
+    .radio-card.selected {
+      border-color: var(--uon-navy);
+      background: rgba(0, 32, 96, 0.04);
+    }
+
+    .radio-label {
+      font-size: 0.92rem;
+      color: var(--text);
+      line-height: 1.4;
+    }
+
+    .radio-label strong {
+      color: var(--uon-navy);
+    }
+
+    .radio-icon {
+      width: 36px;
+      height: 36px;
+      border-radius: 8px;
+      background: var(--uon-fog);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    /* CHECKBOX */
+    .checkbox-row {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      margin-top: 10px;
+      padding: 10px 12px;
+      background: var(--uon-smoke);
+      border-radius: 8px;
+      border: 1px solid #dce6f0;
+    }
+
+    .checkbox-row input[type="checkbox"] {
+      width: 18px;
+      height: 18px;
+      margin-top: 2px;
+      flex-shrink: 0;
+      accent-color: var(--uon-navy);
+    }
+
+    .checkbox-row label {
+      margin: 0;
+      font-size: 0.87rem;
+      font-weight: 400;
+      color: var(--muted);
+      cursor: pointer;
+    }
+
+    /* BUTTONS */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 12px 22px;
+      border: none;
+      border-radius: 8px;
+      font-size: 0.95rem;
+      font-weight: 700;
+      font-family: 'Source Sans 3', sans-serif;
+      cursor: pointer;
+      transition: all 0.2s;
+      width: 100%;
+    }
+
+    .btn-primary {
+      background: var(--uon-navy);
+      color: white;
+    }
+
+    .btn-primary:hover {
+      background: var(--uon-mid);
+      transform: translateY(-1px);
+      box-shadow: var(--shadow-md);
+    }
+
+    .btn-primary:active {
+      transform: translateY(0);
+    }
+
+    .btn-success {
+      background: var(--uon-green);
+      color: white;
+    }
+
+    .btn-success:hover {
+      background: #3d9f3d;
+      transform: translateY(-1px);
+      box-shadow: var(--shadow-md);
+    }
+
+    .btn-ghost {
+      background: transparent;
+      color: var(--uon-navy);
+      border: 2px solid var(--uon-navy);
+      width: auto;
+      padding: 9px 18px;
+      font-size: 0.87rem;
+    }
+
+    .btn-ghost:hover {
+      background: var(--uon-fog);
+    }
+
+    .btn-inline {
+      width: auto;
+      padding: 8px 14px;
+      font-size: 0.84rem;
+      font-weight: 600;
+    }
+
+    .btn-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-top: 20px;
+    }
+
+    .field-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin: 8px 0 10px;
+    }
+
+    .estimator-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 18px;
+      margin-bottom: 14px;
+      align-items: start;
+    }
+
+    .estimator-grid .input-group {
+      display: grid;
+      grid-template-rows: minmax(58px, auto) auto;
+      align-content: start;
+      margin-bottom: 0;
+    }
+
+    .estimator-grid .input-group label {
+      min-height: 0;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      margin-bottom: 8px;
+    }
+
+    .estimator-grid .input-group label small {
+      margin-top: 4px;
+    }
+
+    .estimator-grid .input-group input,
+    .estimator-grid .input-group select {
+      height: 50px;
+      min-height: 50px;
+      box-sizing: border-box;
+    }
+
+    .estimator-panel {
+      background: var(--uon-smoke);
+      border: 1px solid #dce6f0;
+      border-radius: 10px;
+      padding: 14px;
+      margin-bottom: 14px;
+    }
+
+    .estimator-panel h4 {
+      margin: 0 0 10px;
+      font-size: 0.92rem;
+      color: var(--uon-navy);
+    }
+
+    .estimator-result {
+      background: #f4f8ff;
+      border: 1px solid #d9e6f7;
+      border-radius: 10px;
+      padding: 14px;
+      margin-top: 16px;
+    }
+
+    .estimator-result strong {
+      color: var(--uon-navy);
+    }
+
+    .estimator-warning {
+      background: #fff5f5;
+      border: 1px solid #f0c0c0;
+      color: #8b1a1a;
+      border-radius: 8px;
+      padding: 10px 12px;
+      font-size: 0.86rem;
+      line-height: 1.5;
+      margin-top: 12px;
+    }
+
+    .estimator-note {
+      font-size: 0.84rem;
+      color: var(--muted);
+      line-height: 1.55;
+      margin-top: 10px;
+    }
+
+    .estimator-help {
+      background: #fff8e8;
+      border: 1px solid #f3d39b;
+      border-radius: 8px;
+      padding: 10px 12px;
+      font-size: 0.84rem;
+      color: #5e4b1f;
+      line-height: 1.55;
+      margin-top: 12px;
+    }
+
+    #clearDataButton {
+      position: fixed;
+      bottom: 28px;
+      right: 28px;
+      background: var(--uon-amber);
+      color: #1a1a1a;
+      font-weight: 700;
+      font-size: 0.87rem;
+      border: none;
+      border-radius: 50px;
+      padding: 12px 22px;
+      cursor: pointer;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.18);
+      transition: all 0.2s;
+      z-index: 99;
+      font-family: 'Source Sans 3', sans-serif;
+    }
+
+    #clearDataButton:hover {
+      background: #fdd835;
+      transform: scale(1.04);
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.22);
+    }
+
+    /* RESULTS */
+    .result-box {
+      display: none;
+      margin-top: 16px;
+      border-radius: 10px;
+      overflow: hidden;
+      animation: fadeSlide 0.3s ease;
+    }
+
+    .result-box-inner {
+      padding: 16px 20px;
+      background: #e8f4ff;
+      border-left: 5px solid var(--uon-mid);
+      font-size: 1rem;
+    }
+
+    .result-box-inner strong {
+      color: var(--uon-navy);
+      font-size: 1.1em;
+    }
+
+    .result-bubble {
+      margin-top: 16px;
+      border: 2px solid #5b4a9e;
+      border-radius: 12px;
+      overflow: hidden;
+    }
+
+    .result-bubble-header {
+      background: linear-gradient(135deg, #5b4a9e 0%, #3d2d7a 100%);
+      color: #fff;
+      padding: 10px 16px;
+      font-size: 0.92rem;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      letter-spacing: 0.3px;
+    }
+
+    .result-bubble-header svg {
+      flex-shrink: 0;
+    }
+
+    .result-bubble .result-box-inner {
+      border-radius: 0;
+      border-top: none;
+    }
+
+    /* ERRORS */
+    .error-msg {
+      display: none;
+      background: #fdf0f0;
+      color: #8b1a1a;
+      padding: 10px 14px;
+      border-radius: 8px;
+      border: 1px solid #f0c0c0;
+      font-size: 0.88rem;
+      margin-top: 10px;
+    }
+
+    /* MODAL */
+    .modal {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 1000;
+      background: rgba(0, 10, 30, 0.55);
+      backdrop-filter: blur(3px);
+    }
+
+    .modal-content {
+      background: white;
+      margin: 8% auto;
+      padding: 0;
+      border-radius: 14px;
+      width: 90%;
+      max-width: 580px;
+      box-shadow: var(--shadow-lg);
+      display: flex;
+      flex-direction: column;
+      max-height: 75vh;
+      animation: slideIn 0.3s ease-out;
+    }
+
+    .modal-content.modal-content-wide {
+      max-width: 760px;
+    }
+
+    .modal-header {
+      background: var(--uon-navy);
+      color: white;
+      padding: 20px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-shrink: 0;
+    }
+
+    .modal-header h3 {
+      margin: 0;
+      font-family: 'Merriweather', serif;
+      font-size: 1rem;
+    }
+
+    .modal-body {
+      padding: 22px 24px;
+      overflow-y: auto;
+    }
+
+    .info-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: var(--uon-navy);
+      color: white;
+      font-size: 12px;
+      font-weight: 700;
+      font-family: 'Georgia', serif;
+      font-style: italic;
+      cursor: pointer;
+      margin-left: 6px;
+      vertical-align: middle;
+      border: none;
+      transition: background 0.2s, transform 0.15s;
+      line-height: 1;
+    }
+
+    .info-btn:hover {
+      background: #1a3a5c;
+      transform: scale(1.15);
+    }
+
+    .close {
+      color: rgba(255, 255, 255, 0.7);
+      font-size: 24px;
+      cursor: pointer;
+      line-height: 1;
+      transition: color 0.2s;
+    }
+
+    .close:hover {
+      color: white;
+    }
+
+    @keyframes slideIn {
+      from {
+        transform: translateY(-20px);
+        opacity: 0;
+      }
+
+      to {
+        transform: translateY(0);
+        opacity: 1;
+      }
+    }
+
+    /* MISC */
+    .cryo-warning {
+      background: linear-gradient(135deg, #fff7e6, #fffbf0);
+      border: 1px solid #f0c060;
+      border-radius: 10px;
+      padding: 14px 18px;
+      margin-top: 16px;
+      font-size: 0.87rem;
+    }
+
+    .cryo-warning strong {
+      color: #7a4f00;
+    }
+
+    .next-step {
+      text-align: center;
+      font-size: 0.82rem;
+      color: var(--muted);
+      margin-top: 12px;
+      padding: 8px;
+      background: var(--uon-smoke);
+      border-radius: 6px;
+    }
+
+
+    /* RESPONSIVE */
+    @media (max-width: 620px) {
+      .input-row {
+        grid-template-columns: 1fr;
+      }
+
+      .btn-row {
+        grid-template-columns: 1fr;
+      }
+
+      .estimator-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .hero-inner {
+        flex-direction: column;
+        gap: 12px;
+      }
+
+      .hero-icon {
+        width: 52px;
+        height: 52px;
+      }
+
+      .steps-inner {
+        overflow-x: auto;
+      }
+
+      .step-item {
+        white-space: nowrap;
+        padding: 12px 10px;
+        font-size: 0.74rem;
+      }
+
+      .hero-bg-svg {
+        display: none;
+      }
+
+      .illus-strip {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <button id="clearDataButton">&#8635; Clear All &amp; Restart</button>
+
+  <header class="hero">
+    <svg class="hero-bg-svg" viewBox="0 0 400 300" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <circle cx="50" cy="50" r="4" fill="white" opacity="0.3" />
+      <circle cx="120" cy="80" r="6" fill="white" opacity="0.3" />
+      <circle cx="200" cy="40" r="5" fill="white" opacity="0.3" />
+      <circle cx="280" cy="100" r="4" fill="white" opacity="0.3" />
+      <circle cx="350" cy="60" r="6" fill="white" opacity="0.3" />
+      <circle cx="80" cy="180" r="5" fill="white" opacity="0.3" />
+      <circle cx="160" cy="220" r="7" fill="white" opacity="0.3" />
+      <circle cx="250" cy="180" r="4" fill="white" opacity="0.3" />
+      <circle cx="320" cy="250" r="5" fill="white" opacity="0.3" />
+      <g opacity="0.15" stroke="white" stroke-width="1">
+        <line x1="50" y1="50" x2="120" y2="80" />
+        <line x1="120" y1="80" x2="200" y2="40" />
+        <line x1="200" y1="40" x2="280" y2="100" />
+        <line x1="280" y1="100" x2="350" y2="60" />
+        <line x1="50" y1="50" x2="80" y2="180" />
+        <line x1="80" y1="180" x2="160" y2="220" />
+        <line x1="160" y1="220" x2="250" y2="180" />
+        <line x1="250" y1="180" x2="320" y2="250" />
+        <line x1="120" y1="80" x2="160" y2="220" />
+        <line x1="280" y1="100" x2="250" y2="180" />
+      </g>
+    </svg>
+
+    <div class="hero-inner">
+      <svg class="hero-icon" viewBox="0 0 72 72" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <defs>
+          <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
+            <feGaussianBlur stdDeviation="3" result="blur" />
+            <feComposite in="SourceGraphic" in2="blur" operator="over" />
+          </filter>
+        </defs>
+        <circle cx="36" cy="36" r="32" fill="rgba(255,255,255,0.1)" stroke="rgba(255,255,255,0.2)" stroke-width="1" />
+        <rect x="26" y="24" width="20" height="34" rx="4" fill="rgba(255,255,255,0.9)" />
+        <path d="M26 28 C26 20 46 20 46 28" fill="rgba(255,255,255,0.9)" />
+        <rect x="33" y="16" width="6" height="8" fill="#a0c0e0" />
+        <rect x="31" y="14" width="10" height="3" rx="1.5" fill="#a0c0e0" />
+        <circle cx="48" cy="22" r="8" fill="#4cae4c" stroke="white" stroke-width="2" />
+        <path d="M48 22 L52 19" stroke="white" stroke-width="1.5" stroke-linecap="round" />
+        <rect x="26" y="32" width="20" height="6" fill="#002060" opacity="0.8" />
+      </svg>
+      <div class="hero-text">
+        <div class="uon-badge">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect x="3" y="14" width="18" height="8" rx="1" fill="rgba(255,255,255,0.8)" />
+            <rect x="5" y="10" width="4" height="6" rx="0.5" fill="rgba(255,255,255,0.8)" />
+            <rect x="10" y="8" width="4" height="8" rx="0.5" fill="rgba(255,255,255,0.8)" />
+            <rect x="15" y="10" width="4" height="6" rx="0.5" fill="rgba(255,255,255,0.8)" />
+            <rect x="5" y="8" width="2" height="3" rx="0.5" fill="rgba(255,255,255,0.8)" />
+            <rect x="15" y="8" width="2" height="3" rx="0.5" fill="rgba(255,255,255,0.8)" />
+          </svg>
+          University of Nottingham &middot; Health &amp; Safety
+        </div>
+        <h1>Gas/Cryogen Safety Calculator<span id="explanationIcon" title="What does this calculator do?">&#9432;</span>
+        </h1>
+        <p>Estimate gas concentrations from cylinder releases, cryogenic spills, or slow leaks &dash; including
+          proximity risk
+          and worst-case time-to-hazard analysis. For informational use only.</p>
+      </div>
+    </div>
+  </header>
+
+  <nav class="steps-bar" aria-label="Calculator steps">
+    <div class="steps-inner">
+      <div class="step-item active" id="step-indicator-1"><span class="step-num">1</span> Gas Details</div>
+      <div class="step-item" id="step-indicator-2"><span class="step-num">2</span> Calc. Type</div>
+      <div class="step-item" id="step-indicator-3"><span class="step-num">3</span> Volume</div>
+      <div class="step-item" id="step-indicator-4"><span class="step-num">4</span> Concentration</div>
+    </div>
+  </nav>
+
+  <div id="explanationModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 id="modalTitle">About this Calculator</h3>
+        <span class="close" role="button" aria-label="Close">&times;</span>
+      </div>
+      <div class="modal-body">
+        <p style="margin-top:0"><strong>What does this calculator do?</strong></p>
+        <p>This calculator estimates the concentration of a gas released into a room or the remaining air composition
+          after a hazardous release from compressed gas cylinders, liquefied gas containers, or cryogenic vessels. It
+          also models the localised concentration within a Personal Bubble (12 m&sup3;) around the leak
+          source, providing a proximity-risk assessment for anyone working near the gas.</p>
+        <p>It supports six input scenarios:</p>
+        <ul style="font-size:0.93rem; line-height:1.6; padding-left:20px;">
+          <li><strong>Known Volume:</strong> You already know the volume of gas (m&sup3;) and want to calculate the
+            resulting concentration.</li>
+          <li><strong>Compressed Gas:</strong> Calculates the gas volume from cylinder pressure and water capacity, then
+            determines the concentration.</li>
+          <li><strong>Liquefied Gas:</strong> Calculates the gas volume from the weight of the contents and the specific
+            volume, then determines the concentration.</li>
+          <li><strong>Cryogenic Vessel:</strong> Calculates gas volume from the liquid volume using expansion ratios for
+            Liquid Nitrogen or Liquid Helium.</li>
+          <li><strong>Dry Ice (CO&#8322;):</strong> Calculates CO&#8322; gas volume from a provided dry ice mass.</li>
+          <li><strong>Slow Leak:</strong> Estimates the steady-state concentration from a continuous gas leak in a
+            ventilated room, alongside a <strong>Time to Hazard</strong> calculation that shows how long it would take
+            for conditions to become dangerous if ventilation fails.</li>
+        </ul>
+        <p>For every calculation, the calculator also provides a <strong>Personal Bubble Assessment</strong> &dash; a
+          secondary result modelling a fixed 2&times;2&times;3 m zone around the leak source. This estimates the
+          concentration a person would experience if standing directly at the release point.</p>
+        <p
+          style="background:#fff5f5; padding:12px 14px; border-radius:8px; font-size:0.87rem; border:1px solid #f0c0c0; margin-bottom:8px;">
+          &#9888; <strong>Disclaimer:</strong> Assessing exposure to gas is a highly complex field involving factors
+          such as gas behaviour, room geometry, ventilation dynamics, temperature, and human physiology. This calculator
+          provides <strong>estimates for informational purposes only</strong> and must not be treated as a substitute
+          for a professional risk assessment. If there is any doubt about the risk to people, <strong>specialist advice
+            must always be sought</strong> from a competent person.
+        </p>
+        <p style="background:var(--uon-fog); padding:12px 14px; border-radius:8px; font-size:0.87rem; margin-bottom:0;">
+          Results often represent a <strong>worst-case scenario</strong> (total release, perfect mixing). The University of
+          Nottingham and its Health &amp; Safety Department do not accept liability for decisions made solely on the
+          basis of this calculator's output.
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Leak Rate Info Modal -->
+  <div id="leakRateModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="leakRateModalTitle">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 id="leakRateModalTitle">Leak Rate Guidance</h3>
+        <span class="close" id="leakRateModalClose" role="button" aria-label="Close">&times;</span>
+      </div>
+      <div class="modal-body">
+        <p style="margin-top:0; font-size:0.9rem; line-height:1.6;">The leak rate values below are functional estimates
+          for a standard compressed gas cylinder equipped with a regulator and hose.</p>
+        <p
+          style="background:var(--uon-fog); padding:12px 14px; border-radius:8px; font-size:0.85rem; line-height:1.55; margin-bottom:16px;">
+          <strong>Note:</strong> Real-world leak rates can vary widely depending on the exact size of the orifice,
+          upstream pressure, gas density, and the specific nature of the equipment failure.
+        </p>
+        <table style="width:100%; border-collapse:collapse; font-size:0.88rem; line-height:1.5;">
+          <thead>
+            <tr style="border-bottom:2px solid var(--uon-navy);">
+              <th style="text-align:left; padding:8px 10px; color:var(--uon-navy);">Category</th>
+              <th style="text-align:left; padding:8px 10px; color:var(--uon-navy);">Description</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr style="border-bottom:1px solid #e6ecf4;">
+              <td style="padding:10px; white-space:nowrap; vertical-align:top;"><strong>Small Leak</strong><br><span
+                  style="color:var(--muted); font-size:0.82rem;">&asymp; 0.001 m&sup3;/hr</span></td>
+              <td style="padding:10px;">A microscopic, silent leak (e.g., a slightly degraded O-ring or loose fitting).
+              </td>
+            </tr>
+            <tr style="border-bottom:1px solid #e6ecf4;">
+              <td style="padding:10px; white-space:nowrap; vertical-align:top;"><strong>Medium Leak</strong><br><span
+                  style="color:var(--muted); font-size:0.82rem;">&asymp; 0.1 m&sup3;/hr</span></td>
+              <td style="padding:10px;">A nuisance leak producing a distinct hiss (e.g., a punctured hose or failing
+                diaphragm).</td>
+            </tr>
+            <tr>
+              <td style="padding:10px; white-space:nowrap; vertical-align:top;"><strong>Large Leak</strong><br><span
+                  style="color:var(--muted); font-size:0.82rem;">&ge; 1.0 m&sup3;/hr</span></td>
+              <td style="padding:10px;">A severe equipment failure (e.g., a severed line or blown seal) producing a
+                louder hiss and potentially frosting on the hardware.</td>
+            </tr>
+            <tr style="border-top:1px solid #e6ecf4;">
+              <td style="padding:10px; white-space:nowrap; vertical-align:top;"><strong>Catastrophic
+                  Leak</strong><br><span style="color:var(--muted); font-size:0.82rem;">100 m&sup3;/hr</span></td>
+              <td style="padding:10px;">A massive unconstrained release (e.g., sheared cylinder valve, ruptured main
+                line) causing rapid atmospheric change. Note that most pressurised cylinders contain on the order of 10s
+                of m&sup3; of gas, so this leak rate is not likely to be maintained for a long period of time.
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div id="advancedLeakModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="advancedLeakModalTitle">
+    <div class="modal-content modal-content-wide">
+      <div class="modal-header">
+        <h3 id="advancedLeakModalTitle">Advanced Leak-Rate Estimator</h3>
+        <span class="close" id="advancedLeakModalClose" role="button" aria-label="Close">&times;</span>
+      </div>
+      <div class="modal-body">
+        <p style="margin-top:0; font-size:0.9rem; line-height:1.6;">This tool provides a rough estimate of leak rate
+          for the <strong>Slow Leak</strong> calculation. It is intended for screening and must not be treated as a
+          substitute for equipment data, measured leakage, or a competent risk assessment.</p>
+
+        <div class="input-group">
+          <label for="advancedLeakType">Leak Scenario</label>
+          <select id="advancedLeakType">
+            <option value="gas-line">Gas Line (Post-Regulator)</option>
+            <option value="ln2-line">Liquid Nitrogen Line</option>
+          </select>
+        </div>
+        <div class="estimator-help" style="margin-top:0; margin-bottom:14px;"><strong>Which calculation should I use?</strong>
+          Use <strong>Gas Line (Post-Regulator)</strong> when the line contains gas, for example nitrogen that has already
+          been vaporised and pressure-reduced. Use <strong>Liquid Nitrogen Line</strong> only when the line is carrying
+          <strong>liquid nitrogen</strong> before it flashes to gas at the leak point.</div>
+
+        <div id="advancedGasInputs" class="estimator-panel">
+          <h4>Gas Line (Post-Regulator)</h4>
+          <div class="estimator-grid">
+            <div class="input-group" style="margin-bottom:0;">
+              <label for="advancedGasType">Gas Type</label>
+              <select id="advancedGasType">
+                <option value="1">Nitrogen / Air</option>
+                <option value="0.89">Argon</option>
+                <option value="0.94">Oxygen</option>
+                <option value="0.78">Carbon Dioxide</option>
+                <option value="0.78">Nitrous Oxide</option>
+                <option value="1.29">Methane / Natural Gas</option>
+                <option value="2.81">Helium</option>
+                <option value="3.73">Hydrogen</option>
+              </select>
+            </div>
+            <div class="input-group" style="margin-bottom:0;">
+              <label for="advancedGasPressure">Pressure (Post-Regulator) (bar)
+                <small>Use the actual downstream line pressure</small></label>
+              <input type="number" id="advancedGasPressure" min="0" step="0.1" placeholder="e.g. 4">
+            </div>
+            <div class="input-group" style="margin-bottom:0;">
+              <label for="advancedGasDiameter">Equivalent Hole Diameter (mm)</label>
+              <input type="number" id="advancedGasDiameter" min="0" step="0.01" placeholder="e.g. 0.5">
+            </div>
+            <div class="input-group" style="margin-bottom:0;">
+              <label for="advancedRegulatorMax">Upstream Regulator Max Flow (m&#179;/hr)
+                <small>Optional logic check</small></label>
+              <input type="number" id="advancedRegulatorMax" min="0" step="0.01" placeholder="Optional">
+            </div>
+          </div>
+          <div class="estimator-help"><strong>What is Upstream Regulator Max Flow?</strong> This is the maximum flow the
+            regulator can physically supply. It is sometimes shown on the datasheet as <strong>maximum flow</strong>,
+            <strong>capacity</strong>, <strong>SCFM</strong>, <strong>NL/min</strong>, or <strong>Cv</strong>. If you
+            enter a value here, the estimator will cap the leak rate at that figure. If you are unsure, leave it blank
+            and the estimator will use the orifice-based value only.</div>
+          <p class="estimator-note" style="margin-bottom:0;">Illustrative examples only: a small point-of-use regulator
+            may be of the order of <strong>1 to 5 m&sup3;/hr</strong>, while higher-capacity line regulators can be
+            substantially above this. Always use the equipment's actual rating where available.</p>
+          <p class="estimator-note" style="margin-bottom:0;">Use only for gas leaks to atmosphere where the gas is at
+            room temperature and the release is from a short opening such as a torn hose, failed fitting, or snapped
+            small connection.</p>
+        </div>
+
+        <div id="advancedLn2Inputs" class="estimator-panel" style="display:none;">
+          <h4>Liquid Nitrogen Line</h4>
+          <div class="estimator-grid">
+            <div class="input-group" style="margin-bottom:0;">
+              <label for="advancedLn2Pressure">Gauge Pressure (bar)</label>
+              <input type="number" id="advancedLn2Pressure" min="0" step="0.1" placeholder="e.g. 2">
+            </div>
+            <div class="input-group" style="margin-bottom:0;">
+              <label for="advancedLn2Diameter">Equivalent Hole Diameter (mm)</label>
+              <input type="number" id="advancedLn2Diameter" min="0" step="0.01" placeholder="e.g. 0.5">
+            </div>
+          </div>
+          <div class="estimator-help"><strong>When should this be used?</strong> Use this only where the pipework is
+            carrying <strong>liquid nitrogen</strong>. If nitrogen is supplied to the equipment as a gas, or the line is
+            downstream of a vaporiser and functioning as a gas line, use the <strong>Gas Line (Post-Regulator)</strong>
+            calculation instead.</div>
+          <p class="estimator-note" style="margin-bottom:0;">Use only for liquid nitrogen line leaks where you need a
+            rough gaseous release rate for <strong>Oxygen Deficiency Hazard (ODH)</strong> screening. The result is the equivalent nitrogen gas hazard in
+            m&sup3;/hr, not the liquid flow rate.</p>
+          <p class="estimator-note" style="margin-bottom:0;">Do not use this calculation for gaseous nitrogen supplied by
+            cylinder manifolds, on-site gas generators, or vaporised bulk systems where the relevant leak is already on
+            the gas side.</p>
+        </div>
+
+        <div id="advancedLeakError" class="error-msg" style="margin-top:0;"></div>
+
+        <div class="btn-row" style="margin-top:16px;">
+          <button type="button" id="btnCalculateLeakEstimate" class="btn btn-primary">Estimate Leak Rate</button>
+          <button type="button" id="btnUseLeakEstimate" class="btn btn-success" style="display:none;">Use This Leak
+            Rate</button>
+        </div>
+
+        <div id="advancedLeakResult" class="estimator-result" style="display:none;"></div>
+      </div>
+    </div>
+  </div>
+
+  <main class="container">
+
+    <div class="card">
+      <div class="card-body"
+        style="padding:14px 20px; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:10px;">
+        <div style="display:flex; align-items:center; gap:10px;">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--uon-navy)" stroke-width="2"
+            stroke-linecap="round" stroke-linejoin="round">
+            <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" />
+            <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" />
+            <line x1="12" y1="6" x2="16" y2="6" />
+            <line x1="12" y1="10" x2="16" y2="10" />
+          </svg>
+          <span style="font-weight:600; font-size:0.95rem; color:var(--uon-navy);">Detailed Instructions &amp; Reference
+            Tables</span>
+        </div>
+        <button id="toggleInstructions" class="btn btn-ghost">Show / Hide</button>
+      </div>
+      <div class="instructions-panel" id="detailedInstructions">
+        <div class="card-body" style="padding-top:0; border-top:1px solid var(--uon-fog);">
+          <p
+            style="color:#b00; font-size:0.88rem; padding:10px 14px; background:#fff5f5; border-radius:8px; border:1px solid #f0c0c0; margin-bottom:14px;">
+            &#9888; <strong>Important:</strong> This calculator provides estimates for <strong>informational purposes
+              only</strong>. Assessing exposure to gas is a highly complex field &dash; real-world conditions including
+            gas stratification, turbulent mixing, room geometry, temperature, and ventilation dynamics can differ
+            significantly from the idealised models used here. This tool must not be used as a replacement for a full
+            risk assessment. If there is any doubt about the risk to people, <strong>specialist advice must always be
+              sought</strong> from a competent person, or your institution's health and safety
+            department.
+          </p>
+          <h3 style="color:var(--uon-navy); font-size:1rem; margin-bottom:10px;">How to use:</h3>
+          <ol style="font-size:0.9rem; line-height:1.75; padding-left:20px; margin-bottom:16px;">
+            <li>Enter the <strong>Area/Gas Details</strong> (building, room, gas name) &dash; these appear on the
+              printed report.</li>
+            <li>Select the <strong>calculation type</strong> that matches your situation, and then provide all requested
+              details. </li>
+            <li>Where exact release conditions are unknown, use the <strong>worst-case credible release</strong> for the
+              equipment and task, not normal operation or a best-case assumption.</li>
+            <li>Click <strong>Calculate</strong>, and this will populate the fields at the bottom of the form
+              automatically.</li>
+            <li>Move down to the bottom of the form, enter the <strong>Room Volume</strong>, select the <strong>Gas
+                Hazard Type</strong>, and click <strong>Calculate Concentration</strong>.</li>
+            <li>Review both the <strong>Room Concentration</strong> result and the <strong>Personal Bubble
+                Assessment</strong> (which models the concentration within a 2&times;2&times;3 m zone around the leak
+              source).</li>
+            <li>For <strong>Slow Leak</strong> calculations, also review the <strong>Worst-Case Time to Hazard</strong>
+              &dash; this shows how quickly conditions could become dangerous if ventilation fails.</li>
+            <li>Click <strong>Generate Report</strong> for a print-friendly summary including all results and
+              recommendations.</li>
+          </ol>
+          <h3 style="color:var(--uon-navy); font-size:1rem; margin-bottom:10px;">What you need to know:</h3>
+          <table>
+            <tr>
+              <th>Calculation Type</th>
+              <th>Required Information</th>
+            </tr>
+            <tr>
+              <td>Compressed Gas</td>
+              <td>Pressure (bar), water capacity of cylinder (as it suggests, this the the volume of water the cylinder is capable of holding) (Litres)</td>
+            </tr>
+            <tr>
+              <td>Liquefied Gas</td>
+              <td>Weight of cylinder contents (NOT including cylinder itself) (kg), specific volume* (m&sup3;/kg)</td>
+            </tr>
+            <tr>
+              <td>Cryogenic Vessel</td>
+              <td>Liquid volume (Litres), gas type (LN&#8322; or LHe)</td>
+            </tr>
+            <tr>
+              <td>Dry Ice (CO&#8322;)</td>
+              <td>Dry ice mass (kg)</td>
+            </tr>
+            <tr>
+              <td>Slow Leak</td>
+              <td>Leak rate (m&sup3;/hr), air changes per hour (ACH)</td>
+            </tr>
+          </table>
+          <p style="font-size:0.82rem; color:var(--muted);">*Specific volume is the volume per kg of substance. See <a
+              href="https://www.engineeringtoolbox.com/" target="_blank" rel="noopener">Engineering Toolbox</a>.</p>
+          <h3 style="color:var(--uon-navy); font-size:1rem; margin-bottom:8px;">Understanding results:</h3>
+          <ul style="font-size:0.9rem; line-height:1.7; padding-left:20px; margin-bottom:12px;">
+            <li><strong>Room Concentration:</strong> The overall gas concentration (or remaining O&#8322; level)
+              assuming the gas mixes perfectly throughout the room.</li>
+            <li><strong>Personal Bubble:</strong> The localised concentration within a fixed 12 m&sup3; zone
+              (2&times;2&times;3 m) around the leak source. This is always more severe than the room average and
+              indicates the risk to a person standing near the gas.</li>
+            <li><strong>Time to Hazard</strong> (slow leak only): How long it would take for conditions to reach
+              hazardous thresholds if all ventilation fails (0 ACH worst-case).</li>
+          </ul>
+          <div
+            style="background:var(--uon-fog); padding:12px 14px; border-radius:8px; font-size:0.86rem; line-height:1.6; margin-bottom:12px;">
+            <strong>Interpret results with care:</strong> The room result is an average concentration only. Local
+            concentrations near the source, floor, ceiling, pits, ducts, service voids, or poorly ventilated corners may
+            be significantly worse. This calculator is a <strong>screening tool</strong> to support risk assessment, not
+            a design calculation or a substitute for competent judgement.
+          </div>
+          <div
+            style="background:#fff8e8; border-left:4px solid #e09020; padding:12px 14px; font-size:0.86rem; line-height:1.6; margin-bottom:12px;">
+            <strong>Control hierarchy:</strong> Where significant risk remains, prioritise elimination, substitution,
+            segregation, and ventilation before relying on fixed or personal gas detection. For toxic and flammable
+            gases, always compare results with the gas-specific exposure limits or LEL and consider acute local exposure
+            near the source, not only the room average.
+          </div>
+          <h3 style="color:var(--uon-navy); font-size:1rem; margin-bottom:8px;">Key thresholds:</h3>
+          <ul style="font-size:0.9rem; line-height:1.7; padding-left:20px; margin-bottom:0;">
+            <li><strong>Asphyxiant gases:</strong> Shows the resulting O&#8322; level. Below 19.5% = risk; below 18% =
+              dangerous.</li>
+            <li><strong>Toxic gases:</strong> Result in ppm. Compare to the WEL in <a
+                href="https://www.hse.gov.uk/pubns/priced/eh40.pdf" target="_blank" rel="noopener">EH40</a>.</li>
+            <li><strong>Flammable gases:</strong> Result as %. Detection required if &gt;25% of the LEL for the gas.
+            </li>
+            <li><strong>Oxygen/CO&#8322; enrichment:</strong> Detection required above 23.5% for O&#8322; or above 0.5%
+              for CO&#8322;.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <div class="card-header-icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--uon-navy)" stroke-width="2"
+            stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
+            <circle cx="12" cy="10" r="3" />
+          </svg>
+        </div>
+        <div>
+          <h2>Area &amp; Gas Details</h2>
+          <p>These details appear on the printed report</p>
+        </div>
+      </div>
+      <div class="illus-strip">
+        <svg width="120" height="80" viewBox="0 0 120 80" fill="none" xmlns="http://www.w3.org/2000/svg"
+          aria-hidden="true">
+          <g transform="translate(10, 10)">
+            <rect x="4" y="6" width="32" height="44" rx="3" fill="#fff" stroke="#5a6a7a" stroke-width="1.5" />
+            <path d="M12 2 h16 v6 h-16 z" fill="#f2f5f9" stroke="#003087" stroke-width="1.5" rx="1" />
+            <circle cx="20" cy="5" r="1" fill="#003087" />
+            <line x1="10" y1="20" x2="26" y2="20" stroke="#b0c4de" stroke-width="1.5" stroke-linecap="round" />
+            <line x1="10" y1="28" x2="30" y2="28" stroke="#b0c4de" stroke-width="1.5" stroke-linecap="round" />
+            <line x1="10" y1="36" x2="22" y2="36" stroke="#b0c4de" stroke-width="1.5" stroke-linecap="round" />
+          </g>
+          <g transform="translate(68, 5)">
+            <rect x="2" y="15" width="32" height="40" rx="2" fill="#e8edf4" stroke="#003087" stroke-width="1.5" />
+            <path d="M 2 15 L 18 5 L 34 15" fill="none" stroke="#003087" stroke-width="1.5" stroke-linecap="round"
+              stroke-linejoin="round" />
+            <rect x="6" y="20" width="6" height="8" rx="1" fill="#fff" stroke="#5b7eb5" stroke-width="1" />
+            <rect x="15" y="20" width="6" height="8" rx="1" fill="#fff" stroke="#5b7eb5" stroke-width="1" />
+            <rect x="24" y="20" width="6" height="8" rx="1" fill="#fff" stroke="#5b7eb5" stroke-width="1" />
+            <rect x="6" y="32" width="6" height="8" rx="1" fill="#fff" stroke="#5b7eb5" stroke-width="1" />
+            <rect x="15" y="32" width="6" height="8" rx="1" fill="#fff" stroke="#5b7eb5" stroke-width="1" />
+            <rect x="24" y="32" width="6" height="8" rx="1" fill="#fff" stroke="#5b7eb5" stroke-width="1" />
+            <rect x="14" y="45" width="8" height="10" fill="#fff" stroke="#5b7eb5" stroke-width="1" />
+          </g>
+        </svg>
+        <div class="illus-strip-text">Enter the <strong>building/room</strong> and <strong>gas name</strong> for your
+          records. These will be included in any generated report.</div>
+      </div>
+      <div class="card-body">
+        <div class="input-row">
+          <div>
+            <label for="lab_location">Building and lab number:</label>
+            <input type="text" id="lab_location" placeholder="e.g. Building 42, Room 101">
+          </div>
+          <div>
+            <label for="gas_name">Name of the gas:</label>
+            <input type="text" id="gas_name" placeholder="e.g. Hydrogen, Helium, Ammonia">
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <div class="card-header-icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--uon-navy)" stroke-width="2"
+            stroke-linecap="round" stroke-linejoin="round">
+            <path d="M8 21V8a4 4 0 0 1 8 0v13" />
+            <line x1="6" y1="21" x2="18" y2="21" />
+            <path d="M10 5a2 2 0 0 1 4 0" />
+          </svg>
+        </div>
+        <div>
+          <h2>Calculation Type</h2>
+          <p>Select the scenario that matches your situation</p>
+        </div>
+      </div>
+      <div class="illus-strip">
+        <svg width="430" height="80" viewBox="0 0 430 80" fill="none" xmlns="http://www.w3.org/2000/svg"
+          aria-hidden="true">
+          <g>
+            <rect x="15" y="15" width="40" height="40" rx="4" fill="#f2f5f9" stroke="#003087" stroke-width="2" />
+            <path d="M15 35 L55 35 M35 15 L35 55" stroke="#003087" stroke-width="1" opacity="0.3" />
+            <text x="35" y="72" font-size="11" fill="#5a6a7a" text-anchor="middle" font-weight="600">Known Vol</text>
+          </g>
+          <path d="M 62 35 H 88" stroke="#d0dce8" stroke-width="2" stroke-linecap="round" />
+
+          <g>
+            <rect x="95" y="15" width="20" height="40" rx="4" fill="#fff" stroke="#003087" stroke-width="2" />
+            <path d="M95 25 C95 15 115 15 115 25" fill="#003087" />
+            <rect x="102" y="10" width="6" height="5" fill="#5b7eb5" />
+            <text x="105" y="72" font-size="11" fill="#5a6a7a" text-anchor="middle" font-weight="600">Compressed</text>
+          </g>
+          <path d="M 122 35 H 158" stroke="#d0dce8" stroke-width="2" stroke-linecap="round" />
+
+          <g>
+            <rect x="165" y="15" width="20" height="40" rx="4" fill="#fff" stroke="#003087" stroke-width="2" />
+            <path d="M165 25 C165 15 185 15 185 25" fill="#fff" stroke="#003087" stroke-width="2" />
+            <rect x="167" y="35" width="16" height="18" fill="#4cae4c" opacity="0.3" />
+            <path d="M165 35 Q170 32 175 35 T185 35" stroke="#4cae4c" stroke-width="1.5" fill="none" />
+            <text x="175" y="72" font-size="11" fill="#5a6a7a" text-anchor="middle" font-weight="600">Liquefied</text>
+          </g>
+          <path d="M 192 35 H 228" stroke="#d0dce8" stroke-width="2" stroke-linecap="round" />
+
+          <g>
+            <path d="M235 20 L235 50 A 5 5 0 0 0 240 55 H250 A 5 5 0 0 0 255 50 V20" fill="#e8edf4" stroke="#5b7eb5"
+              stroke-width="2" />
+            <ellipse cx="245" cy="20" rx="10" ry="4" fill="#fff" stroke="#5b7eb5" stroke-width="2" />
+            <path d="M230 25 H235 M255 25 H260" stroke="#5b7eb5" stroke-width="2" />
+            <text x="245" y="72" font-size="11" fill="#5a6a7a" text-anchor="middle" font-weight="600">Cryogenic</text>
+          </g>
+          <path d="M 262 35 H 293" stroke="#d0dce8" stroke-width="2" stroke-linecap="round" />
+
+          <g>
+            <circle cx="315" cy="35" r="15" fill="#fff" stroke="#007a7a" stroke-width="2" />
+            <path d="M315 25 V45" stroke="#007a7a" stroke-width="2" />
+            <text x="315" y="72" font-size="11" fill="#5a6a7a" text-anchor="middle" font-weight="600">Slow Leak</text>
+          </g>
+          <path d="M 332 35 H 362" stroke="#d0dce8" stroke-width="2" stroke-linecap="round" />
+
+          <g>
+            <circle cx="385" cy="35" r="15" fill="#fff" stroke="#003087" stroke-width="2" />
+            <text x="385" y="39" font-size="9" fill="#003087" text-anchor="middle" font-weight="700">CO&#8322;</text>
+            <text x="385" y="72" font-size="11" fill="#5a6a7a" text-anchor="middle" font-weight="600">Dry Ice</text>
+          </g>
+        </svg>
+        <div class="illus-strip-text">Choose an option based on what information you have available about your
+          gas/cryogen source.</div>
+      </div>
+      <div class="card-body">
+        <div class="radio-options">
+          <label class="radio-card" id="rc-calc1">
+            <input type="radio" name="calcOption" value="calc1">
+            <div class="radio-icon">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--uon-navy)" stroke-width="2">
+                <path d="M8 21V8a4 4 0 0 1 8 0v13" />
+                <line x1="6" y1="21" x2="18" y2="21" />
+              </svg>
+            </div>
+            <span class="radio-label">I have a gas cylinder and <strong>already know the volume</strong> of the
+              contents.</span>
+          </label>
+          <label class="radio-card" id="rc-calc2">
+            <input type="radio" name="calcOption" value="calc2">
+            <div class="radio-icon">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--uon-navy)" stroke-width="2">
+                <circle cx="12" cy="12" r="8" />
+                <polyline points="12 8 12 12 14 14" />
+              </svg>
+            </div>
+            <span class="radio-label">I have a <strong>compressed</strong> gas cylinder, but do not know the volume of
+              the contents.</span>
+          </label>
+          <label class="radio-card" id="rc-calc3">
+            <input type="radio" name="calcOption" value="calc3">
+            <div class="radio-icon">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--uon-navy)" stroke-width="2">
+                <path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z" />
+              </svg>
+            </div>
+            <span class="radio-label">I have a <strong>liquefied</strong> gas cylinder, but do not know the volume of
+              the contents.</span>
+          </label>
+          <label class="radio-card" id="rc-calc4">
+            <input type="radio" name="calcOption" value="calc4">
+            <div class="radio-icon">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--uon-navy)" stroke-width="2">
+                <path d="M12 2v20M2 12h20M4.93 4.93l14.14 14.14M19.07 4.93L4.93 19.07" />
+              </svg>
+            </div>
+            <span class="radio-label">I have a <strong>Cryogenic</strong> vessel (Dewar / Tank).</span>
+          </label>
+          <label class="radio-card" id="rc-calc5">
+            <input type="radio" name="calcOption" value="calc5">
+            <div class="radio-icon">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--uon-navy)" stroke-width="2">
+                <path d="M5 12 Q8 8 12 12 Q16 16 19 12" />
+              </svg>
+            </div>
+            <span class="radio-label">I want to calculate for a <strong>Slow Leak</strong> / Constant Release with
+              Ventilation.</span>
+          </label>
+          <label class="radio-card" id="rc-calc6">
+            <input type="radio" name="calcOption" value="calc6">
+            <div class="radio-icon">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--uon-navy)" stroke-width="2">
+                <circle cx="12" cy="12" r="9" />
+                <text x="12" y="16" text-anchor="middle" font-size="7" fill="var(--uon-navy)">CO&#8322;</text>
+              </svg>
+            </div>
+            <span class="radio-label">I have <strong>dry ice (solid CO&#8322;)</strong> and want gas volume from a known
+              mass.</span>
+          </label>
+        </div>
+      </div>
+    </div>
+
+    <div class="card" id="calculation1" style="display:none;">
+      <div class="card-header">
+        <div class="card-header-icon" style="background:#dde8f8;">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--uon-mid)" stroke-width="2">
+            <circle cx="12" cy="12" r="8" />
+            <path d="M12 8v4l3 3" />
+          </svg>
+        </div>
+        <div>
+          <h2>Calculate Volume &dash; Compressed Gas</h2>
+          <p>From cylinder pressure and water capacity</p>
+        </div>
+      </div>
+      <div class="card-split">
+        <div class="card-form">
+          <div class="card-body">
+            <div class="input-row" style="grid-template-columns: 1fr;">
+              <div><label for="initialPressure">Initial pressure (bar)</label><input type="number" id="initialPressure"
+                  placeholder="e.g. 230" min="0"></div>
+              <div><label for="cylinderVolume">Cylinder water capacity (L)</label><input type="number"
+                  id="cylinderVolume" placeholder="e.g. 50" min="0"></div>
+            </div>
+            <div id="calc1Error" class="error-msg"></div>
+            <button type="button" id="btnCalculate1" class="btn btn-primary"
+              style="width: 100%; justify-content: center; margin-bottom: 16px;">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
+                <polyline points="22 12 18 12 15 21 9 3 6 12 2 12" />
+              </svg>
+              Calculate Volume
+            </button>
+            <div class="result-box" id="result1">
+              <div class="result-box-inner">Volume of gas in cylinder will appear here.</div>
+            </div>
+            <p class="next-step">&#10003; Your calculated value will be pre-populated in Step 4 below.</p>
+          </div>
+        </div>
+
+        <div class="card-illustration">
+          <svg viewBox="0 0 400 650" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <linearGradient id="cylinderGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+                <stop offset="0%" stop-color="#4B6E8C" />
+                <stop offset="25%" stop-color="#6F92B3" />
+                <stop offset="50%" stop-color="#88A8C6" />
+                <stop offset="85%" stop-color="#3A5D7D" />
+                <stop offset="100%" stop-color="#2D4A66" />
+              </linearGradient>
+
+              <linearGradient id="dangerGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+                <stop offset="0%" stop-color="#8C4B4B" />
+                <stop offset="25%" stop-color="#B36F6F" />
+                <stop offset="50%" stop-color="#C68888" />
+                <stop offset="85%" stop-color="#7D3A3A" />
+                <stop offset="100%" stop-color="#662D2D" />
+              </linearGradient>
+
+              <linearGradient id="valveGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+                <stop offset="0%" stop-color="#A67B27" />
+                <stop offset="50%" stop-color="#E5BE5C" />
+                <stop offset="100%" stop-color="#C09235" />
+              </linearGradient>
+
+              <radialGradient id="particleGrad" cx="50%" cy="50%" r="50%">
+                <stop offset="0%" stop-color="rgba(255,255,255,0.9)" />
+                <stop offset="100%" stop-color="rgba(255,255,255,0)" />
+              </radialGradient>
+
+              <clipPath id="cylinderClip">
+                <path
+                  d="M 140 180 C 140 120, 170 110, 185 110 L 215 110 C 230 110, 260 120, 260 180 L 260 520 C 260 550, 240 560, 200 560 C 160 560, 140 550, 140 520 Z" />
+              </clipPath>
+            </defs>
+
+            <g>
+              <animateTransform attributeName="transform" type="translate"
+                values="0 0; 0 0; 2 -1; -2 1; 3 -2; -3 2; 5 -3; -5 3; 0 0; 0 0"
+                keyTimes="0; 0.53; 0.55; 0.57; 0.59; 0.61; 0.63; 0.65; 0.67; 1" dur="15s" repeatCount="indefinite" />
+
+              <path
+                d="M 140 180 C 140 120, 170 110, 185 110 L 215 110 C 230 110, 260 120, 260 180 L 260 520 C 260 550, 240 560, 200 560 C 160 560, 140 550, 140 520 Z"
+                fill="url(#cylinderGrad)" stroke="#233547" stroke-width="3" />
+
+              <path
+                d="M 140 180 C 140 120, 170 110, 185 110 L 215 110 C 230 110, 260 120, 260 180 L 260 520 C 260 550, 240 560, 200 560 C 160 560, 140 550, 140 520 Z"
+                fill="url(#dangerGrad)" stroke="#233547" stroke-width="3" opacity="0">
+                <animate attributeName="opacity" values="0; 0; 1; 0; 0" keyTimes="0; 0.53; 0.66; 0.67; 1" dur="15s"
+                  repeatCount="indefinite" />
+              </path>
+
+              <g clip-path="url(#cylinderClip)">
+                <circle r="8" fill="url(#particleGrad)">
+                  <animate attributeName="cx" values="150; 250; 160; 240; 150" dur="15s" repeatCount="indefinite" />
+                  <animate attributeName="cy" values="450; 200; 100; 350; 450" dur="19s" repeatCount="indefinite" />
+                </circle>
+                <circle r="10" fill="url(#particleGrad)">
+                  <animate attributeName="cx" values="200; 145; 255; 180; 200" dur="12s" repeatCount="indefinite" />
+                  <animate attributeName="cy" values="150; 480; 300; 120; 150" dur="17s" repeatCount="indefinite" />
+                </circle>
+                <circle r="9" fill="url(#particleGrad)">
+                  <animate attributeName="cx" values="250; 150; 200; 160; 250" dur="14s" repeatCount="indefinite" />
+                  <animate attributeName="cy" values="400; 180; 480; 100; 400" dur="11s" repeatCount="indefinite" />
+                </circle>
+                <circle r="6" fill="#FFFFFF" opacity="0.6">
+                  <animate attributeName="cx" values="240; 160; 220; 150; 240" dur="10s" repeatCount="indefinite" />
+                  <animate attributeName="cy" values="300; 150; 500; 250; 300" dur="14s" repeatCount="indefinite" />
+                </circle>
+                <circle r="7" fill="#FFFFFF" opacity="0.5">
+                  <animate attributeName="cx" values="170; 230; 180; 250; 170" dur="18s" repeatCount="indefinite" />
+                  <animate attributeName="cy" values="100; 400; 200; 480; 100" dur="22s" repeatCount="indefinite" />
+                </circle>
+                <circle r="6" fill="#FFFFFF" opacity="0.4">
+                  <animate attributeName="cx" values="160; 240; 150; 250; 160" dur="11s" repeatCount="indefinite" />
+                  <animate attributeName="cy" values="250; 450; 350; 150; 250" dur="16s" repeatCount="indefinite" />
+                </circle>
+                <circle r="4" fill="#FFFFFF" opacity="0.7">
+                  <animate attributeName="cx" values="180; 220; 190; 230; 180" dur="7s" repeatCount="indefinite" />
+                  <animate attributeName="cy" values="200; 300; 400; 250; 200" dur="9s" repeatCount="indefinite" />
+                </circle>
+                <circle r="5" fill="#FFFFFF" opacity="0.8">
+                  <animate attributeName="cx" values="210; 160; 240; 170; 210" dur="8s" repeatCount="indefinite" />
+                  <animate attributeName="cy" values="450; 200; 150; 380; 450" dur="13s" repeatCount="indefinite" />
+                </circle>
+                <circle r="5" fill="#FFFFFF" opacity="0.5">
+                  <animate attributeName="cx" values="190; 250; 150; 200; 190" dur="9s" repeatCount="indefinite" />
+                  <animate attributeName="cy" values="120; 280; 420; 300; 120" dur="15s" repeatCount="indefinite" />
+                </circle>
+                <circle r="4" fill="#FFFFFF" opacity="0.6">
+                  <animate attributeName="cx" values="230; 180; 250; 160; 230" dur="10s" repeatCount="indefinite" />
+                  <animate attributeName="cy" values="350; 120; 250; 450; 350" dur="12s" repeatCount="indefinite" />
+                </circle>
+              </g>
+
+              <path d="M 160 170 C 160 130, 175 120, 185 115 L 185 530 C 175 520, 160 510, 160 490 Z" fill="#FFFFFF"
+                opacity="0.15" />
+
+              <rect x="185" y="95" width="30" height="15" fill="url(#valveGrad)" stroke="#7A5A1B" stroke-width="1.5"
+                rx="2" />
+              <path d="M 190 75 L 210 75 L 215 95 L 185 95 Z" fill="url(#valveGrad)" stroke="#7A5A1B"
+                stroke-width="1.5" />
+              <rect x="195" y="60" width="10" height="15" fill="url(#valveGrad)" stroke="#7A5A1B" stroke-width="1.5" />
+              <rect x="180" y="50" width="40" height="10" fill="#3D454D" stroke="#1E2328" stroke-width="1.5" rx="3" />
+              <rect x="165" y="80" width="20" height="10" fill="url(#valveGrad)" stroke="#7A5A1B" stroke-width="1.5"
+                rx="2" />
+
+              <g transform="translate(215, 85)">
+                <circle cx="0" cy="0" r="5" fill="#FFFFFF" opacity="0">
+                  <animate attributeName="opacity" values="0; 0; 1; 0; 0" keyTimes="0; 0.65; 0.67; 0.85; 1" dur="15s"
+                    repeatCount="indefinite" />
+                  <animate attributeName="r" values="5; 5; 350; 400; 400" keyTimes="0; 0.65; 0.68; 0.85; 1" dur="15s"
+                    repeatCount="indefinite" />
+                  <animate attributeName="cx" values="0; 0; 100; 400; 400" keyTimes="0; 0.65; 0.68; 0.85; 1" dur="15s"
+                    repeatCount="indefinite" />
+                </circle>
+                <circle cx="0" cy="0" r="5" fill="#E8EDF2" opacity="0">
+                  <animate attributeName="opacity" values="0; 0; 0.9; 0; 0" keyTimes="0; 0.66; 0.68; 0.9; 1" dur="15s"
+                    repeatCount="indefinite" />
+                  <animate attributeName="r" values="5; 5; 300; 450; 450" keyTimes="0; 0.66; 0.69; 0.9; 1" dur="15s"
+                    repeatCount="indefinite" />
+                  <animate attributeName="cx" values="0; 0; 150; 450; 450" keyTimes="0; 0.66; 0.69; 0.9; 1" dur="15s"
+                    repeatCount="indefinite" />
+                </circle>
+                <circle cx="0" cy="0" r="5" fill="#D3D9E0" opacity="0">
+                  <animate attributeName="opacity" values="0; 0; 0.7; 0; 0" keyTimes="0; 0.66; 0.7; 0.95; 1" dur="15s"
+                    repeatCount="indefinite" />
+                  <animate attributeName="r" values="5; 5; 250; 450; 450" keyTimes="0; 0.66; 0.7; 0.95; 1" dur="15s"
+                    repeatCount="indefinite" />
+                  <animate attributeName="cx" values="0; 0; 50; 350; 350" keyTimes="0; 0.66; 0.7; 0.95; 1" dur="15s"
+                    repeatCount="indefinite" />
+                  <animate attributeName="cy" values="0; 0; -50; 50; 50" keyTimes="0; 0.66; 0.7; 0.95; 1" dur="15s"
+                    repeatCount="indefinite" />
+                </circle>
+              </g>
+
+              <g>
+                <animateTransform attributeName="transform" type="translate" values="0 0; 0 0; 350 -100; 350 -100"
+                  keyTimes="0; 0.66; 0.75; 1" dur="15s" repeatCount="indefinite" />
+                <g>
+                  <animateTransform attributeName="transform" type="rotate"
+                    values="0 235 85; 0 235 85; 720 235 85; 720 235 85" keyTimes="0; 0.66; 0.75; 1" dur="15s"
+                    repeatCount="indefinite" />
+
+                  <rect x="215" y="82" width="10" height="6" fill="url(#valveGrad)" stroke="#7A5A1B" stroke-width="1" />
+                  <circle cx="235" cy="85" r="14" fill="#F8F9FA" stroke="#9AA6B5" stroke-width="3" />
+
+                  <line x1="235" y1="74" x2="235" y2="78" stroke="#3D454D" stroke-width="1.5" />
+                  <line x1="225" y1="78" x2="228" y2="81" stroke="#3D454D" stroke-width="1" />
+                  <line x1="245" y1="78" x2="242" y2="81" stroke="#3D454D" stroke-width="1" />
+
+                  <line x1="235" y1="85" x2="243" y2="79" stroke="#E63946" stroke-width="1.5" stroke-linecap="round">
+                    <animateTransform attributeName="transform" type="rotate"
+                      values="0 235 85; 0 235 85; 170 235 85; 170 235 85; 0 235 85" keyTimes="0; 0.53; 0.65; 0.66; 1"
+                      dur="15s" repeatCount="indefinite" />
+                  </line>
+                  <circle cx="235" cy="85" r="2.5" fill="#3D454D" />
+                </g>
+              </g>
+            </g>
+          </svg>
+          <div class="illus-strip-text">You need the <strong>initial pressure</strong> (from the cylinder datasheet, in bar)
+            and the <strong>water capacity for the cylinder</strong> (also can usually be located on the cylinder datasheet, in litres).</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card" id="gasVolumeCalculator" style="display:none;">
+      <div class="card-header">
+        <div class="card-header-icon" style="background:#d8f0e0;">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--uon-green)" stroke-width="2">
+            <path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z" />
+          </svg>
+        </div>
+        <div>
+          <h2>Calculate Volume &dash; Liquefied Gas</h2>
+          <p>From weight and specific volume</p>
+        </div>
+      </div>
+      <div class="card-split">
+        <div class="card-form">
+          <div class="card-body">
+            <div class="input-row" style="grid-template-columns: 1fr;">
+              <div><label for="weight">Weight of cylinder contents (kg)</label><input type="number" id="weight"
+                  step="0.001" min="0" placeholder="e.g. 10"></div>
+              <div>
+                <label for="specificVolume">Specific Volume (m&#179;/kg)</label>
+                <input type="number" id="specificVolume" step="0.00001" min="0" placeholder="from Datasheet">
+              </div>
+            </div>
+            <div id="calc2Error" class="error-msg"></div>
+            <button type="button" id="btnCalculateVolume" class="btn btn-primary"
+              style="width: 100%; justify-content: center; margin-bottom: 16px;">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
+                <polyline points="22 12 18 12 15 21 9 3 6 12 2 12" />
+              </svg>
+              Calculate Volume
+            </button>
+            <div class="result-box" id="result">
+              <div class="result-box-inner">Volume of gas in cylinder will appear here.</div>
+            </div>
+            <p class="next-step">&#10003; Your calculated value will be pre-populated in Step 4 below.</p>
+          </div>
+        </div>
+
+        <div class="card-illustration">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 500" width="100%" height="100%"
+            style="background-color: transparent;">
+            <defs>
+              <clipPath id="tank-clip">
+                <rect x="50" y="100" width="100" height="350" rx="40" />
+              </clipPath>
+              <linearGradient id="vapor-grad" x1="0%" y1="100%" x2="0%" y2="0%">
+                <stop offset="0%" style="stop-color:#9adbc9;stop-opacity:0.1" />
+                <stop offset="100%" style="stop-color:#9adbc9;stop-opacity:0.3" />
+              </linearGradient>
+            </defs>
+
+            <ellipse cx="100" cy="460" rx="60" ry="10" fill="#e2e8f0" />
+
+            <rect x="50" y="100" width="100" height="350" rx="40" fill="#dbebe4" />
+
+            <g clip-path="url(#tank-clip)">
+
+              <rect x="50" y="100" width="100" height="200" fill="url(#vapor-grad)">
+                <animate attributeName="opacity" values="0.6;1;0.6" dur="8s" repeatCount="indefinite" />
+              </rect>
+
+              <g fill="#f0fcf9" style="mix-blend-mode: overlay;">
+                <circle cx="80" cy="200" r="12">
+                  <animate attributeName="cy" values="280; 100" dur="6s" repeatCount="indefinite" />
+                  <animate attributeName="opacity" values="0; 0.8; 0" dur="6s" repeatCount="indefinite" />
+                </circle>
+                <circle cx="120" cy="220" r="18">
+                  <animate attributeName="cy" values="280; 120" dur="8s" repeatCount="indefinite" />
+                  <animate attributeName="opacity" values="0; 0.7; 0" dur="8s" repeatCount="indefinite" />
+                </circle>
+                <circle cx="100" cy="180" r="8">
+                  <animate attributeName="cy" values="280; 110" dur="5s" repeatCount="indefinite" />
+                  <animate attributeName="opacity" values="0; 0.9; 0" dur="5s" repeatCount="indefinite" />
+                </circle>
+                <circle cx="65" cy="250" r="15">
+                  <animate attributeName="cy" values="290; 130" dur="7s" repeatCount="indefinite" />
+                  <animate attributeName="opacity" values="0; 0.6; 0" dur="7s" repeatCount="indefinite" />
+                </circle>
+              </g>
+
+              <path fill="#66ad96"
+                d="M -100 285 Q -75 295, -50 285 T 0 285 T 50 285 T 100 285 T 150 285 T 200 285 L 200 500 L -100 500 Z">
+                <animateTransform attributeName="transform" type="translate" from="0 0" to="-100 0" dur="4s"
+                  repeatCount="indefinite" />
+              </path>
+
+              <path fill="#89ccb8"
+                d="M -100 295 Q -75 285, -50 295 T 0 295 T 50 295 T 100 295 T 150 295 T 200 295 L 200 500 L -100 500 Z">
+                <animateTransform attributeName="transform" type="translate" from="0 0" to="100 0" dur="5s"
+                  repeatCount="indefinite" />
+              </path>
+
+              <g fill="#ffffff">
+                <circle cx="70" cy="450" r="3" opacity="0.6">
+                  <animate attributeName="cy" values="450; 290" dur="2.5s" repeatCount="indefinite" />
+                  <animate attributeName="opacity" values="0; 0.8; 0" dur="2.5s" repeatCount="indefinite" />
+                </circle>
+                <circle cx="110" cy="430" r="2.5" opacity="0.6">
+                  <animate attributeName="cy" values="430; 290" dur="2s" repeatCount="indefinite" />
+                  <animate attributeName="opacity" values="0; 0.6; 0" dur="2s" repeatCount="indefinite" />
+                </circle>
+                <circle cx="90" cy="480" r="4" opacity="0.6">
+                  <animate attributeName="cy" values="480; 290" dur="3s" repeatCount="indefinite" />
+                  <animate attributeName="opacity" values="0; 0.9; 0" dur="3s" repeatCount="indefinite" />
+                </circle>
+                <circle cx="130" cy="460" r="2" opacity="0.6">
+                  <animate attributeName="cy" values="460; 290" dur="2.8s" repeatCount="indefinite" />
+                  <animate attributeName="opacity" values="0; 0.7; 0" dur="2.8s" repeatCount="indefinite" />
+                </circle>
+              </g>
+
+              <rect x="96" y="80" width="8" height="350" fill="#2a353c" opacity="0.8" />
+            </g>
+
+            <rect x="58" y="108" width="12" height="334" rx="6" fill="#ffffff" opacity="0.5" />
+            <rect x="135" y="108" width="5" height="334" rx="2.5" fill="#ffffff" opacity="0.3" />
+
+            <rect x="50" y="100" width="100" height="350" rx="40" fill="none" stroke="#8c9fab" stroke-width="4" />
+
+            <rect x="85" y="85" width="30" height="20" fill="#8c9fab" stroke="#1d2931" stroke-width="4"
+              stroke-linejoin="round" />
+
+            <polygon points="75,25 125,25 115,85 85,85" fill="none" stroke="#1d2931" stroke-width="6"
+              stroke-linejoin="round" />
+            <polygon points="75,25 125,25 115,85 85,85" fill="#ffffff" opacity="0.1" />
+
+            <rect x="93" y="25" width="14" height="60" fill="#ffc107" rx="2" />
+            <rect x="85" y="25" width="30" height="6" fill="#ffc107" rx="1" />
+            <rect x="107" y="50" width="10" height="12" fill="#ffc107" rx="1" />
+            <rect x="117" y="52" width="6" height="8" fill="#d4a004" rx="1" />
+
+          </svg>
+          <div class="illus-strip-text">You need to know the weight of the cylinder <strong>contents only</strong> (subtract the
+            weight of the cylinder itself). Additionally, find the <strong>specific volume</strong> from the gas datasheet or <a
+              href="https://www.engineeringtoolbox.com/" target="_blank" rel="noopener">Engineering Toolbox</a>.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card" id="cryogenicCalculator" style="display:none;">
+      <div class="card-header">
+        <div class="card-header-icon" style="background:#e8f0f8;">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#5b7eb5" stroke-width="2"
+            stroke-linecap="round">
+            <path d="M12 2v20M2 12h20M4.93 4.93l14.14 14.14M19.07 4.93L4.93 19.07" />
+          </svg>
+        </div>
+        <div>
+          <h2>Calculate Volume &dash; Cryogenic Vessel</h2>
+          <p>Liquid nitrogen or liquid helium</p>
+        </div>
+      </div>
+      <div class="card-split">
+        <div class="card-form">
+          <div class="card-body">
+            <div class="input-row" style="grid-template-columns: 1fr;">
+              <div>
+                <label for="cryoType">Cryogen Type</label>
+                <select id="cryoType">
+                  <option value="LN2">Liquid Nitrogen (LN&#8322;)</option>
+                  <option value="LHe">Liquid Helium (LHe)</option>
+                </select>
+              </div>
+              <div><label for="liquidVolume">Liquid Volume (Litres)</label><input type="number" id="liquidVolume"
+                  step="0.1" min="0" placeholder="e.g. 25"></div>
+            </div>
+            <div id="calcBFError" class="error-msg"></div>
+            <button type="button" id="btnCalculateCryo" class="btn btn-primary"
+              style="width: 100%; justify-content: center; margin-bottom: 16px;">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
+                <polyline points="22 12 18 12 15 21 9 3 6 12 2 12" />
+              </svg>
+              Calculate Volume
+            </button>
+            <div class="result-box" id="resultCryo" style="display:none;">
+              <div class="result-box-inner"></div>
+            </div>
+            <div class="cryo-warning">
+              &bigtriangleup; <strong>Cryogenic Hazard Reminder:</strong> Cryogenic liquids expand ~700&times; when
+              released. This can rapidly displace oxygen causing asphyxiation, create severe cold burns/frostbite on
+              contact, and produce a dense fog reducing visibility.
+            </div>
+            <p class="next-step">&#10003; Your calculated value will be pre-populated in Step 4 below.</p>
+          </div>
+        </div>
+
+        <div class="card-illustration">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="90 -40 260 480" width="100%" height="100%">
+            <defs>
+              <linearGradient id="metalBody" x1="0%" y1="0%" x2="100%" y2="0%">
+                <stop offset="0%" stop-color="#546e7a" />
+                <stop offset="15%" stop-color="#cfd8dc" />
+                <stop offset="50%" stop-color="#eceff1" />
+                <stop offset="85%" stop-color="#90a4ae" />
+                <stop offset="100%" stop-color="#37474f" />
+              </linearGradient>
+
+              <linearGradient id="metalDark" x1="0%" y1="0%" x2="100%" y2="0%">
+                <stop offset="0%" stop-color="#37474f" />
+                <stop offset="50%" stop-color="#90a4ae" />
+                <stop offset="100%" stop-color="#263238" />
+              </linearGradient>
+            </defs>
+
+            <style>
+              /* Aggressive Rolling Fog Animations */
+              .fog-layer-1 {
+                animation: rollFast 3s ease-in-out infinite alternate;
+                fill: #e1f5fe;
+                opacity: 0.9;
+                transform-origin: 200px 420px;
+              }
+
+              .fog-layer-2 {
+                animation: rollReverse 2.5s ease-in-out infinite alternate;
+                fill: #b3e5fc;
+                opacity: 0.6;
+                transform-origin: 200px 420px;
+              }
+
+              .fog-layer-3 {
+                animation: billowUp 2s ease-in-out infinite alternate;
+                fill: #ffffff;
+                opacity: 0.8;
+                transform-origin: 200px 430px;
+              }
+
+              @keyframes rollFast {
+                0% {
+                  transform: translateX(-40px) scale(0.9);
+                }
+
+                100% {
+                  transform: translateX(40px) scale(1.15);
+                }
+              }
+
+              @keyframes rollReverse {
+                0% {
+                  transform: translateX(35px) scale(1.1);
+                }
+
+                100% {
+                  transform: translateX(-35px) scale(0.85);
+                }
+              }
+
+              @keyframes billowUp {
+                0% {
+                  transform: translateY(10px) scale(0.95);
+                }
+
+                100% {
+                  transform: translateY(-20px) scale(1.1);
+                }
+              }
+
+              /* Pressurized Venting Gas (Top) */
+              .vent {
+                fill: #ffffff;
+                animation: shootGas 1.2s cubic-bezier(0.1, 0.8, 0.3, 1) infinite;
+                transform-origin: 200px 100px;
+              }
+
+              .v1 {
+                animation-delay: 0s;
+              }
+
+              .v2 {
+                animation-delay: 0.2s;
+              }
+
+              .v3 {
+                animation-delay: 0.4s;
+              }
+
+              .v4 {
+                animation-delay: 0.6s;
+              }
+
+              .v5 {
+                animation-delay: 0.8s;
+              }
+
+              @keyframes shootGas {
+                0% {
+                  transform: translateY(0) scale(0.3);
+                  opacity: 1;
+                }
+
+                40% {
+                  opacity: 0.9;
+                }
+
+                100% {
+                  transform: translateY(-130px) scale(3.5) translateX(-25px);
+                  opacity: 0;
+                }
+              }
+
+              /* Floating Frost Particles */
+              .frost {
+                fill: #81d4fa;
+                animation: floatFrost 1.5s linear infinite;
+              }
+
+              .f1 {
+                animation-delay: 0.1s;
+                animation-duration: 1.2s;
+              }
+
+              .f2 {
+                animation-delay: 0.5s;
+                animation-duration: 1.8s;
+              }
+
+              .f3 {
+                animation-delay: 0.8s;
+                animation-duration: 1.4s;
+              }
+
+              .f4 {
+                animation-delay: 0.3s;
+                animation-duration: 1.6s;
+              }
+
+              .f5 {
+                animation-delay: 0.7s;
+                animation-duration: 1.3s;
+              }
+
+              @keyframes floatFrost {
+                0% {
+                  transform: translateY(0) scale(1);
+                  opacity: 0;
+                }
+
+                20% {
+                  opacity: 1;
+                }
+
+                80% {
+                  opacity: 1;
+                }
+
+                100% {
+                  transform: translateY(-60px) scale(0.5);
+                  opacity: 0;
+                }
+              }
+            </style>
+
+            <g class="fog-layer-2">
+              <ellipse cx="200" cy="420" rx="160" ry="35" />
+              <ellipse cx="100" cy="410" rx="100" ry="30" />
+              <ellipse cx="300" cy="415" rx="110" ry="32" />
+            </g>
+
+            <rect x="145" y="405" width="16" height="20" rx="4" fill="#263238" />
+            <circle cx="153" cy="425" r="8" fill="#546e7a" />
+            <rect x="239" y="405" width="16" height="20" rx="4" fill="#263238" />
+            <circle cx="247" cy="425" r="8" fill="#546e7a" />
+
+            <path d="M 110 395 L 290 395 L 270 410 L 130 410 Z" fill="url(#metalDark)" />
+            <rect x="130" y="410" width="140" height="6" fill="#263238" />
+
+            <rect x="130" y="160" width="140" height="235" fill="url(#metalBody)" />
+            <path d="M 130 160 C 130 120, 270 120, 270 160 Z" fill="url(#metalBody)" />
+
+            <rect x="130" y="240" width="140" height="4" fill="#78909c" opacity="0.8" />
+            <rect x="130" y="320" width="140" height="4" fill="#78909c" opacity="0.8" />
+
+            <rect x="130" y="170" width="140" height="15" fill="#ffffff" opacity="0.8" />
+            <text x="200" y="181" font-family="sans-serif" font-size="10" font-weight="bold" fill="#37474f"
+              text-anchor="middle" letter-spacing="2">NITROGEN</text>
+
+            <path d="M 130 220 L 100 220 L 100 395 L 130 395" fill="none" stroke="url(#metalDark)" stroke-width="8"
+              stroke-linejoin="round" />
+            <line x1="100" y1="290" x2="130" y2="290" stroke="url(#metalDark)" stroke-width="6" />
+
+            <rect x="185" y="105" width="30" height="35" fill="url(#metalDark)" />
+            <path d="M 215 130 L 250 110 L 250 90" fill="none" stroke="url(#metalBody)" stroke-width="6"
+              stroke-linejoin="round" />
+            <path d="M 185 125 L 160 110 L 160 90" fill="none" stroke="url(#metalBody)" stroke-width="5"
+              stroke-linejoin="round" />
+            <circle cx="160" cy="90" r="8" fill="#546e7a" />
+            <circle cx="250" cy="90" r="10" fill="#37474f" />
+
+            <path d="M 200 105 Q 230 60 270 150" fill="none" stroke="#263238" stroke-width="4" stroke-linecap="round" />
+            <path d="M 260 120 L 280 165" fill="none" stroke="#1976d2" stroke-width="6" stroke-linecap="round"
+              stroke-dasharray="2 2" />
+
+            <ellipse cx="200" cy="80" rx="55" ry="12" fill="none" stroke="url(#metalBody)" stroke-width="6" />
+            <path d="M 180 80 L 180 110 M 220 80 L 220 110" fill="none" stroke="url(#metalBody)" stroke-width="5" />
+
+            <circle class="vent v1" cx="200" cy="100" r="10" />
+            <circle class="vent v2" cx="195" cy="100" r="12" />
+            <circle class="vent v3" cx="205" cy="100" r="14" />
+            <circle class="vent v4" cx="190" cy="100" r="11" />
+            <circle class="vent v5" cx="210" cy="100" r="13" />
+
+            <g class="fog-layer-1">
+              <ellipse cx="200" cy="430" rx="150" ry="28" />
+              <circle cx="130" cy="425" r="35" />
+              <circle cx="270" cy="425" r="40" />
+              <ellipse cx="90" cy="415" rx="70" ry="25" />
+              <ellipse cx="310" cy="420" rx="80" ry="28" />
+            </g>
+
+            <g class="fog-layer-3">
+              <circle cx="170" cy="435" r="30" />
+              <circle cx="230" cy="430" r="35" />
+              <ellipse cx="200" cy="440" rx="120" ry="18" />
+            </g>
+
+            <circle class="frost f1" cx="110" cy="380" r="2.5" />
+            <circle class="frost f2" cx="290" cy="400" r="3" />
+            <circle class="frost f3" cx="140" cy="410" r="2" />
+            <circle class="frost f4" cx="260" cy="390" r="3.5" />
+            <circle class="frost f5" cx="80" cy="420" r="2" />
+          </svg>
+          <div class="illus-strip-text">Cryogenic liquids expand dramatically when released &dash; LN&#8322; by
+            <strong>~694&times;</strong> and LHe by <strong>~757&times;</strong> (at room temperature + atmospheric
+            pressure).<br> Enter the <strong>liquid volume</strong> and select the liquid type to calculate the
+            resulting
+            gas volume.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card" id="dryIceCalculator" style="display:none;">
+      <div class="card-header">
+        <div class="card-header-icon" style="background:#e7effa;">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--uon-navy)" stroke-width="2">
+            <circle cx="12" cy="12" r="9" />
+            <text x="12" y="16" text-anchor="middle" font-size="7" fill="var(--uon-navy)">CO&#8322;</text>
+          </svg>
+        </div>
+        <div>
+          <h2>Calculate Volume &dash; Dry Ice</h2>
+          <p>From solid CO&#8322; mass</p>
+        </div>
+      </div>
+      <div class="card-split">
+        <div class="card-form">
+          <div class="card-body">
+            <div class="input-row" style="grid-template-columns: 1fr;">
+              <div><label for="dryIceMass">Dry ice mass (kg)</label><input type="number" id="dryIceMass" step="0.01"
+                  min="0" placeholder="e.g. 5"></div>
+            </div>
+            <div id="calcDryIceError" class="error-msg"></div>
+            <button type="button" id="btnCalculateDryIce" class="btn btn-primary"
+              style="width: 100%; justify-content: center; margin-bottom: 16px;">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
+                <polyline points="22 12 18 12 15 21 9 3 6 12 2 12" />
+              </svg>
+              Calculate Volume
+            </button>
+            <div class="result-box" id="resultDryIce">
+              <div class="result-box-inner">Volume of CO&#8322; gas will appear here.</div>
+            </div>
+            <p class="next-step">&#10003; Your calculated value will be pre-populated in Step 4 below.</p>
+          </div>
+        </div>
+
+        <div class="card-illustration">
+          <div
+            style="margin:0 16px 10px; padding:10px 12px; font-size:0.84rem; line-height:1.45; color:#6b1e1e; background:#fff1f1; border:1px solid #f0c2c2; border-radius:8px;">
+            <strong>Note:</strong> The UoN Health and Safety Department does not endorse the use of dry ice in
+            beverages.
+          </div>
+          <img src="martini.svg" alt="Dry ice illustration">
+          <div class="illus-strip-text">Calculated using an approximate dry ice expansion of
+            <strong>5.4 m&#179; CO&#8322; per 10 kg</strong> (0.54 m&#179;/kg).</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card" id="calculation3" style="display:none;">
+      <div class="card-header">
+        <div class="card-header-icon" style="background:#e8f4e0;">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--uon-green)" stroke-width="2"
+            stroke-linecap="round">
+            <rect x="3" y="3" width="18" height="18" rx="2" />
+            <circle cx="9" cy="9" r="2" />
+            <circle cx="15" cy="9" r="2" />
+            <circle cx="12" cy="15" r="2" />
+            <line x1="9" y1="9" x2="15" y2="9" />
+            <line x1="9" y1="9" x2="12" y2="15" />
+            <line x1="15" y1="9" x2="12" y2="15" />
+          </svg>
+        </div>
+        <div>
+          <h2>Calculate Concentration in Room</h2>
+          <p>Enter free air volume, gas hazard type, then calculate</p>
+        </div>
+      </div>
+      <div class="card-quad-grid" id="calc3-quad">
+
+        <!-- TOP LEFT: Room volume + gas volume + standard controls -->
+        <div class="quad-form quad-top-left">
+          <div class="card-body">
+            <p id="calc3ProdText" style="font-size:0.9rem; color:var(--muted); margin:0 0 16px;">Enter the free air volume of the
+              room and select the gas type, then click Calculate.</p>
+            <div class="input-row" style="grid-template-columns: 1fr;">
+              <div>
+                <label for="roomVolume">Free Air Volume of room (m&#179;)</label>
+                <input type="number" id="roomVolume" placeholder="e.g. 50" min="0">
+                <div class="checkbox-row">
+                  <input type="checkbox" id="volumeCheckbox">
+                  <label for="volumeCheckbox">Apply 40% reduction for conservative estimate (if free air volume
+                    unknown)</label>
+                </div>
+              </div>
+            </div>
+            <div id="gasVolInputContainer" class="input-row" style="grid-template-columns: 1fr;">
+              <div><label for="volumeGas">Volume of gas (m&#179;)</label><input type="number" id="volumeGas"
+                  placeholder="e.g. 5.2" min="0"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- TOP RIGHT: Air Space SVG -->
+        <div class="quad-illustration quad-top-right" id="svg-air-space">
+          <svg viewBox="0 0 800 600" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <style>
+                .stream {
+                  fill: none;
+                  stroke-linecap: round;
+                }
+
+                .p-fast {
+                  stroke: #00b4d8;
+                  stroke-width: 7;
+                  stroke-dasharray: 0.1 39.9;
+                  animation: flow-fast 3s linear infinite;
+                  opacity: 0.9;
+                }
+
+                .p-med {
+                  stroke: #48cae4;
+                  stroke-width: 5.5;
+                  stroke-dasharray: 0.1 49.9;
+                  animation: flow-med 4.5s linear infinite;
+                  opacity: 0.75;
+                }
+
+                .p-slow {
+                  stroke: #90e0ef;
+                  stroke-width: 4;
+                  stroke-dasharray: 0.1 59.9;
+                  animation: flow-slow 6s linear infinite;
+                  opacity: 0.65;
+                }
+
+                @keyframes flow-fast {
+                  to {
+                    stroke-dashoffset: -160;
+                  }
+                }
+
+                @keyframes flow-med {
+                  to {
+                    stroke-dashoffset: -200;
+                  }
+                }
+
+                @keyframes flow-slow {
+                  to {
+                    stroke-dashoffset: -240;
+                  }
+                }
+
+                .flame-outer {
+                  transform-origin: 0px 0px;
+                  animation: flicker-outer 0.15s ease-in-out infinite alternate;
+                }
+
+                .flame-inner {
+                  transform-origin: 0px 0px;
+                  animation: flicker-inner 0.08s ease-in-out infinite alternate;
+                }
+
+                @keyframes flicker-outer {
+                  0% {
+                    transform: scaleY(0.95) scaleX(1.05);
+                    opacity: 0.7;
+                  }
+
+                  100% {
+                    transform: scaleY(1.1) scaleX(0.95);
+                    opacity: 0.9;
+                  }
+                }
+
+                @keyframes flicker-inner {
+                  0% {
+                    transform: scaleY(0.9);
+                    opacity: 0.9;
+                  }
+
+                  100% {
+                    transform: scaleY(1.15);
+                    opacity: 1;
+                  }
+                }
+              </style>
+
+              <linearGradient id="chemPink" x1="0%" y1="0%" x2="0%" y2="100%">
+                <stop offset="0%" stop-color="#ff00cc" stop-opacity="0.8" />
+                <stop offset="100%" stop-color="#cc0099" stop-opacity="0.9" />
+              </linearGradient>
+              <linearGradient id="chemGreen" x1="0%" y1="0%" x2="0%" y2="100%">
+                <stop offset="0%" stop-color="#00ff00" stop-opacity="0.8" />
+                <stop offset="100%" stop-color="#00cc00" stop-opacity="0.9" />
+              </linearGradient>
+              <linearGradient id="chemBlue" x1="0%" y1="0%" x2="0%" y2="100%">
+                <stop offset="0%" stop-color="#00ffff" stop-opacity="0.8" />
+                <stop offset="100%" stop-color="#00cccc" stop-opacity="0.9" />
+              </linearGradient>
+
+              <clipPath id="roomClip">
+                <path d="M 100,350 L 400,500 L 700,350 L 400,200 L 400,0 L 100,150 Z" />
+              </clipPath>
+            </defs>
+
+            <g id="room-structure">
+              <path d="M 100,350 L 400,500 L 700,350 L 400,200 Z" fill="#f0f2f5" />
+              <path d="M 160,320 L 460,470 M 220,290 L 520,440 M 280,260 L 580,410 M 340,230 L 640,380" stroke="#e8eaed"
+                stroke-width="1.5" fill="none" />
+              <path d="M 160,380 L 460,230 M 220,410 L 520,260 M 280,440 L 580,290 M 340,470 L 640,320" stroke="#e8eaed"
+                stroke-width="1.5" fill="none" />
+              <path d="M 100,350 L 400,200 L 400,0   L 100,150 Z" fill="#e8eaed" />
+              <path d="M 400,200 L 700,350 L 700,150 L 400,0   Z" fill="#f8f9fa" />
+              <path d="M 100,350 L 400,500 L 700,350 L 700,370 L 400,520 L 100,370 Z" fill="#cbd0d5" />
+            </g>
+
+            <g id="vent" transform="translate(90, 0 )">
+              <polygon points="140,110  240,60  240,100  140,150" fill="#c8ccd0" />
+              <line x1="143" y1="118" x2="237" y2="68" stroke="#9aa0a6" stroke-width="2" />
+              <line x1="143" y1="126" x2="237" y2="76" stroke="#9aa0a6" stroke-width="2" />
+              <line x1="143" y1="134" x2="237" y2="84" stroke="#9aa0a6" stroke-width="2" />
+              <line x1="143" y1="142" x2="237" y2="92" stroke="#9aa0a6" stroke-width="2" />
+              <polygon points="140,110  240,60  240,100  140,150" fill="none" stroke="#b0b4b8" stroke-width="1.5" />
+            </g>
+
+            <g id="left-cabinets" transform="translate(210, 180)">
+              <path d="M 0,120 L 40,140 L 40,40 L 0,20 Z" fill="#bdc1c6" />
+              <path d="M 40,140 L 120,100 L 120,0 L 40,40 Z" fill="#dadce0" />
+              <path d="M 0,20 L 40,40 L 120,0 L 80,-20 Z" fill="#f1f3f4" />
+              <line x1="80" y1="20" x2="80" y2="120" stroke="#bdc1c6" stroke-width="1" />
+              <line x1="74" y1="66" x2="74" y2="82" stroke="#5f6368" stroke-width="2" stroke-linecap="round" />
+              <line x1="86" y1="60" x2="86" y2="76" stroke="#5f6368" stroke-width="2" stroke-linecap="round" />
+            </g>
+
+            <g id="fume-hood" transform="translate(500, 95)">
+              <g clip-path="url(#roomClip)">
+                <path d="M 0,-10 L 0,-200 L 30,-215 L 30,-25 Z" fill="#bdc1c6" />
+                <path d="M 30,-25 L 30,-215 L 50,-205 L 50,-15 Z" fill="#9aa0a6" />
+              </g>
+              <path d="M -30,-10 L 80,45  L 120,25 L 10,-30 Z" fill="#e8eaed" />
+              <path d="M -30,-10 L -30,50 L 80,105 L 80,45 Z" fill="#dadce0" />
+              <path d="M 80,45  L 120,25 L 120,85 L 80,105 Z" fill="#c8ccd0" />
+              <path d="M -30,120 L 80,175 L 120,155 L 10,100 Z" fill="#3c4043" />
+              <path d="M -30,120 L -30,180 L 80,235 L 80,175 Z" fill="#bdc1c6" />
+              <path d="M 80,175 L 120,155 L 120,215 L 80,235 Z" fill="#9aa0a6" />
+              <path d="M 10,100 L 120,155 L 120,25 L 10,-30 Z" fill="#dadce0" />
+              <path d="M -30,120 L 10,100 L 10,-30 L -30,-10 Z" fill="#f1f3f4" />
+              <path d="M 20,70 L 90,105 L 90,85 L 20,50 Z" fill="#9aa0a6" />
+              <path d="M 30,75 L 70,95 M 40,70 L 70,83" stroke="#5f6368" stroke-width="1" />
+              <g transform="translate(40, 120)">
+                <path d="M 0,10 L 30,25 L 50,15 L 20,0 Z" fill="#5f6368" />
+                <path d="M 5,10 L 5,0  L 25,-5 L 25,5 Z" fill="#9aa0a6" />
+                <path d="M 25,12 L 35,17 L 32,2 L 28,2 Z" fill="url(#chemBlue)" opacity="0.7" />
+                <circle cx="30" cy="12" r="7" fill="url(#chemBlue)" opacity="0.6" />
+              </g>
+              <path d="M -30,50 L 80,105 L 80,175 L -30,120 Z" fill="#aee0eb" opacity="0.25" stroke="#ffffff"
+                stroke-width="1.5" />
+              <path d="M -30,120 L 80,175 L 80,178 L -30,123 Z" fill="#9aa0a6" />
+              <path d="M 80,105 L 120,85  L 120,155 L 80,175 Z" fill="#aee0eb" opacity="0.18" stroke="#ffffff"
+                stroke-width="1" />
+            </g>
+
+            <g id="stool" transform="translate(500, 280)">
+              <ellipse cx="0" cy="0" rx="20" ry="10" fill="#bdc1c6" stroke="#9aa0a6" stroke-width="1" />
+              <ellipse cx="0" cy="3" rx="20" ry="10" fill="#9aa0a6" />
+              <path d="M -10,5 L -15,35 M 10,5 L 15,35 M 0,8 L 0,40" stroke="#9aa0a6" stroke-width="3"
+                stroke-linecap="round" />
+              <path d="M -12,25 L 12,25 M 0,25 L 0,28" stroke="#bdc1c6" stroke-width="2" />
+              <ellipse cx="-15" cy="35" rx="3" ry="1.5" fill="#5f6368" />
+              <ellipse cx="15" cy="35" rx="3" ry="1.5" fill="#5f6368" />
+              <ellipse cx="0" cy="40" rx="3" ry="1.5" fill="#5f6368" />
+            </g>
+
+            <g id="biohazard-bin" transform="translate(400, 230)">
+              <path d="M -16,-40 L -16,0 A 16 8 0 0 0 16,0 L 16,-40 Z" fill="#f1c40f" />
+              <path d="M 0,-32 L 0,8 A 16 8 0 0 0 16,0 L 16,-40 Z" fill="#e67e22" opacity="0.4" />
+              <ellipse cx="0" cy="-40" rx="16" ry="8" fill="#f1c40f" />
+              <ellipse cx="0" cy="-42" rx="17" ry="8.5" fill="#f39c12" />
+              <ellipse cx="0" cy="-44" rx="17" ry="8.5" fill="#f1c40f" />
+              <path d="M -6,6 L -10,13 L 10,13 L 6,6 Z" fill="#bdc1c6" />
+              <g transform="translate(0, -20) scale(0.4)">
+                <circle cx="0" cy="-12" r="10" stroke="#3c4043" stroke-width="4" fill="none" />
+                <circle cx="-10" cy="6" r="10" stroke="#3c4043" stroke-width="4" fill="none" />
+                <circle cx="10" cy="6" r="10" stroke="#3c4043" stroke-width="4" fill="none" />
+                <circle cx="0" cy="0" r="6" fill="#3c4043" />
+              </g>
+            </g>
+
+            <g id="particles-background">
+              <path class="stream p-fast" d="M 260,90  C 320,100 380,120 460,160" />
+              <path class="stream p-med" d="M 270,100 C 330,150 400,150 480,180" />
+              <path class="stream p-slow" d="M 250,80  C 350,60  420,100 470,140" />
+              <path class="stream p-fast" d="M 280,110 C 320,180 400,190 470,190" />
+              <path class="stream p-med" d="M 290,90  C 350,100 420,110 490,150" />
+              <path class="stream p-slow" d="M 240,100 C 280,140 330,160 450,170" />
+            </g>
+
+            <g id="center-bench-group" transform="translate(170, 304)">
+              <path d="M 0,40 L 160,120 L 220,90 L 60,10 Z" fill="#3c4043" />
+              <path d="M 0,40 L 160,120 L 160,160 L 0,80 Z" fill="#c8ccd0" />
+              <path d="M 160,120 L 220,90 L 220,130 L 160,160 Z" fill="#bdc1c6" />
+              <g transform="translate(50, 25)">
+                <path d="M 0,20 L 20,30 L 16,10 L 4,10 Z" fill="url(#chemPink)" opacity="0.8" />
+                <path d="M -5,30 L 25,30 L 18,-10 L 2,-10 Z" fill="none" stroke="#ffffff" stroke-width="1.5"
+                  opacity="0.5" />
+              </g>
+              <g transform="translate(80, 50)">
+                <path d="M 0,15 L 15,22.5 L 12,8 L 3,8 Z" fill="url(#chemGreen)" opacity="0.8" />
+                <path d="M -3,22.5 L 18,22.5 L 14,-5 L 1,-5 Z" fill="none" stroke="#ffffff" stroke-width="1.5"
+                  opacity="0.5" />
+              </g>
+              <g transform="translate(140, 40)">
+                <rect x="0" y="30" width="30" height="5" transform="skewY(30)" fill="#5f6368" />
+                <line x1="15" y1="30" x2="15" y2="-40" stroke="#9aa0a6" stroke-width="3" />
+                <line x1="15" y1="0" x2="-5" y2="10" stroke="#5f6368" stroke-width="2" />
+                <rect x="-8" y="-20" width="4" height="40" fill="url(#chemBlue)" opacity="0.6" />
+              </g>
+              <g transform="translate(110, 60)">
+                <rect x="0" y="20" width="15" height="5" transform="skewY(30)" fill="#5f6368" />
+                <rect x="5" y="5" width="5" height="20" fill="#9aa0a6" />
+                <g transform="translate(7.5, 5)">
+                  <path class="flame-outer" d="M -4,0 Q -6,-12 0,-20 Q 6,-12 4,0 Z" fill="#00b4d8" opacity="0.6" />
+                  <path class="flame-inner" d="M -2,0 Q -3,-8  0,-14 Q 3,-8  2,0 Z" fill="#e0ffff" />
+                </g>
+              </g>
+            </g>
+
+            <g id="particles-foreground">
+              <path class="stream p-med" d="M 350,280 C 400,260 460,240 530,250" />
+              <path class="stream p-slow" d="M 355,290 C 410,270 470,255 535,260" />
+              <path class="stream p-fast" d="M 345,270 C 390,250 455,230 528,242" />
+              <path class="stream p-slow" d="M 340,285 C 380,265 445,245 525,255" />
+              <path class="stream p-fast" d="M 360,275 C 420,255 480,240 540,248" />
+              <path class="stream p-med" d="M 350,265 C 405,245 465,232 532,245" />
+              <path class="stream p-slow" d="M 355,282 C 415,260 475,248 538,258" />
+            </g>
+
+          </svg>
+
+          <div class="quad-illus-text">
+            The <strong>free air volume</strong> is the room volume minus the space occupied by furniture and
+            equipment.<br>
+			The most accurate way to obtain this value, is to directly measure it. There are some phone apps that may help you do this.<br>
+            If unknown, enter the room volume and apply the 40% reduction checkbox as a conservative estimate.
+          </div>
+        </div>
+
+        <!-- BOTTOM LEFT: Slow Leak Inputs (hidden until calc5) -->
+        <div class="quad-form quad-bottom-left" id="slowLeakInputs" style="display:none;">
+          <div class="card-body">
+            <p style="font-size:0.9rem; color:var(--muted); margin:0 0 16px;"><strong>Slow Leak Parameters</strong>
+            </p>
+            <div class="input-block" style="margin-bottom: 12px;">
+              <label for="leakRate">
+                Leak Rate (m&#179;/hr)
+                <button type="button" class="info-btn" id="leakRateInfoBtn"
+                  aria-label="Leak rate information">i</button>
+                <small>Small ≈ 0.001 | Medium ≈ 0.1 | Large ≈ 1| Catastrophic ≈ 100</small>
+              </label>
+              <input type="number" id="leakRate" step="0.001" min="0" placeholder="e.g. 0.1" style="width:100%;">
+              <div class="field-actions">
+                <button type="button" id="advancedLeakBtn" class="btn btn-ghost btn-inline">Estimate Leak Rate</button>
+              </div>
+            </div>
+            <div class="input-block" style="margin-bottom: 12px;">
+              <label for="ach">Air Changes per Hour (ACH)</label>
+              <input type="number" id="ach" step="0.1" min="0" placeholder="e.g. 6" style="width:100%;">
+            </div>
+            <p style="font-size:0.82rem; color:var(--muted); margin:0 0 16px;">
+              <em>Note: This calculation assumes perfect mixing of the gas within the room.</em>
+            </p>
+            <p style="font-size:0.82rem; color:var(--muted); margin:0 0 16px;">
+              <em>If ventilation is poor, uneven, or uncertain, the calculated room concentration may understate the local hazard.</em>
+            </p>
+          </div>
+        </div>
+
+        <!-- BOTTOM RIGHT: Slow Leak SVG (hidden until calc5) -->
+        <div class="quad-illustration quad-bottom-right" id="svg-slow-leak" style="display:none;">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="30 60 620 620" width="100%" height="100%">
+            <defs>
+              <!-- Cylinder body: muted amber-bronze -->
+              <linearGradient id="cylinderGradSL" x1="0%" y1="0%" x2="100%" y2="0%">
+                <stop offset="0%" stop-color="#8C6B2A" />
+                <stop offset="20%" stop-color="#B8963E" />
+                <stop offset="45%" stop-color="#D4B06A" />
+                <stop offset="80%" stop-color="#B8963E" />
+                <stop offset="100%" stop-color="#7A5D1F" />
+              </linearGradient>
+              <!-- Brass fittings: warmer, desaturated -->
+              <linearGradient id="brassGradSL" x1="0%" y1="0%" x2="0%" y2="100%">
+                <stop offset="0%" stop-color="#D9CBA8" />
+                <stop offset="15%" stop-color="#B8A060" />
+                <stop offset="50%" stop-color="#8C7A45" />
+                <stop offset="85%" stop-color="#6B5C30" />
+                <stop offset="100%" stop-color="#4A3F20" />
+              </linearGradient>
+              <!-- Brass pipe: subtle highlight -->
+              <linearGradient id="brassPipeSL" x1="0%" y1="0%" x2="0%" y2="100%">
+                <stop offset="0%" stop-color="#B8A060" />
+                <stop offset="30%" stop-color="#D9CBA8" />
+                <stop offset="70%" stop-color="#9A8650" />
+                <stop offset="100%" stop-color="#5C4E2A" />
+              </linearGradient>
+              <!-- Chrome/steel: cool metallic -->
+              <linearGradient id="chromeGradSL" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#F0F0F0" />
+                <stop offset="40%" stop-color="#C8CDD0" />
+                <stop offset="100%" stop-color="#6B7B82" />
+              </linearGradient>
+              <g id="gas-puffSL">
+                <circle cx="0" cy="0" r="14" fill="#9BBCD4" />
+                <circle cx="16" cy="-10" r="18" fill="#9BBCD4" />
+                <circle cx="28" cy="4" r="16" fill="#9BBCD4" />
+                <circle cx="12" cy="14" r="14" fill="#9BBCD4" />
+                <path d="M -8,2 A 14,14 0 0,0 12,12 A 12,12 0 0,0 24,14 A 14,14 0 0,0 40,2 A 16,16 0 0,1 -8,2 Z"
+                  fill="#6F9AB5" opacity="0.9" />
+              </g>
+              <filter id="shadowSL" x="-10%" y="-10%" width="120%" height="120%">
+                <feDropShadow dx="2" dy="4" stdDeviation="3" flood-opacity="0.2" />
+              </filter>
+            </defs>
+            <!-- Hose: dark wine/maroon -->
+            <g filter="url(#shadowSL)">
+              <path d="M 400 260 C 530 260, 600 310, 580 650" stroke="#2C3440" stroke-width="36" fill="none" />
+              <path d="M 400 260 C 530 260, 600 310, 580 650" stroke="#7A3045" stroke-width="28" fill="none" />
+              <path d="M 400 260 C 530 260, 600 310, 580 650" stroke="#B8607A" stroke-width="5" fill="none"
+                transform="translate(-5, -3)" opacity="0.6" />
+              <path d="M 400 260 C 530 260, 600 310, 580 650" stroke="#501828" stroke-width="2" fill="none"
+                transform="translate(5, 2)" stroke-dasharray="10 14" />
+            </g>
+            <!-- Cylinder body -->
+            <g filter="url(#shadowSL)">
+              <path d="M 60,450 C 60,330 280,330 280,450 L 280,650 L 60,650 Z" fill="url(#cylinderGradSL)"
+                stroke="#2C3E50" stroke-width="4" />
+              <rect x="145" y="315" width="50" height="40" fill="url(#cylinderGradSL)" stroke="#2C3E50"
+                stroke-width="3.5" rx="3" />
+              <line x1="145" y1="326" x2="195" y2="326" stroke="#2C3E50" stroke-width="2" />
+              <line x1="145" y1="336" x2="195" y2="336" stroke="#2C3E50" stroke-width="2" />
+              <line x1="145" y1="346" x2="195" y2="346" stroke="#2C3E50" stroke-width="2" />
+              <rect x="152" y="290" width="36" height="25" fill="url(#chromeGradSL)" stroke="#2C3E50"
+                stroke-width="3.5" />
+              <rect x="155" y="210" width="30" height="80" fill="url(#brassGradSL)" stroke="#2C3E50" stroke-width="3.5"
+                rx="2" />
+              <rect x="135" y="245" width="20" height="18" fill="url(#brassGradSL)" stroke="#2C3E50" stroke-width="3.5"
+                rx="2" />
+              <rect x="162" y="190" width="16" height="20" fill="url(#brassPipeSL)" stroke="#2C3E50"
+                stroke-width="3.5" />
+              <rect x="130" y="175" width="80" height="15" fill="#34495E" stroke="#1C2833" stroke-width="3" rx="4" />
+              <circle cx="170" cy="182" r="12" fill="#2C3E50" stroke="#1C2833" stroke-width="2" />
+              <rect x="135" y="171" width="10" height="5" fill="#7F8C8D" rx="2" />
+            </g>
+            <!-- Regulator pipes -->
+            <g filter="url(#shadowSL)">
+              <rect x="185" y="248" width="50" height="24" fill="url(#brassPipeSL)" stroke="#2C3E50"
+                stroke-width="3.5" />
+              <rect x="190" y="240" width="16" height="40" fill="url(#brassGradSL)" stroke="#2C3E50" stroke-width="3.5"
+                rx="2" />
+              <rect x="335" y="248" width="60" height="24" fill="url(#brassPipeSL)" stroke="#2C3E50"
+                stroke-width="3.5" />
+              <circle cx="290" cy="260" r="50" fill="url(#brassGradSL)" stroke="#2C3E50" stroke-width="3.5" />
+              <circle cx="290" cy="260" r="42" fill="none" stroke="#D9CBA8" stroke-width="2" opacity="0.5" />
+            </g>
+            <!-- Gauges -->
+            <g filter="url(#shadowSL)">
+              <line x1="260" y1="220" x2="220" y2="155" stroke="url(#brassPipeSL)" stroke-width="14"
+                stroke-linecap="round" />
+              <line x1="260" y1="220" x2="220" y2="155" stroke="#2C3E50" stroke-width="18" stroke-linecap="round"
+                opacity="0.5" />
+              <circle cx="205" cy="125" r="52" fill="url(#chromeGradSL)" stroke="#2C3E50" stroke-width="3" />
+              <circle cx="205" cy="125" r="44" fill="#FAFAFA" />
+              <circle cx="205" cy="125" r="40" fill="none" stroke="#8C9DA6" stroke-width="2" stroke-dasharray="2 4.2" />
+              <circle cx="205" cy="125" r="34" fill="none" stroke="#34495E" stroke-width="4" stroke-dasharray="2 16" />
+              <path d="M 238 105 A 38 38 0 0 1 215 162" fill="none" stroke="#7A3045" stroke-width="6"
+                stroke-linecap="round" />
+              <polygon points="205,125 201,128 220,95 209,122" fill="#1C2833" />
+              <circle cx="205" cy="125" r="5" fill="#2C3E50" />
+              <path d="M 170 100 A 42 42 0 0 1 230 95" fill="none" stroke="#FFFFFF" stroke-width="4" opacity="0.6"
+                stroke-linecap="round" />
+              <line x1="320" y1="220" x2="360" y2="155" stroke="url(#brassPipeSL)" stroke-width="14"
+                stroke-linecap="round" />
+              <line x1="320" y1="220" x2="360" y2="155" stroke="#2C3E50" stroke-width="18" stroke-linecap="round"
+                opacity="0.5" />
+              <circle cx="375" cy="125" r="52" fill="url(#chromeGradSL)" stroke="#2C3E50" stroke-width="3" />
+              <circle cx="375" cy="125" r="44" fill="#FAFAFA" />
+              <circle cx="375" cy="125" r="40" fill="none" stroke="#8C9DA6" stroke-width="2" stroke-dasharray="2 4.2" />
+              <circle cx="375" cy="125" r="34" fill="none" stroke="#34495E" stroke-width="4" stroke-dasharray="2 16" />
+              <path d="M 408 105 A 38 38 0 0 1 385 162" fill="none" stroke="#7A3045" stroke-width="6"
+                stroke-linecap="round" />
+              <polygon points="375,125 371,128 395,100 379,122" fill="#1C2833" />
+              <circle cx="375" cy="125" r="5" fill="#2C3E50" />
+              <path d="M 340 100 A 42 42 0 0 1 400 95" fill="none" stroke="#FFFFFF" stroke-width="4" opacity="0.6"
+                stroke-linecap="round" />
+            </g>
+            <!-- Central knob + outlet -->
+            <g filter="url(#shadowSL)">
+              <circle cx="290" cy="260" r="38" fill="#34495E" stroke="#2C3E50" stroke-width="3.5" />
+              <circle cx="290" cy="260" r="36" fill="none" stroke="#1C2833" stroke-width="4" stroke-dasharray="4 5" />
+              <circle cx="290" cy="260" r="22" fill="#3D566E" stroke="#2C3E50" stroke-width="3" />
+              <circle cx="290" cy="260" r="10" fill="#2C3E50" />
+              <polygon points="390,238 420,238 430,250 430,270 420,282 390,282" fill="url(#brassGradSL)"
+                stroke="#2C3E50" stroke-width="3.5" stroke-linejoin="round" />
+              <line x1="405" y1="238" x2="405" y2="282" stroke="#2C3E50" stroke-width="2" opacity="0.5" />
+              <line x1="418" y1="243" x2="418" y2="277" stroke="#2C3E50" stroke-width="2" opacity="0.3" />
+              <path d="M 420 245 Q 425 250 422 265" stroke="#D9CBA8" stroke-width="3" fill="none" opacity="0.6"
+                stroke-linecap="round" />
+            </g>
+            <!-- Animated gas puffs -->
+            <g transform="translate(425, 255)">
+              <ellipse cx="0" cy="0" rx="6" ry="14" fill="#6F9AB5" opacity="0.8" />
+              <g opacity="0">
+                <animate attributeName="opacity" values="0; 0.8; 0" dur="3s" repeatCount="indefinite" begin="0s" />
+                <use href="#gas-puffSL">
+                  <animate attributeName="x" values="0; 60" dur="3s" repeatCount="indefinite" begin="0s" />
+                  <animate attributeName="y" values="0; -30" dur="3s" repeatCount="indefinite" begin="0s" />
+                  <animateTransform attributeName="transform" type="scale" values="0.3; 2.2" dur="3s"
+                    repeatCount="indefinite" begin="0s" />
+                </use>
+              </g>
+              <g opacity="0">
+                <animate attributeName="opacity" values="0; 0.75; 0" dur="3.5s" repeatCount="indefinite" begin="1s" />
+                <use href="#gas-puffSL">
+                  <animate attributeName="x" values="0; 80" dur="3.5s" repeatCount="indefinite" begin="1s" />
+                  <animate attributeName="y" values="5; 20" dur="3.5s" repeatCount="indefinite" begin="1s" />
+                  <animateTransform attributeName="transform" type="scale" values="0.4; 1.8" dur="3.5s"
+                    repeatCount="indefinite" begin="1s" />
+                </use>
+              </g>
+              <g opacity="0">
+                <animate attributeName="opacity" values="0; 0.8; 0" dur="4s" repeatCount="indefinite" begin="2s" />
+                <use href="#gas-puffSL">
+                  <animate attributeName="x" values="0; 100" dur="4s" repeatCount="indefinite" begin="2s" />
+                  <animate attributeName="y" values="-5; -10" dur="4s" repeatCount="indefinite" begin="2s" />
+                  <animateTransform attributeName="transform" type="scale" values="0.2; 2.5" dur="4s"
+                    repeatCount="indefinite" begin="2s" />
+                </use>
+              </g>
+              <circle cx="0" cy="0" r="5" fill="#9BBCD4" stroke="#6F9AB5" stroke-width="1.5" opacity="0">
+                <animate attributeName="opacity" values="0; 0.9; 0" dur="2.5s" repeatCount="indefinite" begin="0.2s" />
+                <animate attributeName="cx" values="10; 50" dur="2.5s" repeatCount="indefinite" begin="0.2s" />
+                <animate attributeName="cy" values="-5; -60" dur="2.5s" repeatCount="indefinite" begin="0.2s" />
+                <animate attributeName="r" values="1; 8" dur="2.5s" repeatCount="indefinite" begin="0.2s" />
+              </circle>
+              <circle cx="0" cy="0" r="4" fill="#9BBCD4" stroke="#4A8BA8" stroke-width="1" opacity="0">
+                <animate attributeName="opacity" values="0; 0.85; 0" dur="2s" repeatCount="indefinite" begin="1.5s" />
+                <animate attributeName="cx" values="5; 70" dur="2s" repeatCount="indefinite" begin="1.5s" />
+                <animate attributeName="cy" values="5; -40" dur="2s" repeatCount="indefinite" begin="1.5s" />
+                <animate attributeName="r" values="2; 10" dur="2s" repeatCount="indefinite" begin="1.5s" />
+              </circle>
+            </g>
+          </svg>
+          <div class="quad-illus-text">
+            For a <strong>slow leak</strong> (e.g., from a regulator or valve), gas mixes continuously with room air.
+            Enter the <strong>leak rate</strong> and <strong>ACH</strong> to find the steady-state concentration.
+          </div>
+        </div>
+
+
+        <!-- BOTTOM FULL-WIDTH: Gas type + Buttons + Result -->
+        <div class="quad-bottom-full">
+          <div class="card-body">
+            <div class="input-row" style="grid-template-columns: 1fr 1fr;">
+              <div>
+                <label for="gasType">Gas Hazard Type</label>
+                <select id="gasType">
+                  <option value="asphyxiant">Asphyxiant (O&#8322; Depletion)</option>
+                  <option value="carbon-dioxide">Carbon Dioxide (Enrichment)</option>
+                  <option value="oxygen">Oxygen (Enrichment)</option>
+                  <option value="flammable">Flammable</option>
+                  <option value="toxic">Toxic</option>
+                </select>
+              </div>
+            </div>
+            <div id="calc3Error" class="error-msg"></div>
+            <div class="btn-row">
+              <button type="button" id="btnCalculate2" class="btn btn-primary"
+                style="flex: 1; justify-content: center;">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
+                  <polyline points="22 12 18 12 15 21 9 3 6 12 2 12" />
+                </svg>
+                Calculate Concentration
+              </button>
+              <button id="btnGenerateReport" class="btn btn-success" style="flex: 1; justify-content: center;">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
+                  <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                  <polyline points="14 2 14 8 20 8" />
+                  <line x1="16" y1="13" x2="8" y2="13" />
+                  <line x1="16" y1="17" x2="8" y2="17" />
+                </svg>
+                Generate Report
+              </button>
+            </div>
+            <div class="result-box" id="result2">
+              <div class="result-box-inner">Concentration of gas in room will appear here.</div>
+            </div>
+            <div class="result-box result-bubble" id="resultBubble" style="display:none;">
+              <div class="result-bubble-header">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"
+                  stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                  <circle cx="12" cy="7" r="4" />
+                </svg>
+                Personal Bubble Assessment (2&times;2&times;3 m)
+              </div>
+              <div class="result-box-inner"></div>
+            </div>
+          </div>
+        </div>
+
+      </div><!-- /card-quad-grid -->
+    </div>
+
+  </main>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      let calculatedValues = {};
+      const detailedInstructions = document.getElementById('detailedInstructions');
+      const explanationModal = document.getElementById('explanationModal');
+      const volumeGasInput = document.getElementById("volumeGas");
+      const result1 = document.getElementById("result1");
+      const result2 = document.getElementById("result2");
+      const result = document.getElementById("result");
+      const resultBubble = document.getElementById("resultBubble");
+      const calc1Error = document.getElementById("calc1Error");
+      const calc2Error = document.getElementById("calc2Error");
+      const calc3Error = document.getElementById("calc3Error");
+      const resultCryo = document.getElementById("resultCryo");
+      const calcBFError = document.getElementById("calcBFError");
+      const resultDryIce = document.getElementById("resultDryIce");
+      const calcDryIceError = document.getElementById("calcDryIceError");
+      const leakRateInput = document.getElementById('leakRate');
+      const advancedLeakModal = document.getElementById('advancedLeakModal');
+      const advancedLeakResult = document.getElementById('advancedLeakResult');
+      const advancedLeakError = document.getElementById('advancedLeakError');
+      let latestEstimatedLeakRate = null;
+
+      const formatLeakRate = (value) => {
+        if (!isFinite(value)) return '';
+        if (value >= 100) return value.toFixed(1);
+        if (value >= 10) return value.toFixed(2);
+        if (value >= 1) return value.toFixed(3);
+        if (value >= 0.1) return value.toFixed(4);
+        return value.toFixed(5);
+      };
+
+      const resetAdvancedLeakOutput = () => {
+        latestEstimatedLeakRate = null;
+        advancedLeakError.style.display = 'none';
+        advancedLeakError.innerHTML = '';
+        advancedLeakResult.style.display = 'none';
+        advancedLeakResult.innerHTML = '';
+        document.getElementById('btnUseLeakEstimate').style.display = 'none';
+      };
+
+      const syncAdvancedLeakScenario = () => {
+        const scenario = document.getElementById('advancedLeakType').value;
+        document.getElementById('advancedGasInputs').style.display = scenario === 'gas-line' ? 'block' : 'none';
+        document.getElementById('advancedLn2Inputs').style.display = scenario === 'ln2-line' ? 'block' : 'none';
+        resetAdvancedLeakOutput();
+      };
+
+      // Radio card selection styling
+      document.querySelectorAll('.radio-card input[type="radio"]').forEach(radio => {
+        radio.addEventListener('change', () => {
+          document.querySelectorAll('.radio-card').forEach(c => c.classList.remove('selected'));
+          radio.closest('.radio-card').classList.add('selected');
+        });
+      });
+
+      const resetUI = () => {
+        ['calculation1', 'gasVolumeCalculator', 'cryogenicCalculator', 'dryIceCalculator'].forEach(id => {
+          const el = document.getElementById(id);
+          if (el) el.style.display = 'none';
+        });
+        ['calc1Error', 'calc2Error', 'calc3Error', 'calcBFError', 'calcDryIceError'].forEach(id => {
+          const el = document.getElementById(id);
+          if (el) { el.style.display = 'none'; el.innerText = ''; }
+        });
+        const slowLeakInputs = document.getElementById("slowLeakInputs");
+        const gasVolInputContainer = document.getElementById("gasVolInputContainer");
+        const calc3ProdText = document.getElementById("calc3ProdText");
+        if (slowLeakInputs) slowLeakInputs.style.display = 'none';
+        if (gasVolInputContainer) gasVolInputContainer.style.display = 'block';
+        if (calc3ProdText) calc3ProdText.innerText = "Enter the volume of the room and select the gas type, then click Calculate.";
+        const volCheckbox = document.getElementById("volumeCheckbox");
+        if (volCheckbox) volCheckbox.disabled = false;
+      };
+
+      document.getElementById('toggleInstructions').addEventListener('click', (e) => {
+        e.preventDefault();
+        const panel = document.getElementById('detailedInstructions');
+        panel.style.display = getComputedStyle(panel).display === 'none' ? 'block' : 'none';
+      });
+
+      document.getElementById('clearDataButton').addEventListener('click', () => {
+        document.querySelectorAll('input').forEach(input => {
+          if (input.type === 'checkbox' || input.type === 'radio') input.checked = false;
+          else if (input.type === 'number' || input.type === 'text') input.value = '';
+        });
+        document.querySelectorAll('select').forEach(select => { select.selectedIndex = 0; });
+        document.querySelectorAll('.radio-card').forEach(c => c.classList.remove('selected'));
+        volumeGasInput.disabled = false;
+        document.querySelectorAll('.result-box').forEach(el => {
+          el.innerHTML = '<div class="result-box-inner"></div>';
+          el.style.display = 'none';
+        });
+        resultBubble.style.display = 'none';
+        resetUI();
+        document.getElementById('calculation3').style.display = 'none';
+        ['step-indicator-2', 'step-indicator-3', 'step-indicator-4'].forEach(id => {
+          document.getElementById(id).classList.remove('active');
+        });
+        calculatedValues = {};
+        resetAdvancedLeakOutput();
+        window.scrollTo(0, 0);
+      });
+
+      document.querySelectorAll('input[name="calcOption"]').forEach(radio => {
+        radio.addEventListener('change', (e) => {
+          resetUI();
+          const val = e.target.value;
+          const volCheckbox = document.getElementById("volumeCheckbox");
+          document.getElementById('calculation3').style.display = 'block';
+          document.getElementById('slowLeakInputs').style.display = 'none';
+          document.getElementById('svg-slow-leak').style.display = 'none';
+          document.getElementById('gasVolInputContainer').style.display = 'block';
+          document.getElementById('calc3ProdText').innerText = "Enter the volume of the room and select the gas type, then click Calculate.";
+          volumeGasInput.disabled = false;
+
+          if (val === 'calc2') {
+            document.getElementById('calculation1').style.display = 'block';
+            volumeGasInput.disabled = true;
+          } else if (val === 'calc3') {
+            document.getElementById('gasVolumeCalculator').style.display = 'block';
+            volumeGasInput.disabled = true;
+          } else if (val === 'calc4') {
+            document.getElementById('cryogenicCalculator').style.display = 'block';
+            volumeGasInput.disabled = true;
+          } else if (val === 'calc5') {
+            // Show the slow leak quadrants
+            document.getElementById('slowLeakInputs').style.display = 'flex';
+            document.getElementById('svg-slow-leak').style.display = 'flex';
+            document.getElementById('gasVolInputContainer').style.display = 'none';
+            document.getElementById('calc3ProdText').innerText = "Enter the Room Volume, Leak Rate and ACH, then click Calculate.";
+          } else if (val === 'calc6') {
+            document.getElementById('dryIceCalculator').style.display = 'block';
+            volumeGasInput.disabled = true;
+          }
+
+          // Clear unused tab inputs and the calculated gas volume
+          if (val !== 'calc2') { document.getElementById('initialPressure').value = ''; document.getElementById('cylinderVolume').value = ''; }
+          if (val !== 'calc3') { document.getElementById('weight').value = ''; document.getElementById('specificVolume').value = ''; }
+          if (val !== 'calc4') { document.getElementById('liquidVolume').value = ''; }
+          if (val !== 'calc5') { document.getElementById('leakRate').value = ''; document.getElementById('ach').value = ''; }
+          if (val !== 'calc6') { document.getElementById('dryIceMass').value = ''; }
+          volumeGasInput.value = '';
+          resetAdvancedLeakOutput();
+
+          document.getElementById('step-indicator-2').classList.add('active');
+
+          setTimeout(() => {
+            const nextCard = val === 'calc2' ? document.getElementById('calculation1')
+              : val === 'calc3' ? document.getElementById('gasVolumeCalculator')
+                : val === 'calc4' ? document.getElementById('cryogenicCalculator')
+                  : val === 'calc6' ? document.getElementById('dryIceCalculator')
+                  : document.getElementById('calculation3');
+            if (nextCard) {
+              nextCard.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+          }, 180);
+        });
+      });
+
+      document.getElementById('btnCalculate1').addEventListener('click', () => {
+        const cylpressure = parseFloat(document.getElementById("initialPressure").value);
+        const cylvolume = parseFloat(document.getElementById("cylinderVolume").value);
+        if (isNaN(cylpressure) || cylpressure <= 0 || isNaN(cylvolume) || cylvolume <= 0) {
+          calc1Error.innerHTML = "&#9888; Please enter valid positive values for both pressure and cylinder volume.";
+          calc1Error.style.display = 'block'; return;
+        }
+        calc1Error.style.display = 'none';
+        const volumeGas = Math.round(((cylpressure * (cylvolume / 1000)) / 1.013) * 100) / 100;
+        result1.innerHTML = `<div class="result-box-inner">Volume of gas in cylinder = <strong>${volumeGas} m&#179;</strong></div>`;
+        result1.style.display = 'block';
+        volumeGasInput.value = volumeGas;
+        volumeGasInput.disabled = true;
+        calculatedValues = { ...calculatedValues, cylpressure, cylvolume, volumeGas };
+        document.getElementById('step-indicator-3').classList.add('active');
+      });
+
+      document.getElementById('btnCalculateVolume').addEventListener('click', () => {
+        const weight = parseFloat(document.getElementById('weight').value);
+        const specificVolume = parseFloat(document.getElementById('specificVolume').value);
+        if (isNaN(weight) || weight <= 0 || isNaN(specificVolume) || specificVolume <= 0) {
+          calc2Error.innerHTML = "&#9888; Please enter valid positive values for both weight and specific volume.";
+          calc2Error.style.display = 'block'; return;
+        }
+        calc2Error.style.display = 'none';
+        const volume = weight * specificVolume;
+        result.innerHTML = `<div class="result-box-inner">Volume of gas in cylinder = <strong>${volume.toFixed(2)} m&#179;</strong></div>`;
+        result.style.display = 'block';
+        volumeGasInput.value = volume.toFixed(5);
+        volumeGasInput.disabled = true;
+        calculatedValues = { ...calculatedValues, weight, specificVolume, volume };
+        document.getElementById('step-indicator-3').classList.add('active');
+      });
+
+      document.getElementById('btnCalculateCryo').addEventListener('click', () => {
+        const liquidVol = parseFloat(document.getElementById('liquidVolume').value);
+        const cryoType = document.getElementById('cryoType').value;
+        if (isNaN(liquidVol) || liquidVol <= 0) {
+          calcBFError.innerHTML = "&#9888; Please enter a valid positive value for Liquid Volume.";
+          calcBFError.style.display = 'block'; return;
+        }
+        calcBFError.style.display = 'none';
+        let expansionRatio = 694;
+        if (cryoType === 'LHe') expansionRatio = 757;
+        const gasVol = (liquidVol * expansionRatio) / 1000;
+        resultCryo.innerHTML = `<div class="result-box-inner">Volume of gas generated = <strong>${gasVol.toFixed(3)} m&#179;</strong></div>`;
+        resultCryo.style.display = 'block';
+        volumeGasInput.value = gasVol.toFixed(5);
+        volumeGasInput.disabled = true;
+        const gasSelect = document.getElementById('gasType');
+        for (let i = 0; i < gasSelect.options.length; i++) {
+          if (gasSelect.options[i].value === 'asphyxiant') gasSelect.selectedIndex = i;
+        }
+        calculatedValues = { ...calculatedValues, liquidVol, cryoType, expansionRatio, gasVol };
+        document.getElementById('step-indicator-3').classList.add('active');
+      });
+
+      document.getElementById('btnCalculateDryIce').addEventListener('click', () => {
+        const dryIceMass = parseFloat(document.getElementById('dryIceMass').value);
+        if (isNaN(dryIceMass) || dryIceMass <= 0) {
+          calcDryIceError.innerHTML = "&#9888; Please enter a valid positive value for Dry Ice Mass.";
+          calcDryIceError.style.display = 'block'; return;
+        }
+        calcDryIceError.style.display = 'none';
+        const dryIceFactor = 0.54; // m3 CO2 per kg dry ice (5.4 m3 per 10 kg)
+        const dryIceGasVol = dryIceMass * dryIceFactor;
+        resultDryIce.innerHTML = `<div class="result-box-inner">Volume of CO&#8322; gas generated = <strong>${dryIceGasVol.toFixed(3)} m&#179;</strong></div>`;
+        resultDryIce.style.display = 'block';
+        volumeGasInput.value = dryIceGasVol.toFixed(5);
+        volumeGasInput.disabled = true;
+        const gasSelect = document.getElementById('gasType');
+        for (let i = 0; i < gasSelect.options.length; i++) {
+          if (gasSelect.options[i].value === 'carbon-dioxide') gasSelect.selectedIndex = i;
+        }
+        calculatedValues = { ...calculatedValues, dryIceMass, dryIceFactor, dryIceGasVol };
+        document.getElementById('step-indicator-3').classList.add('active');
+      });
+
+      document.getElementById('btnCalculate2').addEventListener('click', () => {
+        const isSlowLeak = document.querySelector('input[name="calcOption"]:checked')?.value === 'calc5';
+        const roomVolInput = document.getElementById("roomVolume");
+        const roomCheckbox = document.getElementById("volumeCheckbox");
+        let roomvolume = parseFloat(roomVolInput.value);
+
+        if (isNaN(roomvolume) || roomvolume <= 0) {
+          calc3Error.innerHTML = "&#9888; Please enter a valid positive room volume.";
+          calc3Error.style.display = 'block'; return;
+        }
+        if (roomCheckbox && roomCheckbox.checked) roomvolume *= 0.60;
+
+        let concgas = 0, volgas = 0, Q = 0, leakRate = 0, ach = 0;
+
+        if (isSlowLeak) {
+          leakRate = parseFloat(document.getElementById('leakRate').value);
+          ach = parseFloat(document.getElementById('ach').value);
+          if (isNaN(leakRate) || leakRate <= 0) {
+            calc3Error.innerHTML = "&#9888; Please enter a valid positive value for Leak Rate.";
+            calc3Error.style.display = 'block'; return;
+          }
+          if (isNaN(ach) || ach <= 0) {
+            calc3Error.innerHTML = "&#9888; Please enter a valid positive value for ACH.";
+            calc3Error.style.display = 'block'; return;
+          }
+          Q = roomvolume * ach;
+          concgas = (leakRate / Q) * 100;
+          volgas = leakRate / ach;
+          calculatedValues.leakRate = leakRate;
+          calculatedValues.ach = ach;
+          calculatedValues.Q = Q;
+        } else {
+          volgas = parseFloat(volumeGasInput.value);
+          if (isNaN(volgas) || volgas <= 0) {
+            calc3Error.innerHTML = "&#9888; Please enter a valid positive gas volume (or calculate it in Step 3 above).";
+            calc3Error.style.display = 'block'; return;
+          }
+          concgas = (volgas / roomvolume) * 100;
+          if (volgas >= roomvolume) {
+            calc3Error.innerHTML = "Warning: The gas volume equals or exceeds the room volume. This represents complete displacement of all air. Results shown for 100% gas concentration.";
+            calc3Error.style.display = 'block';
+            volgas = roomvolume;
+          }
+          if (volgas < 0) volgas = 0;
+        }
+
+        calc3Error.style.display = 'none';
+        const gasTypeVal = document.getElementById("gasType").value;
+        let message = "", messageColor = "", concDisplay = "";
+
+        if (gasTypeVal === "oxygen") {
+          if (isSlowLeak) concgas = 20.9 + ((concgas / 100) * 100);
+          else { const displacegas = 0.21 * volgas; concgas = (((roomvolume * 0.21) + volgas - displacegas) / roomvolume) * 100; }
+          concgas = Math.round(concgas * 100) / 100;
+          if (concgas > 100) concgas = 100;
+          if (concgas < 0) concgas = 0;
+          concDisplay = `O&#8322; concentration: <strong>${concgas.toFixed(2)}%</strong>`;
+        } else if (gasTypeVal === "toxic") {
+          concgas = isSlowLeak ? Math.round(concgas * 10000 * 100) / 100 : Math.round(((volgas / roomvolume) * 1000000) * 100) / 100;
+          if (concgas < 0) concgas = 0;
+          concDisplay = `Gas concentration: <strong>${concgas} ppm</strong>`;
+        } else if (gasTypeVal === "asphyxiant") {
+          concgas = isSlowLeak ? 20.9 * (1 - (leakRate / Q)) : ((roomvolume - volgas) * 0.2095 / roomvolume) * 100;
+          concgas = Math.round(concgas * 100) / 100;
+          if (concgas < 0) concgas = 0;
+          if (concgas > 20.95) concgas = 20.95;
+          concDisplay = `O&#8322; concentration in room: <strong>${concgas.toFixed(2)}%</strong>`;
+        } else {
+          concgas = Math.round(concgas * 100) / 100;
+          if (concgas > 100) concgas = 100;
+          if (concgas < 0) concgas = 0;
+          concDisplay = `Gas concentration in room: <strong>${concgas}%</strong>`;
+        }
+
+        if (gasTypeVal === "carbon-dioxide") {
+          // CO₂ is heavier than air and accumulates in low areas.
+          if (concgas > 0.5) {
+            message = "CO₂ detection required. Your risk assessment should also consider local conditions such as low‑level accumulation, ventilation effectiveness, and whether CO₂ may collect in pits, trenches, or sunken areas.";
+            messageColor = "red";
+          } else {
+            message = "CO₂ detection is not likely to be required. Still, ensure your risk assessment considers local features where CO₂ may settle, including basements, cellars, and enclosed low spaces.";
+            messageColor = "green";
+          }
+
+        } else if (gasTypeVal === "oxygen") {
+          // Oxygen-enriched or depleted atmospheres depend mainly on airflow, not buoyancy alone.
+          if (concgas > 23.5) {
+            message = "O₂ detection required. Your risk assessment should consider the local airflow patterns, enclosure size, and any sources of oxygen release that may create enriched zones.";
+            messageColor = "red";
+          } else {
+            message = "O₂ detection is not likely to be required. Even so, assess local ventilation and areas where oxygen levels could deviate from normal due to equipment leaks or confinement.";
+            messageColor = "green";
+          }
+
+        } else if (gasTypeVal === "asphyxiant") {
+          // Asphyxiation risk depends on displacement characteristics of the specific gas.
+          if (concgas < 18) {
+            message = "O₂ detection necessary. Consider local factors such as room ventilation, enclosure volume, and whether the displaced oxygen might stratify or accumulate based on the gas used.";
+            messageColor = "red";
+          } else if (concgas <= 19.5) {
+            message = "Further assessment of risk necessary. Your assessment should account for local conditions including airflow, potential gas build‑up, and how the specific asphyxiant behaves in the space. Consider the quality of ventilation and whether there are any dead zones where gas may collect, as well as whether smaller cylinders can be used.";
+            messageColor = "orange";
+          } else {
+            message = "No detection likely to be required. However, ensure your assessment considers local environmental factors such as ventilation adequacy and potential sources of oxygen displacement.";
+            messageColor = "green";
+          }
+
+        } else if (gasTypeVal === "flammable") {
+          // Behaviour varies greatly by gas — some rise (H₂), some sink (propane), some mix.
+          message =
+            "Please compare this to the <a href='https://www.engineeringtoolbox.com/explosive-concentration-limits-d_423.html'>LEL for your gas</a> to confirm whether detection is required.<br>" +
+            "Detection is required if the calculated percentage exceeds 25% of the LEL.<br><br>" +
+            "Common LELs: Acetylene 2%, Hydrogen 4%, Methane 5%.<br><br>" +
+            "Your risk assessment should also consider local conditions relevant to your specific flammable gas, such as whether it tends to rise or sink, how ventilation affects dispersion, and the location of potential ignition sources.";
+          messageColor = "orange";
+
+        } else if (gasTypeVal === "toxic") {
+          // Toxic gases vary widely – emphasis on exposure pathways and ventilation.
+          message =
+            "Please compare this to the <a href='https://www.hse.gov.uk/pubns/priced/eh40.pdf'>WEL for your gas</a> (EH40). Detection is needed if the calculated value exceeds the WEL.<br><br>" +
+            "Common WELs: Ammonia 25 ppm, Carbon Monoxide 20 ppm, Hydrogen Sulphide 5 ppm.<br><br>" +
+            "Your risk assessment should also consider local environmental influences, including how the toxic gas disperses, ventilation patterns, and any confined spaces where exposure concentrations could rise.<br><br>" +
+            "Consider the location of the cylinder, and how closely a person must work in relation to it. There may be instances where the calculator may not suggest detection is necessary due to the room concentration being below a threshold, however exposure limits for toxic gases are generally low enough such that a user can exceed the WELs within seconds after exposure even to small leaks.";
+          messageColor = "orange";
+        }
+
+        const statusIcon = messageColor === 'red' ? '&#128308;' : messageColor === 'orange' ? '&#127997;' : '&#128994;';
+        const bgColour = messageColor === 'red' ? '#fff0f0' : messageColor === 'orange' ? '#fff8e8' : messageColor === 'green' ? '#f0fbf0' : '#e8f4ff';
+        const borderColour = messageColor === 'red' ? '#e05050' : messageColor === 'orange' ? '#e09020' : messageColor === 'green' ? '#4cae4c' : '#4a90d9';
+
+        // ── Time to Hazard (0 ACH worst-case) ── only for slow leak
+        let timeToHazardHtml = '';
+        if (isSlowLeak && leakRate > 0) {
+          const formatTime = (hours) => {
+            if (!isFinite(hours) || hours <= 0) return null;
+            if (hours > 48) { const d = Math.floor(hours / 24); const h = Math.round(hours % 24); return `${d} day${d !== 1 ? 's' : ''}${h > 0 ? ` ${h} hr${h !== 1 ? 's' : ''}` : ''}`; }
+            if (hours >= 1) { const h = Math.floor(hours); const m = Math.round((hours - h) * 60); return `${h} hr${h !== 1 ? 's' : ''}${m > 0 ? ` ${m} min` : ''}`; }
+            const m = Math.floor(hours * 60); const s = Math.round((hours * 3600) % 60);
+            if (m === 0) return `${s} seconds`;
+            return `${m} min${m !== 1 ? 's' : ''}${s > 0 ? ` ${s}s` : ''}`;
+          };
+          let tthLines = [];
+          if (gasTypeVal === 'asphyxiant') {
+            const t195 = (roomvolume / leakRate) * Math.log(20.9 / 19.5);
+            const t18 = (roomvolume / leakRate) * Math.log(20.9 / 18);
+            const ft195 = formatTime(t195); const ft18 = formatTime(t18);
+            if (ft195) tthLines.push(`\u23F1 <strong>Time to 19.5% O\u2082</strong> (warning): <strong>${ft195}</strong>`);
+            if (ft18) tthLines.push(`\u23F1 <strong>Time to 18% O\u2082</strong> (danger): <strong>${ft18}</strong>`);
+          } else if (gasTypeVal === 'carbon-dioxide') {
+            const t05 = -(roomvolume / leakRate) * Math.log(1 - 0.005);
+            const t4 = -(roomvolume / leakRate) * Math.log(1 - 0.04);
+            const ft05 = formatTime(t05); const ft4 = formatTime(t4);
+            if (ft05) tthLines.push(`\u23F1 <strong>Time to 0.5% CO\u2082</strong> (detection): <strong>${ft05}</strong>`);
+            if (ft4) tthLines.push(`\u23F1 <strong>Time to 4% CO\u2082</strong> (IDLH): <strong>${ft4}</strong>`);
+          } else if (gasTypeVal === 'oxygen') {
+            const t235 = -(roomvolume / leakRate) * Math.log((100 - 23.5) / (100 - 20.9));
+            const ft235 = formatTime(t235);
+            if (ft235) tthLines.push(`\u23F1 <strong>Time to 23.5% O\u2082</strong> (enrichment): <strong>${ft235}</strong>`);
+          } else if (gasTypeVal === 'flammable') {
+            const ratePerHr = (leakRate / roomvolume) * 100;
+            tthLines.push(`\u23F1 Gas accumulates at <strong>${ratePerHr.toFixed(3)}% per hour</strong> in a sealed room. Compare to 25% of the LEL for your gas.`);
+          } else if (gasTypeVal === 'toxic') {
+            const ratePerHr = (leakRate / roomvolume) * 1000000;
+            tthLines.push(`\u23F1 Gas accumulates at <strong>${ratePerHr.toFixed(1)} ppm per hour</strong> in a sealed room. Compare to the WEL for your gas.`);
+          }
+          if (tthLines.length > 0) {
+            timeToHazardHtml = `<div style="margin-top:12px; padding:12px 14px; background:#f0f0fa; border-left:4px solid #5b4a9e; border-radius:4px; font-size:0.92rem; line-height:1.7;">
+              <div style="font-weight:600; color:#3d2d7a; margin-bottom:4px;">\u26A0\uFE0F Worst-Case Time to Hazard (if ventilation fails)</div>
+              ${tthLines.join('<br>')}
+              <div style="font-size:0.82rem; color:#666; margin-top:6px;">Based on 0 ACH (sealed room). Assumes the leak continues uninterrupted with no automatic shutdown, isolation, or manual intervention.</div>
+            </div>`;
+          }
+          calculatedValues.timeToHazardHtml = timeToHazardHtml;
+        }
+
+        const screeningNote = `<div style="margin-top:10px; font-size:0.85rem; line-height:1.6; color:#555;">
+          <strong>Screening note:</strong> This is a screening estimate to support risk assessment. Average room concentration may not reflect the most severe local exposure near the source, in low/high level spaces, or in poorly ventilated connected voids. Where significant risk remains, prioritise elimination, substitution, segregation, and ventilation before relying on detection.
+        </div>`;
+
+        result2.innerHTML = `<div class="result-box-inner" style="background:${bgColour}; border-left-color:${borderColour};">
+        <div style="margin-bottom:${message ? '10px' : '0'};">${concDisplay}</div>
+        ${message ? `<div style="color:${messageColor === 'orange' ? '#7a5000' : messageColor}; font-size:0.95rem; line-height:1.6;">${statusIcon} ${message}</div>` : ''}
+        ${timeToHazardHtml}
+        ${screeningNote}
+      </div>`;
+        result2.style.display = 'block';
+        document.getElementById('step-indicator-4').classList.add('active');
+        calculatedValues = { ...calculatedValues, roomvolume, volgas, concgas, gasType: gasTypeVal, message, messageColor };
+        if (isSlowLeak) calculatedValues.effectiveGasVol = volgas;
+
+        // ── Personal Bubble Calculation (fixed 12 m³) ──
+        const BUBBLE_VOL = 12;
+        let bubbleConc = 0, bubbleMsg = '', bubbleColor = '', bubbleConcDisplay = '';
+
+        if (isSlowLeak) {
+          // Steady-state with ventilation (same ACH as room)
+          const bubbleQ = BUBBLE_VOL * ach;
+          const bubbleLeakConc = (leakRate / bubbleQ) * 100;
+          if (gasTypeVal === 'oxygen') {
+            bubbleConc = 20.9 + ((bubbleLeakConc / 100) * 100);
+          } else if (gasTypeVal === 'asphyxiant') {
+            bubbleConc = 20.9 * (1 - (leakRate / bubbleQ));
+          } else if (gasTypeVal === 'toxic') {
+            bubbleConc = Math.round(((leakRate / BUBBLE_VOL) * (1 / ach) * 1000000) * 100) / 100;
+          } else {
+            bubbleConc = bubbleLeakConc;
+          }
+        } else {
+          // Instantaneous release: all gas fills the 12 m³ bubble
+          if (gasTypeVal === 'oxygen') {
+            const displaceB = 0.21 * volgas;
+            bubbleConc = (((BUBBLE_VOL * 0.21) + volgas - displaceB) / BUBBLE_VOL) * 100;
+          } else if (gasTypeVal === 'asphyxiant') {
+            const effectiveVol = Math.min(volgas, BUBBLE_VOL);
+            bubbleConc = ((BUBBLE_VOL - effectiveVol) * 0.2095 / BUBBLE_VOL) * 100;
+          } else if (gasTypeVal === 'toxic') {
+            bubbleConc = Math.round(((volgas / BUBBLE_VOL) * 1000000) * 100) / 100;
+          } else {
+            bubbleConc = (volgas / BUBBLE_VOL) * 100;
+          }
+        }
+        bubbleConc = Math.round(bubbleConc * 100) / 100;
+        // Clamp to physically meaningful ranges
+        if (bubbleConc < 0) bubbleConc = 0;
+        if (gasTypeVal === 'oxygen') {
+          if (bubbleConc > 100) bubbleConc = 100;
+        } else if (gasTypeVal === 'asphyxiant') {
+          if (bubbleConc > 20.95) bubbleConc = 20.95;
+        } else if (gasTypeVal !== 'toxic') {
+          // CO₂, flammable — cap at 100%
+          if (bubbleConc > 100) bubbleConc = 100;
+        }
+
+        // Format display
+        if (gasTypeVal === 'oxygen') {
+          bubbleConcDisplay = `O&#8322; concentration near leak: <strong>${bubbleConc.toFixed(2)}%</strong>`;
+        } else if (gasTypeVal === 'toxic') {
+          bubbleConcDisplay = `Gas concentration near leak: <strong>${bubbleConc} ppm</strong>`;
+        } else if (gasTypeVal === 'asphyxiant') {
+          bubbleConcDisplay = `O&#8322; concentration near leak: <strong>${bubbleConc.toFixed(2)}%</strong>`;
+        } else {
+          bubbleConcDisplay = `Gas concentration near leak: <strong>${bubbleConc > 100 ? 100 : bubbleConc}%</strong>`;
+        }
+
+        // Proximity-specific narratives
+        if (gasTypeVal === 'carbon-dioxide') {
+          if (bubbleConc > 4) {
+            bubbleMsg = 'Immediately dangerous to a person standing near this leak. CO\u2082 at this concentration causes rapid breathing, confusion, and loss of consciousness within minutes. Prioritise elimination or improving ventilation. Personal monitors should only be considered if the work is in a confined space and subject to an approved permit to work.';
+            bubbleColor = 'red';
+          } else if (bubbleConc > 0.5) {
+            bubbleMsg = 'Significant risk to anyone working in close proximity to this leak. Even brief exposure at this level can cause headaches, dizziness, and shortness of breath. Prioritise elimination of the hazard or improving ventilation. Personal CO\u2082 monitors should only be considered if the work is in a confined space and subject to an approved permit to work.';
+            bubbleColor = 'orange';
+          } else {
+            bubbleMsg = 'Localised CO\u2082 levels near the leak are within acceptable limits. A person working or passing near this source is unlikely to be at significant risk, however CO\u2082 is heavier than air and will accumulate in low areas \u2014 take care if working at floor level near this source.';
+            bubbleColor = 'green';
+          }
+        } else if (gasTypeVal === 'oxygen') {
+          if (bubbleConc > 23.5) {
+            bubbleMsg = 'The area immediately surrounding this release point is oxygen\u2011enriched. Anyone/anything in the environment around this source faces increased risk of ignition, and materials become more flammable than normal. No hot work, open flames, or sources of ignition should be permitted near the cylinder. Prioritise elimination of the hazard, improving ventilation and detection. Personal monitors should only be considered if the work is in a confined space and subject to an approved permit to work.';
+            bubbleColor = 'red';
+          } else {
+            bubbleMsg = 'Localised O\u2082 levels near the release point remain within safe limits. A person working or passing near this source is not at elevated risk from oxygen enrichment, but this should still be considered in your risk assessment.';
+            bubbleColor = 'green';
+          }
+        } else if (gasTypeVal === 'asphyxiant') {
+          if (bubbleConc < 18) {
+            bubbleMsg = 'Immediately dangerous for anyone near this leak. Oxygen levels in the personal zone would drop to a level that causes loss of consciousness within seconds and can be fatal. No person should approach, work near, or pass through this area without a suitably planned and rehearsed confined space action plan.';
+            bubbleColor = 'red';
+          } else if (bubbleConc <= 19.5) {
+            bubbleMsg = 'Reduced oxygen levels in the immediate vicinity of the leak. A person working near this source is at risk of impaired judgement, reduced coordination, and breathlessness. Brief transit past the source may be acceptable, but sustained work near the cylinder requires enhanced ventilation. Personal monitors should only be considered if the work is in a confined space and subject to an approved permit to work.';
+            bubbleColor = 'orange';
+          } else {
+            bubbleMsg = 'Localised O\u2082 levels near the leak remain within safe limits. A person working or passing near this source is unlikely to be at risk from oxygen depletion at this volume, however your risk assessment should still consider worst\u2011case scenarios and the behaviour of the specific gas.';
+            bubbleColor = 'green';
+          }
+        } else if (gasTypeVal === 'flammable') {
+          if (bubbleConc > 1) {
+            bubbleMsg = 'Significant flammable gas concentration near the leak source. Any persons/materials working near this cylinder are likely to be subject to increased risk from ignition. Compare this value to 25% of the LEL for your specific gas \u2014 if exceeded, the area around the source must be treated as a hazardous zone. Remove all ignition sources and restrict access. Prioritise elimination/substitution of the hazard or improving ventilation, alongside implementation of detection. Personal monitors should only be considered if the work is in a confined space and subject to an approved permit to work.';
+            bubbleColor = 'red';
+          } else {
+            bubbleMsg = 'Flammable gas concentration near the leak source is relatively low. However, localised pockets may form, especially in still air or enclosed areas. Compare this value to the LEL for your gas and consider personal gas monitoring only if working in a confined space under an approved permit.';
+            bubbleColor = 'orange';
+          }
+        } else if (gasTypeVal === 'toxic') {
+          bubbleMsg = 'Compare this value to the <a href="https://www.hse.gov.uk/pubns/priced/eh40.pdf">Workplace Exposure Limit (WEL)</a> for your gas. At the point of release, concentration is significantly higher than the room average. Even if the room\u2011level calculation is within safe limits, a person standing near this source may exceed their WEL within seconds of exposure.<br><br>' +
+            'Common WELs: Ammonia 25 ppm, Carbon Monoxide 20 ppm, Hydrogen Sulphide 5 ppm.<br><br>' +
+            'Prioritise elimination or substitution of the hazard, or installing local exhaust ventilation at the source. Limit the time any individual spends near the cylinder. Personal gas monitors should only be considered if the work is in a confined space and subject to an approved permit to work.';
+          bubbleColor = 'orange';
+        }
+
+        const bIcon = bubbleColor === 'red' ? '&#128308;' : bubbleColor === 'orange' ? '&#127997;' : '&#128994;';
+        const bBg = bubbleColor === 'red' ? '#fff0f0' : bubbleColor === 'orange' ? '#fff8e8' : '#f0fbf0';
+        const bBorder = bubbleColor === 'red' ? '#e05050' : bubbleColor === 'orange' ? '#e09020' : '#4cae4c';
+
+        // Bubble Time to Hazard (0 ACH, 12 m³)
+        let bubbleTthHtml = '';
+        if (isSlowLeak && leakRate > 0) {
+          const formatTime = (hours) => {
+            if (!isFinite(hours) || hours <= 0) return null;
+            if (hours > 48) { const d = Math.floor(hours / 24); const h = Math.round(hours % 24); return `${d} day${d !== 1 ? 's' : ''}${h > 0 ? ` ${h} hr${h !== 1 ? 's' : ''}` : ''}`; }
+            if (hours >= 1) { const h = Math.floor(hours); const m = Math.round((hours - h) * 60); return `${h} hr${h !== 1 ? 's' : ''}${m > 0 ? ` ${m} min` : ''}`; }
+            const m = Math.floor(hours * 60); const s = Math.round((hours * 3600) % 60);
+            if (m === 0) return `${s} seconds`;
+            return `${m} min${m !== 1 ? 's' : ''}${s > 0 ? ` ${s}s` : ''}`;
+          };
+          let bTthLines = [];
+          if (gasTypeVal === 'asphyxiant') {
+            const t195 = (BUBBLE_VOL / leakRate) * Math.log(20.9 / 19.5);
+            const t18 = (BUBBLE_VOL / leakRate) * Math.log(20.9 / 18);
+            const ft195 = formatTime(t195); const ft18 = formatTime(t18);
+            if (ft195) bTthLines.push(`\u23F1 <strong>Time to 19.5% O\u2082</strong> (warning): <strong>${ft195}</strong>`);
+            if (ft18) bTthLines.push(`\u23F1 <strong>Time to 18% O\u2082</strong> (danger): <strong>${ft18}</strong>`);
+          } else if (gasTypeVal === 'carbon-dioxide') {
+            const t05 = -(BUBBLE_VOL / leakRate) * Math.log(1 - 0.005);
+            const t4 = -(BUBBLE_VOL / leakRate) * Math.log(1 - 0.04);
+            const ft05 = formatTime(t05); const ft4 = formatTime(t4);
+            if (ft05) bTthLines.push(`\u23F1 <strong>Time to 0.5% CO\u2082</strong> (detection): <strong>${ft05}</strong>`);
+            if (ft4) bTthLines.push(`\u23F1 <strong>Time to 4% CO\u2082</strong> (IDLH): <strong>${ft4}</strong>`);
+          } else if (gasTypeVal === 'oxygen') {
+            const t235 = -(BUBBLE_VOL / leakRate) * Math.log((100 - 23.5) / (100 - 20.9));
+            const ft235 = formatTime(t235);
+            if (ft235) bTthLines.push(`\u23F1 <strong>Time to 23.5% O\u2082</strong> (enrichment): <strong>${ft235}</strong>`);
+          } else if (gasTypeVal === 'flammable') {
+            const ratePerHr = (leakRate / BUBBLE_VOL) * 100;
+            bTthLines.push(`\u23F1 Gas accumulates at <strong>${ratePerHr.toFixed(3)}% per hour</strong> near the source. Compare to 25% of the LEL.`);
+          } else if (gasTypeVal === 'toxic') {
+            const ratePerHr = (leakRate / BUBBLE_VOL) * 1000000;
+            bTthLines.push(`\u23F1 Gas accumulates at <strong>${ratePerHr.toFixed(1)} ppm per hour</strong> near the source. Compare to the WEL.`);
+          }
+          if (bTthLines.length > 0) {
+            bubbleTthHtml = `<div style="margin-top:12px; padding:12px 14px; background:#f0f0fa; border-left:4px solid #5b4a9e; border-radius:4px; font-size:0.92rem; line-height:1.7;">
+              <div style="font-weight:600; color:#3d2d7a; margin-bottom:4px;">\u26A0\uFE0F Worst-Case Time to Hazard (if ventilation fails)</div>
+              ${bTthLines.join('<br>')}
+              <div style="font-size:0.82rem; color:#666; margin-top:6px;">Based on 0 ACH in the 12 m\u00b3 personal zone. Assumes the leak continues uninterrupted with no automatic shutdown, isolation, or manual intervention.</div>
+            </div>`;
+          }
+          calculatedValues.bubbleTthHtml = bubbleTthHtml;
+        }
+
+        resultBubble.querySelector('.result-box-inner').innerHTML = `<div style="background:${bBg}; border-left: 5px solid ${bBorder}; padding: 16px; border-radius: 0 0 10px 10px;">
+          <div style="margin-bottom:${bubbleMsg ? '10px' : '0'};">${bubbleConcDisplay}</div>
+          ${bubbleMsg ? `<div style="color:${bubbleColor === 'orange' ? '#7a5000' : bubbleColor}; font-size:0.93rem; line-height:1.6;">${bIcon} ${bubbleMsg}</div>` : ''}
+          ${isSlowLeak && ach > 0 ? `<div style="margin-top:10px; font-size: 0.85rem; font-style: italic; color: #666; opacity: 0.85;">* Note: The bubble models the localised area (12 m&sup3;) near the leak source before full mixing. It uses the room ACH to account for active dilution within this smaller zone, which is why it often shows a higher concentration than the whole room average.</div>` : ''}
+          ${bubbleTthHtml}
+        </div>`;
+        resultBubble.style.display = 'block';
+
+        setTimeout(() => {
+          result2.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }, 150);
+
+        calculatedValues.bubbleConc = bubbleConc;
+        calculatedValues.bubbleMsg = bubbleMsg;
+        calculatedValues.bubbleColor = bubbleColor;
+        calculatedValues.bubbleConcDisplay = bubbleConcDisplay;
+      });
+
+      document.getElementById('btnGenerateReport').addEventListener('click', () => {
+        // Ensure values are freshly calculated before generating the report
+        const activeCalc = document.querySelector('input[name="calcOption"]:checked')?.value;
+        if (activeCalc === 'calc2') document.getElementById('btnCalculate1')?.click();
+        if (activeCalc === 'calc3') document.getElementById('btnCalculateVolume')?.click();
+        if (activeCalc === 'calc4') document.getElementById('btnCalculateCryo')?.click();
+
+        document.getElementById('btnCalculate2').click();
+
+        const reportWindow = window.open("", "Calculation Report", "width=900,height=700");
+        if (!reportWindow) { alert("Your browser blocked the report popup. Please allow popups and try again."); return; }
+
+        const gasTypeVal = document.getElementById("gasType").value;
+        const concDisplay = calculatedValues.concgas !== undefined
+          ? (gasTypeVal === "toxic" ? `${calculatedValues.concgas} ppm` : `${calculatedValues.concgas}%`)
+          : "No value calculated";
+        const dateStr = new Date().toLocaleString();
+
+        let reportContent = `<div class='header'>
+        <div style="display:flex;align-items:center;gap:16px;margin-bottom:10px;">
+          <div style="width:48px;height:48px;background:#002060;border-radius:8px;display:flex;align-items:center;justify-content:center;">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M8 21V8a4 4 0 0 1 8 0v13"/><line x1="6" y1="21" x2="18" y2="21"/></svg>
+          </div>
+          <div><h1>Gas Safety Calculation Report</h1><p style="margin:2px 0 0;font-size:13px;color:#555;">University of Nottingham Health &amp; Safety &middot; ${dateStr}</p></div>
+        </div>
+        <div style="background:#fff5f5; border:1px solid #f0c0c0; padding:14px; border-radius:6px; margin-top:16px;">
+          <p class="disclaimer" style="color:#b00; font-size:12px; margin-bottom:8px;"><strong>&#9888; IMPORTANT DISCLAIMER &dash; FOR INFORMATIONAL PURPOSES ONLY</strong></p>
+          <p class="disclaimer" style="font-size:11.5px; line-height:1.5;">Generated using the University of Nottingham Gas Safety Calculator. Methods are based on guidance from the British Compressed Gas Association. Results represent idealised worst-case assumptions (perfect mixing, total release). Assessing exposure to gas is a highly complex field &dash; this calculator must not be treated as a substitute for a full risk assessment. If there is any doubt about the risk to people, specialist advice must always be sought. The University of Nottingham and its Health &amp; Safety Department do not accept liability for decisions made solely on the basis of this calculator's output.</p>
+        </div>
+      </div>`;
+
+        const labLoc = document.getElementById("lab_location").value.trim();
+        const gasName = document.getElementById("gas_name").value.trim();
+        if (labLoc || gasName) {
+          reportContent += `<div class='section'><h2>Location Details</h2><div class="grid-container">`;
+          if (labLoc) reportContent += `<div class="grid-item"><strong>Building/Lab:</strong> ${labLoc}</div>`;
+          if (gasName) reportContent += `<div class="grid-item"><strong>Gas Name:</strong> ${gasName}</div>`;
+          reportContent += `</div></div>`;
+        }
+
+        reportContent += `<div class='section'><h2>Gas Details</h2><div class="grid-container">`;
+        reportContent += `<div class="grid-item"><strong>Gas Type:</strong> ${gasTypeVal}</div>`;
+        if (volumeGasInput.value) reportContent += `<div class="grid-item"><strong>Total Gas Volume:</strong> ${volumeGasInput.value} m&#179;</div>`;
+        reportContent += `</div></div>`;
+
+        const roomVol = document.getElementById("roomVolume").value;
+        if (roomVol) {
+          reportContent += `<div class='section'><h2>Room Details</h2><div class="grid-container">`;
+          reportContent += `<div class="grid-item"><strong>Room Volume:</strong> ${roomVol} m&#179;</div>`;
+          if (document.getElementById("volumeCheckbox").checked) reportContent += `<div class="grid-item"><strong>Volume Reduced:</strong> Yes (40% reduction applied)</div>`;
+          reportContent += `</div></div>`;
+        }
+
+        if (calculatedValues.cylpressure) {
+          reportContent += `<div class='section'><h2>Compressed Gas Inputs</h2><div class="grid-container">
+          <div class="grid-item"><strong>Initial Pressure:</strong> ${calculatedValues.cylpressure} bar</div>
+          <div class="grid-item"><strong>Cylinder Capacity:</strong> ${calculatedValues.cylvolume} L</div>
+        </div></div>`;
+        } else if (calculatedValues.weight) {
+          reportContent += `<div class='section'><h2>Liquefied Gas Inputs</h2><div class="grid-container">
+          <div class="grid-item"><strong>Weight of Contents:</strong> ${calculatedValues.weight} kg</div>
+          <div class="grid-item"><strong>Specific Volume:</strong> ${calculatedValues.specificVolume} m&#179;/kg</div>
+        </div></div>`;
+        } else if (calculatedValues.cryoType) {
+          reportContent += `<div class='section'><h2>Cryogenic Details</h2><div class="grid-container">
+          <div class="grid-item"><strong>Cryogen:</strong> ${calculatedValues.cryoType === 'LN2' ? 'Liquid Nitrogen' : 'Liquid Helium'}</div>
+          <div class="grid-item"><strong>Liquid Volume:</strong> ${calculatedValues.liquidVol} Litres</div>
+          <div class="grid-item"><strong>Expansion Ratio:</strong> 1:${calculatedValues.expansionRatio}</div>
+          <div class="grid-item"><strong>Gas Volume Generated:</strong> ${calculatedValues.gasVol.toFixed(3)} m&#179;</div>
+        </div>
+        <div style="background:#eef;padding:10px;margin-top:10px;border-left:4px solid #002060;font-size:13px;">
+          <strong>BCGA Hazard Warning:</strong> Cryogenic liquids expand rapidly (~1:700). Risks include asphyxiation, severe cold burns, and dense fog.
+        </div></div>`;
+        } else if (calculatedValues.dryIceMass) {
+          reportContent += `<div class='section'><h2>Dry Ice Details</h2><div class="grid-container">
+          <div class="grid-item"><strong>Dry Ice Mass:</strong> ${calculatedValues.dryIceMass} kg</div>
+          <div class="grid-item"><strong>Conversion Factor:</strong> ${calculatedValues.dryIceFactor} m&#179;/kg</div>
+          <div class="grid-item"><strong>CO&#8322; Gas Volume Generated:</strong> ${calculatedValues.dryIceGasVol.toFixed(3)} m&#179;</div>
+        </div></div>`;
+        } else if (calculatedValues.leakRate) {
+          reportContent += `<div class='section'><h2>Slow Leak / Ventilation Details</h2><div class="grid-container">
+          <div class="grid-item"><strong>Leak Rate:</strong> ${calculatedValues.leakRate} m&#179;/hr</div>
+          <div class="grid-item"><strong>Air Changes per Hour (ACH):</strong> ${calculatedValues.ach}</div>
+          <div class="grid-item"><strong>Ventilation Rate (Q):</strong> ${calculatedValues.Q.toFixed(1)} m&#179;/hr</div>
+          <div class="grid-item"><strong>Steady State Concentration:</strong> ${(calculatedValues.effectiveGasVol / roomVol * 100).toFixed(4)} %</div>
+        </div><p style="font-size:12px;"><em>Note: Assumes perfect mixing (Steady State).</em></p></div>`;
+        }
+
+        reportContent += `<div class='section results-section'><h2>Results &amp; Recommendations</h2>
+        <p class="result-value">Calculated Concentration: <strong>${concDisplay}</strong></p>`;
+        if (calculatedValues.message) {
+          reportContent += `<div class="recommendation-box" style="border-left-color:${calculatedValues.messageColor || '#ccc'};">
+          <strong style="color:${calculatedValues.messageColor || '#333'};">Recommendation:</strong>
+          <div>${calculatedValues.message}</div>
+        </div>`;
+        }
+        if (calculatedValues.messageColor === 'orange' || calculatedValues.messageColor === 'red') {
+          reportContent += `<div class='section' style='border-left:5px solid ${calculatedValues.messageColor};margin-top:15px; font-family:"Segoe UI", Arial, sans-serif;'>
+          <h3 style="margin-bottom:10px;">Risk Control Guidance (Hierarchy of Controls)</h3>
+          <ol style="line-height:1.9; margin-top:0;">
+            <li><strong>Elimination:</strong> Remove the hazard (e.g. smaller cylinder, eliminate gas use).</li>
+            <li><strong>Substitution:</strong> Replace with a less hazardous gas or safer system.</li>
+            <li><strong>Engineering Controls:</strong> Increase ventilation (ACH), install fixed gas/O&#8322; detection, remote storage.</li>
+            <li><strong>Administrative Controls:</strong> Training, Safe Systems of Work, Permit to Work, Restricted Access.</li>
+            <li><strong>PPE:</strong> Personal monitors (only if work is in a confined space and subject to an approved Permit to Work), Breathing Apparatus (last resort).</li>
+          </ol>
+        </div>`;
+        }
+        reportContent += `</div>`;
+
+        // Personal Bubble section in report
+        if (calculatedValues.bubbleConc !== undefined) {
+          const bConc = gasTypeVal === 'toxic' ? `${calculatedValues.bubbleConc} ppm` : `${calculatedValues.bubbleConc}%`;
+          reportContent += `<div class='section' style='border:2px solid #5b4a9e;'>
+            <h2 style='color:#5b4a9e;border-bottom-color:#5b4a9e;'>Personal Bubble Assessment (2\u00d72\u00d73 m)</h2>
+            <p style='font-size:13px;color:#555;margin-bottom:12px;'>This assessment models a fixed <strong>12 m\u00b3</strong> volume immediately surrounding the gas release point. It estimates the concentration a person would experience if standing directly at the leak source. For instantaneous releases, all gas is assumed to fill this volume first. For slow leaks, the same ACH is applied but over the smaller volume, giving a higher local concentration.</p>
+            <p class='result-value'>Concentration near leak: <strong>${bConc}</strong></p>`;
+          if (calculatedValues.bubbleMsg) {
+            reportContent += `<div class='recommendation-box' style='border-left-color:${calculatedValues.bubbleColor || '#ccc'};'>
+              <strong style='color:${calculatedValues.bubbleColor || '#333'};'>Proximity Risk:</strong>
+              <div>${calculatedValues.bubbleMsg}</div>
+            </div>`;
+          }
+          if (calculatedValues.bubbleTthHtml) {
+            reportContent += calculatedValues.bubbleTthHtml;
+          }
+          reportContent += `</div>`;
+        }
+
+        // Time to Hazard section in report (room-level)
+        if (calculatedValues.timeToHazardHtml) {
+          reportContent += `<div class='section' style='border:2px solid #5b4a9e;'>
+            <h2 style='color:#5b4a9e;border-bottom-color:#5b4a9e;'>Worst-Case Time to Hazard (Room)</h2>
+            <p style='font-size:13px;color:#555;margin-bottom:12px;'>This models a worst-case scenario where all ventilation fails (0 ACH). It calculates how long it would take for gas to accumulate to hazardous levels in the room, given the current leak rate.</p>
+            ${calculatedValues.timeToHazardHtml}
+          </div>`;
+        }
+
+        reportContent += `<div class='section'><h2>Methodology</h2><div class="formula-box">`;
+        if (calculatedValues.cylpressure) reportContent += `<p><strong>Gas Volume:</strong> V<sub>gas</sub> = (P<sub>cyl</sub> &times; V<sub>water</sub>) / 1.013</p>`;
+        else if (calculatedValues.weight) reportContent += `<p><strong>Gas Volume:</strong> V<sub>gas</sub> = Weight &times; Specific Volume</p>`;
+        else if (calculatedValues.cryoType) reportContent += `<p><strong>Gas Volume:</strong> V<sub>gas</sub> = (V<sub>liquid</sub> &times; Expansion Ratio) / 1000</p>`;
+        else if (calculatedValues.dryIceMass) reportContent += `<p><strong>Gas Volume:</strong> V<sub>gas</sub> = m<sub>dry ice</sub> &times; 0.54</p>`;
+        else if (calculatedValues.leakRate) reportContent += `<p><strong>Steady State Concentration:</strong> C = Leak Rate / (Room Vol &times; ACH)</p>`;
+        if (gasTypeVal === "oxygen" || gasTypeVal === "asphyxiant") reportContent += `<p><strong>O&#8322; Calc:</strong> O&#8322;% = 20.95% &times; (V<sub>room</sub> &minus; V<sub>gas</sub>) / V<sub>room</sub></p>`;
+        else if (gasTypeVal === "toxic") reportContent += `<p><strong>Concentration (ppm):</strong> ppm = (V<sub>gas</sub> / V<sub>room</sub>) &times; 1,000,000</p>`;
+        else reportContent += `<p><strong>Concentration (%):</strong> % = (V<sub>gas</sub> / V<sub>room</sub>) &times; 100</p>`;
+
+        reportContent += `<div style="margin-top:16px; padding-top:16px; border-top:1px solid #d0dcf0;">
+          <h4 style="margin:0 0 8px 0; color:#002060;">Key Assumptions &amp; Limitations</h4>
+          <ul style="margin:0; padding-left:20px; font-size:13px; color:#444;">
+            <li><strong>Instantaneous mixing:</strong> For room calculations, the model assumes released gas mixes perfectly and instantaneously with all air in the room. In reality, gas will pool or stratify before mixing, creating areas of much higher concentration.</li>
+            <li><strong>Personal Bubble (Proximity):</strong> This models a fixed 12 m&sup3; zone to simulate the concentration near the source before mixing occurs. This assumes the worker is standing directly within the dispersion plume.</li>
+            <li><strong>Worst-case credible release:</strong> Where exact release conditions are uncertain, the calculation should be based on the worst-case credible release for the equipment and task, not normal operation.</li>
+            <li><strong>Uninterrupted leak:</strong> Slow leak calculations assume the leak remains constant and is not isolated by safety systems, automatic shutdown, or manual intervention.</li>
+            <li><strong>Perfect ventilation:</strong> "Time to Hazard" uses a 0 ACH worst-case, assuming total ventilation failure. Steady-state calculations assume the stated ACH provides perfect sweeping of the room, which rarely happens due to "dead spots".</li>
+            <li><strong>Average vs local exposure:</strong> A room-average result may understate the risk at the source, floor level, ceiling level, in pits, service risers, ceiling voids, ducts, or adjacent connected spaces.</li>
+            <li><strong>Control hierarchy:</strong> Detection should support, not replace, elimination, substitution, segregation, and effective ventilation.</li>
+            <li><strong>Gas-specific judgement:</strong> Toxic and flammable gases must be assessed against the gas-specific WEL or LEL, with attention to acute local exposure near the source as well as the room average.</li>
+          </ul>
+        </div></div></div>`;
+
+        reportContent += `<div class='section'><h2>Gas Detection Guidance</h2>
+        <div style="font-size:14px; line-height:1.6; color:#333;">
+          <p style="margin-top:0;">If the recommendations above indicate that fixed gas detection is required, consider the following selection and placement criteria:</p>
+          
+          <div class="grid-container" style="margin-top:15px;">
+            <div class="grid-item">
+              <strong style="color:#002060; font-size:13px; margin-bottom:4px;">Detector Type</strong>
+              <ul style="margin-top:0; padding-left:20px; font-size:13px;">
+                <li><strong>Asphyxiants (N&#8322;, Ar, He):</strong> O&#8322; depletion sensors.</li>
+                <li><strong>CO&#8322;:</strong> Specific NDIR CO&#8322; sensors (O&#8322; sensors will not detect dangerous CO&#8322; levels in time).</li>
+                <li><strong>Flammables:</strong> Pellistor (catalytic bead) or Infrared sensors calibrated to the target gas.</li>
+                <li><strong>Toxics:</strong> Electrochemical sensors specific to the gas.</li>
+              </ul>
+            </div>
+            <div class="grid-item">
+              <strong style="color:#002060; font-size:13px; margin-bottom:4px;">Mounting Height</strong>
+              <ul style="margin-top:0; padding-left:20px; font-size:13px;">
+                <li><strong>Heavier than air (e.g. CO&#8322;, Ar, Propane):</strong> Mount low, approx. 300mm from the floor or in pits/trenches.</li>
+                <li><strong>Lighter than air (e.g. He, H&#8322;):</strong> Mount high, near the ceiling or exhaust extraction points.</li>
+                <li><strong>Similar to air (e.g. N&#8322;, CO, O&#8322;):</strong> Mount at typical breathing zone height (approx. 1.5m - 1.8m).</li>
+              </ul>
+            </div>
+          </div>
+          
+          <div style="background:#fff8e8; border-left:4px solid #e09020; padding:12px; font-size:13px; margin-top:12px;">
+            <p style="margin:0 0 8px 0;"><strong>Placement Considerations:</strong> Detectors should be placed between the potential leak source and the personnel exposure area. Avoid placing sensors directly in the path of fresh air supply vents or in "dead zones" where air doesn't circulate.</p>
+            <p style="margin:0;"><strong>Cryogen Labs:</strong> When monitoring for liquid nitrogen leaks from dewars, sensors must be placed carefully to balance safety against false alarms caused by normal venting. Because the cold gas is extremely dense when initially released, detectors are typically mounted at between <strong>30 cm and 1 m from the floor</strong> (though this depends on specific room assessment, taking into account activities and risk perception of users of the lab). The lower end of this range is likely to alarm early in the event of a leak, but has a higher chance for false alarms, whereas 1 m is likely to alarm before an asphyxiation hazard is present, but provides a lesser time to respond, make safe, and escape.<br> <strong>For LHe leaks,</strong> sensors are generally placed on/near the ceiling as it boils off extremely quickly and rises rapidly. Consider the ability for the gas to escape into ceiling voids where panels or porous materials are used.</p>
+          </div>
+        </div></div>`;
+
+        reportContent += `<div class='section'><h2>References</h2><ul>
+        <li><strong>EH40 WELs:</strong> <a href='https://www.hse.gov.uk/pubns/priced/eh40.pdf'>https://www.hse.gov.uk/pubns/priced/eh40.pdf</a></li>
+        <li><strong>Engineering Toolbox:</strong> <a href='https://www.engineeringtoolbox.com/'>https://www.engineeringtoolbox.com/</a></li>
+      </ul></div>`;
+
+        const html = `<!DOCTYPE html><html lang="en"><head><meta charset='UTF-8'><title>Gas Safety Report</title>
+        <style>
+          body{font-family:'Segoe UI',Arial,sans-serif;color:#333;background:#f4f4f4;margin:0;padding:40px;}
+          .header{background:#fff;padding:20px;border-radius:8px;margin-bottom:20px;border-bottom:4px solid #002060;}
+          h1{color:#002060;margin:0 0 4px;font-size:22px;}
+          .disclaimer{font-size:11px;color:#777;margin:0;line-height:1.4;}
+          .section{background:white;padding:20px;border-radius:8px;margin-bottom:15px;box-shadow:0 2px 4px rgba(0,0,0,0.05);}
+          h2{color:#0056b3;margin-top:0;font-size:17px;border-bottom:1px solid #eee;padding-bottom:8px;}
+          h3{color:#002060;font-size:15px;}
+          .grid-container{display:grid;grid-template-columns:repeat(2,1fr);gap:15px;}
+          .grid-item{font-size:14px;}
+          .grid-item strong{display:block;color:#555;font-size:12px;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:2px;}
+          .results-section{border:2px solid #002060;}
+          .result-value{font-size:17px;margin-bottom:15px;}
+          .recommendation-box{background:#f9f9f9;padding:15px;border-left:5px solid #ccc;font-size:14px;line-height:1.5;}
+          .formula-box{background:#f4f8ff;padding:14px;border-radius:6px;font-size:14px;}
+          .no-print{text-align:center;margin-top:30px;}
+          button{padding:12px 25px;background:#002060;color:white;border:none;border-radius:4px;cursor:pointer;font-size:15px;font-weight:bold;}
+          button:hover{background:#4cae4c;}
+          @media print{body{background:white;padding:0;}.section{box-shadow:none;border:1px solid #ddd;page-break-inside:avoid;}.no-print{display:none;}}
+        </style></head><body>
+        ${reportContent}
+        <div class="no-print"><button onclick="window.print()">&#128438; Print Report</button></div>
+        </body></html>`;
+
+        reportWindow.document.write(html);
+        reportWindow.document.close();
+      });
+
+      document.getElementById("explanationIcon").addEventListener('click', () => { explanationModal.style.display = 'block'; });
+      document.querySelector("#explanationModal .close").addEventListener('click', () => { explanationModal.style.display = 'none'; });
+
+      const leakRateModal = document.getElementById('leakRateModal');
+      document.getElementById("leakRateInfoBtn").addEventListener('click', (e) => { e.preventDefault(); leakRateModal.style.display = 'block'; });
+      document.getElementById("leakRateModalClose").addEventListener('click', () => { leakRateModal.style.display = 'none'; });
+      document.getElementById("advancedLeakBtn").addEventListener('click', (e) => {
+        e.preventDefault();
+        syncAdvancedLeakScenario();
+        advancedLeakModal.style.display = 'block';
+      });
+      document.getElementById("advancedLeakModalClose").addEventListener('click', () => { advancedLeakModal.style.display = 'none'; });
+      document.getElementById("advancedLeakType").addEventListener('change', syncAdvancedLeakScenario);
+
+      document.getElementById("btnCalculateLeakEstimate").addEventListener('click', () => {
+        resetAdvancedLeakOutput();
+        const scenario = document.getElementById('advancedLeakType').value;
+
+        if (scenario === 'gas-line') {
+          const postRegPressure = parseFloat(document.getElementById('advancedGasPressure').value);
+          const holeDiameter = parseFloat(document.getElementById('advancedGasDiameter').value);
+          const gasFactor = parseFloat(document.getElementById('advancedGasType').value);
+          const regulatorMaxValue = document.getElementById('advancedRegulatorMax').value.trim();
+          const regulatorMax = regulatorMaxValue === '' ? null : parseFloat(regulatorMaxValue);
+
+          if (isNaN(postRegPressure) || postRegPressure < 0 || isNaN(holeDiameter) || holeDiameter <= 0) {
+            advancedLeakError.innerHTML = "&#9888; Please enter valid values for Pressure (Post-Regulator) and Equivalent Hole Diameter.";
+            advancedLeakError.style.display = 'block'; return;
+          }
+          if (regulatorMaxValue !== '' && (isNaN(regulatorMax) || regulatorMax <= 0)) {
+            advancedLeakError.innerHTML = "&#9888; Please enter a valid positive value for Upstream Regulator Max Flow, or leave it blank.";
+            advancedLeakError.style.display = 'block'; return;
+          }
+
+          const absolutePressure = postRegPressure + 1;
+          const rawLeakRate = 0.4 * absolutePressure * Math.pow(holeDiameter, 2) * gasFactor;
+          const finalLeakRate = regulatorMax ? Math.min(rawLeakRate, regulatorMax) : rawLeakRate;
+          latestEstimatedLeakRate = finalLeakRate;
+
+          const warnings = [];
+          if (absolutePressure < 1.9) {
+            warnings.push("This pressure is below the usual choked-flow threshold for a leak to atmosphere. Treat this result with caution because the estimate may overstate the actual flow.");
+          }
+          warnings.push("Use only for post-regulator gas leaks to atmosphere at room temperature. Do not use for very low-pressure seepage, long narrow tubing, relief devices, cryogenic service, or design verification.");
+
+          advancedLeakResult.innerHTML = `
+            <p style="margin:0 0 10px 0;"><strong>Estimated Leak Rate:</strong> ${formatLeakRate(finalLeakRate)} m&#179;/hr</p>
+            <p style="margin:0 0 8px 0;">Based on <strong>Q = 0.4 &times; P<sub>abs</sub> &times; D<sup>2</sup> &times; F<sub>g</sub></strong>, where
+              P<sub>abs</sub> = ${absolutePressure.toFixed(2)} bar and D = ${holeDiameter.toFixed(2)} mm.</p>
+            <p style="margin:0 0 8px 0;">Entered pressure: <strong>${postRegPressure.toFixed(2)} bar post-regulator</strong>. The estimator converts this to absolute pressure internally.</p>
+            <p style="margin:0 0 8px 0;">Orifice-based estimate: <strong>${formatLeakRate(rawLeakRate)} m&#179;/hr</strong>${regulatorMax ? ` | Regulator max entered: <strong>${formatLeakRate(regulatorMax)} m&#179;/hr</strong>` : ''}</p>
+            ${regulatorMax ? `<p style="margin:0 0 8px 0;">Logic check applied: the value used for the Slow Leak calculation is <strong>${formatLeakRate(finalLeakRate)} m&#179;/hr</strong>.</p>` : ''}
+            <div class="estimator-note">This estimate is intended to support the existing Slow Leak calculation and follows the same screening-tool approach used elsewhere in the calculator.</div>
+            ${warnings.map(text => `<div class="estimator-warning">${text}</div>`).join('')}
+          `;
+        } else {
+          const ln2Pressure = parseFloat(document.getElementById('advancedLn2Pressure').value);
+          const holeDiameter = parseFloat(document.getElementById('advancedLn2Diameter').value);
+
+          if (isNaN(ln2Pressure) || ln2Pressure < 0 || isNaN(holeDiameter) || holeDiameter <= 0) {
+            advancedLeakError.innerHTML = "&#9888; Please enter valid values for Gauge Pressure and Equivalent Hole Diameter.";
+            advancedLeakError.style.display = 'block'; return;
+          }
+
+          const finalLeakRate = 19.3 * Math.pow(holeDiameter, 2) * Math.sqrt(ln2Pressure);
+          latestEstimatedLeakRate = finalLeakRate;
+
+          advancedLeakResult.innerHTML = `
+            <p style="margin:0 0 10px 0;"><strong>Estimated Leak Rate:</strong> ${formatLeakRate(finalLeakRate)} m&#179;/hr</p>
+            <p style="margin:0 0 8px 0;">Based on <strong>Q<sub>LN2,gas</sub> = 19.3 &times; D<sup>2</sup> &times; &radic;P<sub>gauge</sub></strong>, where
+              D = ${holeDiameter.toFixed(2)} mm and P<sub>gauge</sub> = ${ln2Pressure.toFixed(2)} bar.</p>
+            <p style="margin:0 0 8px 0;">This gives the equivalent <strong>nitrogen gas hazard</strong> in m&#179;/hr for <strong>Oxygen Deficiency Hazard (ODH)</strong> screening, not the liquid flow rate.</p>
+            <div class="estimator-note">Use only for liquid nitrogen line leaks where a rough gaseous release rate is needed for the Slow Leak calculation. Do not use for vessel rupture, pool formation, vent discharge, vacuum-jacket failure, or detailed cryogenic system design.</div>
+          `;
+        }
+
+        advancedLeakResult.style.display = 'block';
+        document.getElementById('btnUseLeakEstimate').style.display = 'inline-flex';
+      });
+
+      document.getElementById("btnUseLeakEstimate").addEventListener('click', () => {
+        if (!isFinite(latestEstimatedLeakRate) || latestEstimatedLeakRate <= 0) return;
+        leakRateInput.value = formatLeakRate(latestEstimatedLeakRate);
+        advancedLeakModal.style.display = 'none';
+      });
+
+      window.addEventListener('click', (event) => {
+        if (event.target === explanationModal) explanationModal.style.display = 'none';
+        if (event.target === leakRateModal) leakRateModal.style.display = 'none';
+        if (event.target === advancedLeakModal) advancedLeakModal.style.display = 'none';
+      });
+    });
+  </script>
+</body>
+
+</html>
