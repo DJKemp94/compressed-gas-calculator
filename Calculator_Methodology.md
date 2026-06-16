@@ -17,7 +17,7 @@ Before concentration can be determined, the total volume of gas (at standard atm
     *   *Theory:* Direct mass-to-volume conversion using the specific volume of the gas at standard conditions.
 *   **Cryogenic Gas Volume:**
     `Volume (m³) = (Liquid Volume (L) × Expansion Ratio) / 1000`
-    *   *Theory:* Utilizes standard liquid-to-gas expansion ratios (e.g., 1:694 for Liquid Nitrogen).
+    *   *Theory:* Utilizes standard liquid-to-gas expansion ratios (e.g., 1:694 for Liquid Nitrogen, 1:757 for Liquid Helium, 1:535 for Liquid Carbon Dioxide).
 
 ### 1.2 Room Concentration (Instantaneous Release)
 Models a catastrophic failure where the entire container contents are released immediately.
@@ -57,6 +57,15 @@ An optional helper is provided alongside the **Slow Leak** input to generate a r
     *   3. **Integration:** Converting liquid velocity ($v$) through an area ($A = \pi D^2/4$) into a hourly gas volume ($Q$) with $D$ in mm and $P$ in bar, and using a standard $C_d \approx 0.62$ for liquid orifices, yields: $Q \approx 3600 \times 0.62 \times (\frac{\pi (D/1000)^2}{4}) \times \sqrt{\frac{2 \times P \times 10^5}{808}} \times 694 \approx 19.3 \times D^2 \sqrt{P}$.
     *   *Inputs:* Gauge pressure in bar and equivalent hole diameter in mm.
     *   *Note:* This calculates the equivalent **gaseous nitrogen hazard** for ODH screening, not the liquid volume flow.
+
+*   **Liquid Carbon Dioxide Line:**
+    `Q_LCO2,gas (m³/hr) = 13.1 × D² × √P_gauge`
+    *   **Derivation:** Same approach as the Liquid Nitrogen Line, substituting liquid CO₂ parameters.
+    *   1. **Liquid Flow:** $v = C_d \sqrt{2 \Delta P / \rho_L}$ (where $\rho_L \approx 1032 kg/m^3$ for LCO₂ at typical storage conditions of ~20 bar, −20°C).
+    *   2. **Expansion:** CO₂ expands **535 times** by volume when transitioning from liquid to gas at standard conditions.
+    *   3. **Integration:** Combining as with LN₂: $Q \approx 3600 \times 0.62 \times (\frac{\pi (D/1000)^2}{4}) \times \sqrt{\frac{2 \times P \times 10^5}{1032}} \times 535 \approx 13.1 \times D^2 \sqrt{P}$.
+    *   *Inputs:* Gauge pressure in bar and equivalent hole diameter in mm.
+    *   *Note:* This formula assumes complete, instantaneous gasification and therefore **overestimates** the immediate release rate (conservative for screening). In practice, some LCO₂ may form dry ice snow that sublimates gradually. Cold CO₂ gas is dense and will pool at floor level - the room-average concentration from the Slow Leak calculation may underestimate local floor-level hazard.
 
 *   **Important Limitation:** These formulae are included only to support the calculator's existing screening approach. They must not be treated as design equations, and they are not suitable for relief devices, long narrow tubing, vessel rupture, pool formation, vacuum-jacket failure, measured leakage verification, or other detailed engineering calculations.
 
@@ -116,4 +125,4 @@ When defending this calculator, it is crucial to acknowledge its limitations. It
 *   **Impact:** The steady-state concentration calculation could underestimate the risk if the ventilation is ineffective in the specific area where the leak occurs.
 
 ### Conclusion for Defence
-The calculator is highly defensible **provided its scope is clearly defined**. It is a conservative, first-pass screening tool designed to trigger the implementation of further controls (like fixed detection or mechanical ventilation) by modelling idealised worst-case scenarios. It cannot—and does not attempt to—replace a competent person considering the specific physics, geometry, and ventilation dynamics of a laboratory space.
+The calculator is highly defensible **provided its scope is clearly defined**. It is a conservative, first-pass screening tool designed to trigger the implementation of further controls (like fixed detection or mechanical ventilation) by modelling idealised worst-case scenarios. It cannot-and does not attempt to-replace a competent person considering the specific physics, geometry, and ventilation dynamics of a laboratory space.

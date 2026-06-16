@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Gas/Cryogen Safety Calculator – University of Nottingham</title>
+  <title>Gas/Cryogen Safety Calculator - University of Nottingham</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@700;900&family=Source+Sans+3:wght@300;400;600;700&display=swap" rel="stylesheet">
   <style>
@@ -562,7 +562,7 @@
         </p>
         <h3 style="color:var(--uon-navy); font-size:1rem; margin-bottom:10px;">How to use:</h3>
         <ol style="font-size:0.9rem; line-height:1.75; padding-left:20px; margin-bottom:16px;">
-          <li>Enter the <strong>Area/Gas Details</strong> (building, room, gas name) &dash; these appear on the printed report.</li>
+          <li>Enter the <strong>Area/Gas Details</strong> (building, room, gas name) - these appear on the printed report.</li>
           <li>Select the <strong>calculation type</strong> that matches your situation, and then provide all requested details. </li>
           <li>Click <strong>Calculate</strong>, and this will populate the fields at the bottom of the form automatically.</li>
           <li>Move down to the bottom of the form, enter the <strong>Room Volume</strong>, select the <strong>Gas Hazard Type</strong>, and click <strong>Calculate Concentration</strong>.</li>
@@ -710,7 +710,7 @@
       <div class="card-header-icon" style="background:#dde8f8;">
         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--uon-mid)" stroke-width="2"><circle cx="12" cy="12" r="8"/><path d="M12 8v4l3 3"/></svg>
       </div>
-      <div><h2>Calculate Volume &dash; Compressed Gas</h2><p>From cylinder pressure and water capacity</p></div>
+      <div><h2>Calculate Volume - Compressed Gas</h2><p>From cylinder pressure and water capacity</p></div>
     </div>
     <div class="illus-strip">
       <svg width="130" height="52" viewBox="0 0 130 52" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
@@ -753,7 +753,7 @@
       <div class="card-header-icon" style="background:#d8f0e0;">
         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--uon-green)" stroke-width="2"><path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"/></svg>
       </div>
-      <div><h2>Calculate Volume &dash; Liquefied Gas</h2><p>From weight and specific volume</p></div>
+      <div><h2>Calculate Volume - Liquefied Gas</h2><p>From weight and specific volume</p></div>
     </div>
     <div class="illus-strip">
       <svg width="110" height="52" viewBox="0 0 110 52" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
@@ -794,7 +794,7 @@
       <div class="card-header-icon" style="background:#e8f0f8;">
         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#5b7eb5" stroke-width="2" stroke-linecap="round"><path d="M12 2v20M2 12h20M4.93 4.93l14.14 14.14M19.07 4.93L4.93 19.07"/></svg>
       </div>
-      <div><h2>Calculate Volume &dash; Cryogenic Vessel</h2><p>Liquid nitrogen or liquid helium</p></div>
+      <div><h2>Calculate Volume - Cryogenic Vessel</h2><p>Liquid nitrogen or liquid helium</p></div>
     </div>
     <div class="illus-strip">
       <svg width="120" height="52" viewBox="0 0 120 52" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
@@ -815,7 +815,7 @@
         <path d="M90 30 Q85 20 95 20 Q100 10 110 20 Q120 20 115 30 Q120 40 110 40 Q100 45 95 35 Q85 35 90 30" fill="#fff" stroke="#5b7eb5" stroke-width="1.5" stroke-dasharray="2 2"/>
         <text x="102" y="32" font-size="6" fill="#5b7eb5" text-anchor="middle">GAS</text>
       </svg>
-      <div class="illus-strip-text">Cryogenic liquids expand dramatically when released &dash; LN&#8322; by <strong>~694&times;</strong> and LHe by <strong>~757&times;</strong> (at room temperature + atmospheric pressure).<br> Enter the <strong>liquid volume</strong> and select the liquid type to calculate the resulting gas volume.</div>
+      <div class="illus-strip-text">Cryogenic liquids expand dramatically when released - LN&#8322; by <strong>~694&times;</strong> and LHe by <strong>~757&times;</strong> (at room temperature + atmospheric pressure).<br> Enter the <strong>liquid volume</strong> and select the liquid type to calculate the resulting gas volume.</div>
     </div>
     <div class="card-body">
       <div class="input-row">
@@ -1200,7 +1200,7 @@ if (gasTypeVal === "carbon-dioxide") {
   }
 
 } else if (gasTypeVal === "flammable") {
-  // Behaviour varies greatly by gas — some rise (H₂), some sink (propane), some mix.
+  // Behaviour varies greatly by gas - some rise (H₂), some sink (propane), some mix.
   message =
     "Please compare this to the <a href='https://www.engineeringtoolbox.com/explosive-concentration-limits-d_423.html'>LEL for your gas</a> to confirm whether detection is required.<br>" +
     "Detection is required if the calculated percentage exceeds 25% of the LEL.<br><br>" +
@@ -1209,7 +1209,7 @@ if (gasTypeVal === "carbon-dioxide") {
   messageColor = "orange";
 
 } else if (gasTypeVal === "toxic") {
-  // Toxic gases vary widely – emphasis on exposure pathways and ventilation.
+  // Toxic gases vary widely - emphasis on exposure pathways and ventilation.
   message =
     "Please compare this to the <a href='https://www.hse.gov.uk/pubns/priced/eh40.pdf'>WEL for your gas</a> (EH40). Detection is needed if the calculated value exceeds the WEL.<br><br>" +
     "Common WELs: Ammonia 25 ppm, Carbon Monoxide 30 ppm, Hydrogen Sulphide 5 ppm.<br><br>" +

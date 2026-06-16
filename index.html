@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Gas/Cryogen Safety Calculator – University of Nottingham</title>
+  <title>Gas/Cryogen Safety Calculator - University of Nottingham</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link
     href="https://fonts.googleapis.com/css2?family=Merriweather:wght@700;900&family=Source+Sans+3:wght@300;400;600;700&display=swap"
@@ -623,6 +623,17 @@
       cursor: pointer;
     }
 
+    .checkbox-label-with-info {
+      display: flex;
+      align-items: flex-start;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+
+    .checkbox-label-with-info label {
+      flex: 1 1 240px;
+    }
+
     /* BUTTONS */
     .btn {
       display: inline-flex;
@@ -950,6 +961,14 @@
       transform: scale(1.15);
     }
 
+    .info-btn.info-btn-inline {
+      margin-left: 0;
+      width: 18px;
+      height: 18px;
+      font-size: 11px;
+      flex: 0 0 auto;
+    }
+
     .close {
       color: rgba(255, 255, 255, 0.7);
       font-size: 24px;
@@ -1106,7 +1125,7 @@
         </div>
         <h1>Gas/Cryogen Safety Calculator<span id="explanationIcon" title="What does this calculator do?">&#9432;</span>
         </h1>
-        <p>Estimate gas concentrations from cylinder releases, cryogenic spills, or slow leaks &dash; including
+        <p>Estimate gas concentrations from cylinder releases, cryogenic spills, or slow leaks - including
           proximity risk
           and worst-case time-to-hazard analysis. For informational use only.</p>
       </div>
@@ -1143,13 +1162,13 @@
           <li><strong>Liquefied Gas:</strong> Calculates the gas volume from the weight of the contents and the specific
             volume, then determines the concentration.</li>
           <li><strong>Cryogenic Vessel:</strong> Calculates gas volume from the liquid volume using expansion ratios for
-            Liquid Nitrogen or Liquid Helium.</li>
+            Liquid Nitrogen, Liquid Helium, or Liquid Carbon Dioxide.</li>
           <li><strong>Dry Ice (CO&#8322;):</strong> Calculates CO&#8322; gas volume from a provided dry ice mass.</li>
           <li><strong>Slow Leak:</strong> Estimates the steady-state concentration from a continuous gas leak in a
             ventilated room, alongside a <strong>Time to Hazard</strong> calculation that shows how long it would take
             for conditions to become dangerous if ventilation fails.</li>
         </ul>
-        <p>For every calculation, the calculator also provides a <strong>Personal Bubble Assessment</strong> &dash; a
+        <p>For every calculation, the calculator also provides a <strong>Personal Bubble Assessment</strong> - a
           secondary result modelling a fixed 2&times;2&times;3 m zone around the leak source. This estimates the
           concentration a person would experience if standing directly at the release point.</p>
         <p
@@ -1185,12 +1204,19 @@
           <select id="advancedLeakType">
             <option value="gas-line">Gas Line (Post-Regulator)</option>
             <option value="ln2-line">Liquid Nitrogen Line</option>
+            <option value="lco2-line">Liquid Carbon Dioxide Line</option>
           </select>
         </div>
         <div class="estimator-help" style="margin-top:0; margin-bottom:14px;"><strong>Which calculation should I use?</strong>
           Use <strong>Gas Line (Post-Regulator)</strong> when the line contains gas, for example nitrogen that has already
-          been vaporised and pressure-reduced. Use <strong>Liquid Nitrogen Line</strong> only when the line is carrying
-          <strong>liquid nitrogen</strong> before it flashes to gas at the leak point.</div>
+          been vaporised and pressure-reduced. Use <strong>Liquid Nitrogen Line</strong> or <strong>Liquid Carbon Dioxide Line</strong> only when the line is carrying
+          <strong>liquid nitrogen</strong> or <strong>liquid carbon dioxide</strong> before it flashes to gas at the leak point.</div>
+        <div class="estimator-help" style="margin-top:0; margin-bottom:14px;"><strong>What is Equivalent Hole Diameter?</strong>
+          This is the diameter of a single sharp-edged circular orifice that would produce the same flow as the actual leak
+          opening. For a small torn hose or a failed fitting, estimate the size of the opening. For a pinhole in tubing,
+          use the visible hole diameter. When the actual opening is irregular, cracks, or corrosion pits, choose a
+          representative round-hole size that you judge would pass a similar flow. The equivalent hole diameter is always
+          used as a conservative screening estimate; it is not a measured or calibrated value.</div>
 
         <div id="advancedGasInputs" class="estimator-panel">
           <h4>Gas Line (Post-Regulator)</h4>
@@ -1253,11 +1279,37 @@
             downstream of a vaporiser and functioning as a gas line, use the <strong>Gas Line (Post-Regulator)</strong>
             calculation instead.</div>
           <p class="estimator-note" style="margin-bottom:0;">Use only for liquid nitrogen line leaks where you need a
-            rough gaseous release rate for <strong>Oxygen Deficiency Hazard (ODH)</strong> screening. The result is the equivalent nitrogen gas hazard in
+            rough gaseous release rate for <strong>Oxygen Deficiency Hazard</strong> screening. The result is the equivalent nitrogen gas hazard in
             m&sup3;/hr, not the liquid flow rate.</p>
           <p class="estimator-note" style="margin-bottom:0;">Do not use this calculation for gaseous nitrogen supplied by
             cylinder manifolds, on-site gas generators, or vaporised bulk systems where the relevant leak is already on
             the gas side.</p>
+        </div>
+
+        <div id="advancedLco2Inputs" class="estimator-panel" style="display:none;">
+          <h4>Liquid Carbon Dioxide Line</h4>
+          <div class="estimator-grid">
+            <div class="input-group" style="margin-bottom:0;">
+              <label for="advancedLco2Pressure">Gauge Pressure (bar)</label>
+              <input type="number" id="advancedLco2Pressure" min="0" step="0.1" placeholder="e.g. 20">
+            </div>
+            <div class="input-group" style="margin-bottom:0;">
+              <label for="advancedLco2Diameter">Equivalent Hole Diameter (mm)</label>
+              <input type="number" id="advancedLco2Diameter" min="0" step="0.01" placeholder="e.g. 0.5">
+            </div>
+          </div>
+          <div class="estimator-help"><strong>When should this be used?</strong> Use this only where the pipework is
+            carrying <strong>liquid carbon dioxide</strong>. If CO&#8322; is supplied as a gas, use the <strong>Gas Line (Post-Regulator)</strong>
+            calculation instead.</div>
+          <p class="estimator-note" style="margin-bottom:0;">Use only for liquid CO&#8322; line leaks where you need a
+            rough gaseous release rate for <strong>CO&#8322; enrichment hazard</strong> screening. The result is the equivalent CO&#8322; gas hazard in
+            m&sup3;/hr, not the liquid flow rate.</p>
+          <p class="estimator-warning" style="margin-bottom:0;"><strong>Important notes on LCO&#8322; leaks:</strong>
+            When liquid CO&#8322; depressurises to atmosphere, a portion may form dry ice snow that sublimates gradually.
+            This formula assumes complete, instantaneous gasification and therefore <strong>overestimates</strong> the
+            immediate gas release rate - conservative for worst-case screening. Additionally, cold CO&#8322; gas is
+            significantly denser than air and will pool at low level; the room-average concentration from the Slow Leak
+            calculation may underestimate floor-level hazard.</p>
         </div>
 
         <div id="advancedLeakError" class="error-msg" style="margin-top:0;"></div>
@@ -1274,6 +1326,25 @@
   </div>
 
   <main class="container">
+
+    <div class="card" style="border:1px solid #f0c0c0; border-left:5px solid #b00; background:#fff5f5;">
+      <div class="card-body" style="padding:14px 18px;">
+        <p style="color:#8b1a1a; font-size:0.92rem; line-height:1.55; margin:0 0 8px 0;">
+          &#9888; <strong>Important:</strong> This calculator provides estimates for informational purposes only. It must
+          not be used on its own to make emergency occupancy, re-entry, rescue, evacuation, or detector-placement
+          decisions. Assessing exposure to gas is a highly complex field - real-world conditions including gas
+          stratification, turbulent mixing, room geometry, temperature, and ventilation dynamics can differ significantly
+          from the idealised models used here.
+        </p>
+        <p style="color:#8b1a1a; font-size:0.92rem; line-height:1.55; margin:0;">
+          Make sure you understand the process, gas source, quantities, operating conditions, and credible failure
+          scenarios being assessed. Entering numbers into the calculator does not confirm the activity is safe if
+          important release routes or hazards have not been considered. This tool supports, but does not replace, a
+          suitable risk assessment. If you are unsure, speak to your local gas and cryogenic coordinator, competent
+          person, or Health and Safety team before relying on the result.
+        </p>
+      </div>
+    </div>
 
     <div class="card">
       <div class="card-body"
@@ -1293,20 +1364,9 @@
       </div>
       <div class="instructions-panel" id="detailedInstructions">
         <div class="card-body" style="padding-top:0; border-top:1px solid var(--uon-fog);">
-          <p
-            style="color:#b00; font-size:0.88rem; padding:10px 14px; background:#fff5f5; border-radius:8px; border:1px solid #f0c0c0; margin-bottom:14px;">
-            &#9888; <strong>Important:</strong> This calculator provides estimates for <strong>informational purposes
-              only</strong>. It must not be used on its own to make emergency occupancy, re-entry, rescue, evacuation,
-            or detector-placement decisions. Assessing exposure to gas is a highly complex field &dash; real-world conditions including
-            gas stratification, turbulent mixing, room geometry, temperature, and ventilation dynamics can differ
-            significantly from the idealised models used here. This tool must not be used as a replacement for a full
-            risk assessment. If there is any doubt about the risk to people, <strong>specialist advice must always be
-              sought</strong> from a competent person, or your institution's health and safety
-            department.
-          </p>
           <h3 style="color:var(--uon-navy); font-size:1rem; margin-bottom:10px;">How to use:</h3>
           <ol style="font-size:0.9rem; line-height:1.75; padding-left:20px; margin-bottom:16px;">
-            <li>Enter the <strong>Area/Gas Details</strong> (building, room, gas name) &dash; these appear on the
+            <li>Enter the <strong>Area/Gas Details</strong> (building, room, gas name) - these appear on the
               printed report.</li>
             <li>Select the <strong>calculation type</strong> that matches your situation, and then provide all requested
               details. </li>
@@ -1320,7 +1380,7 @@
                 Assessment</strong> (which models the concentration within a 2&times;2&times;3 m zone around the leak
               source).</li>
             <li>For <strong>Slow Leak</strong> calculations, also review the <strong>Worst-Case Time to Hazard</strong>
-              &dash; this shows how quickly conditions could become dangerous if ventilation fails.</li>
+              - this shows how quickly conditions could become dangerous if ventilation fails.</li>
             <li>Click <strong>Generate Report</strong> for a print-friendly summary including all results and
               recommendations.</li>
           </ol>
@@ -1340,7 +1400,7 @@
             </tr>
             <tr>
               <td>Cryogenic Vessel</td>
-              <td>Liquid volume (Litres), gas type (LN&#8322; or LHe)</td>
+              <td>Liquid volume (Litres), gas type (LN&#8322;, LHe, or LCO&#8322;)</td>
             </tr>
             <tr>
               <td>Dry Ice (CO&#8322;)</td>
@@ -1591,7 +1651,7 @@
           </svg>
         </div>
         <div>
-          <h2>Calculate Volume &dash; Compressed Gas</h2>
+          <h2>Calculate Volume - Compressed Gas</h2>
           <p>From cylinder pressure and water capacity</p>
         </div>
       </div>
@@ -1794,7 +1854,7 @@
           </svg>
         </div>
         <div>
-          <h2>Calculate Volume &dash; Liquefied Gas</h2>
+          <h2>Calculate Volume - Liquefied Gas</h2>
           <p>From weight and specific volume</p>
         </div>
       </div>
@@ -1934,8 +1994,8 @@
           </svg>
         </div>
         <div>
-          <h2>Calculate Volume &dash; Cryogenic Vessel</h2>
-          <p>Liquid nitrogen or liquid helium</p>
+          <h2>Calculate Volume - Cryogenic Vessel</h2>
+          <p>Liquid nitrogen, liquid helium, or liquid carbon dioxide</p>
         </div>
       </div>
       <div class="card-split">
@@ -1947,6 +2007,7 @@
                 <select id="cryoType">
                   <option value="LN2">Liquid Nitrogen (LN&#8322;)</option>
                   <option value="LHe">Liquid Helium (LHe)</option>
+                  <option value="LCO2">Liquid Carbon Dioxide (LCO&#8322;)</option>
                 </select>
               </div>
               <div><label for="liquidVolume">Liquid Volume (Litres)</label><input type="number" id="liquidVolume"
@@ -2207,8 +2268,9 @@
             <circle class="frost f4" cx="260" cy="390" r="3.5" />
             <circle class="frost f5" cx="80" cy="420" r="2" />
           </svg>
-          <div class="illus-strip-text">Cryogenic liquids expand dramatically when released &dash; LN&#8322; by
-            <strong>~694&times;</strong> and LHe by <strong>~757&times;</strong> (at room temperature + atmospheric
+          <div class="illus-strip-text">Cryogenic liquids expand dramatically when released - LN&#8322; by
+            <strong>~694&times;</strong>, LHe by <strong>~757&times;</strong>, and LCO&#8322; by
+            <strong>~535&times;</strong> (at room temperature + atmospheric
             pressure).<br> Enter the <strong>liquid volume</strong> and select the liquid type to calculate the
             resulting
             gas volume.
@@ -2226,7 +2288,7 @@
           </svg>
         </div>
         <div>
-          <h2>Calculate Volume &dash; Dry Ice</h2>
+          <h2>Calculate Volume - Dry Ice</h2>
           <p>From solid CO&#8322; mass</p>
         </div>
       </div>
@@ -2299,6 +2361,25 @@
                   <input type="checkbox" id="volumeCheckbox">
                   <label for="volumeCheckbox">Apply 40% reduction for conservative estimate (if free air volume
                     unknown)</label>
+                </div>
+                <div class="checkbox-row" style="margin-top:8px;" id="denseGasCheckboxRow">
+                  <input type="checkbox" id="denseGasCheckbox">
+                  <div class="checkbox-label-with-info">
+                    <label for="denseGasCheckbox">Dense Gas Check</label>
+                    <button type="button" id="denseGasInfoBtn" class="info-btn info-btn-inline" aria-expanded="false" aria-controls="denseGasInfoPanel" title="When should I use this?">i</button>
+                  </div>
+                </div>
+                <div id="denseGasInfoPanel" class="estimator-help" style="display:none; margin-top:8px;">
+                  <p style="margin:0 0 8px 0;"><strong>When should I leave this unticked?</strong><br>Leave this unticked when the gas is expected to mix normally through the room, or when it is lighter than air. This usually applies to gases such as nitrogen, helium, hydrogen, methane, carbon monoxide, and well-ventilated rooms with good air movement.</p>
+                  <p style="margin:0 0 8px 0;"><strong>When should I tick this?</strong><br>Tick this when the gas could collect low down before it fully mixes with the room air. This is more likely for heavier gases such as CO&#8322;, argon, propane/LPG, sulphur dioxide, SF&#8326;, dry ice, liquid CO&#8322;, cold gas releases, basements, pits, trenches, still rooms, or rooms with poor low-level ventilation.</p>
+                  <p style="margin:0;"><strong>How should I read the two results?</strong><br>Use the lower 1.7 m case as a general lower-zone check. Use the lower mixing height case when the gas is very heavy, cold, or there are low-level spaces where gas could collect. These are not height-by-height readings; they are alternative mixing assumptions.</p>
+                </div>
+                <div id="ceilingHeightRow" style="display:none; margin-top:10px;">
+                  <label for="ceilingHeight">Ceiling Height (m)</label>
+                  <input type="number" id="ceilingHeight" placeholder="e.g. 2.4" min="1.71" step="0.1" style="max-width:200px;">
+                  <label for="lowLevelLayerHeight" style="margin-top:10px;">Lower mixing height (m)</label>
+                  <input type="number" id="lowLevelLayerHeight" placeholder="1.0" min="0.1" step="0.1" style="max-width:200px;">
+                  <div style="font-size:0.78rem; color:#888; margin-top:3px;">Optional. Defaults to 1.0 m. This value estimates the concentration if the gas were mixed only within the room volume below the height entered. It does not predict the real height of a gas layer. Use a lower value where gas may collect close to the floor, such as in pits, trenches, floor-level work, dry ice, liquid CO&#8322;, or very cold/heavy gas releases.</div>
                 </div>
               </div>
             </div>
@@ -2865,8 +2946,43 @@
         const scenario = document.getElementById('advancedLeakType').value;
         document.getElementById('advancedGasInputs').style.display = scenario === 'gas-line' ? 'block' : 'none';
         document.getElementById('advancedLn2Inputs').style.display = scenario === 'ln2-line' ? 'block' : 'none';
+        document.getElementById('advancedLco2Inputs').style.display = scenario === 'lco2-line' ? 'block' : 'none';
         resetAdvancedLeakOutput();
       };
+
+      const hasCalculatedRoomResult = () => {
+        return getComputedStyle(result2).display !== 'none' &&
+          result2.querySelector('.result-box-inner strong') !== null;
+      };
+
+      // Dense Gas Calculation toggle
+      document.getElementById('denseGasCheckbox').addEventListener('change', () => {
+        const checked = document.getElementById('denseGasCheckbox').checked;
+        document.getElementById('ceilingHeightRow').style.display = checked ? 'block' : 'none';
+        // Auto-recalculate if a result is already displayed
+        if (hasCalculatedRoomResult()) {
+          document.getElementById('btnCalculate2').click();
+        }
+      });
+
+      document.getElementById('denseGasInfoBtn').addEventListener('click', () => {
+        const panel = document.getElementById('denseGasInfoPanel');
+        const isOpen = getComputedStyle(panel).display !== 'none';
+        panel.style.display = isOpen ? 'none' : 'block';
+        document.getElementById('denseGasInfoBtn').setAttribute('aria-expanded', String(!isOpen));
+      });
+
+      const recalculateDenseGasIfReady = () => {
+        if (document.getElementById('denseGasCheckbox').checked &&
+            hasCalculatedRoomResult()) {
+          document.getElementById('btnCalculate2').click();
+        }
+      };
+
+      ['change', 'input'].forEach(eventName => {
+        document.getElementById('ceilingHeight').addEventListener(eventName, recalculateDenseGasIfReady);
+        document.getElementById('lowLevelLayerHeight').addEventListener(eventName, recalculateDenseGasIfReady);
+      });
 
       // Radio card selection styling
       document.querySelectorAll('.radio-card input[type="radio"]').forEach(radio => {
@@ -2913,6 +3029,12 @@
           el.innerHTML = '<div class="result-box-inner"></div>';
           el.style.display = 'none';
         });
+        document.getElementById('denseGasCheckbox').checked = false;
+        document.getElementById('denseGasInfoPanel').style.display = 'none';
+        document.getElementById('denseGasInfoBtn').setAttribute('aria-expanded', 'false');
+        document.getElementById('ceilingHeightRow').style.display = 'none';
+        document.getElementById('ceilingHeight').value = '';
+        document.getElementById('lowLevelLayerHeight').value = '';
         resultBubble.style.display = 'none';
         resetUI();
         document.getElementById('calculation3').style.display = 'none';
@@ -3024,14 +3146,21 @@
         calcBFError.style.display = 'none';
         let expansionRatio = 694;
         if (cryoType === 'LHe') expansionRatio = 757;
+        if (cryoType === 'LCO2') expansionRatio = 535;
         const gasVol = (liquidVol * expansionRatio) / 1000;
         resultCryo.innerHTML = `<div class="result-box-inner">Volume of gas generated = <strong>${gasVol.toFixed(3)} m&#179;</strong></div>`;
         resultCryo.style.display = 'block';
         volumeGasInput.value = gasVol.toFixed(5);
         volumeGasInput.disabled = true;
         const gasSelect = document.getElementById('gasType');
-        for (let i = 0; i < gasSelect.options.length; i++) {
-          if (gasSelect.options[i].value === 'asphyxiant') gasSelect.selectedIndex = i;
+        if (cryoType === 'LCO2') {
+          for (let i = 0; i < gasSelect.options.length; i++) {
+            if (gasSelect.options[i].value === 'carbon-dioxide') gasSelect.selectedIndex = i;
+          }
+        } else {
+          for (let i = 0; i < gasSelect.options.length; i++) {
+            if (gasSelect.options[i].value === 'asphyxiant') gasSelect.selectedIndex = i;
+          }
         }
         calculatedValues = { ...calculatedValues, liquidVol, cryoType, expansionRatio, gasVol };
         document.getElementById('step-indicator-3').classList.add('active');
@@ -3132,6 +3261,147 @@
           concDisplay = `Gas concentration in room: <strong>${concgas}%</strong>`;
         }
 
+        // ── Dense Gas Breathing Zone Calculation ──
+        let denseGasHtml = '';
+        delete calculatedValues.denseGasHtml;
+        delete calculatedValues.denseConc;
+        delete calculatedValues.breathingZoneVolume;
+        delete calculatedValues.denseVolumeFactor;
+        delete calculatedValues.lowLevelConc;
+        delete calculatedValues.lowLevelLayerHeight;
+        delete calculatedValues.lowLevelLayerVolume;
+        delete calculatedValues.lowLevelVolumeFactor;
+        const denseGasChecked = document.getElementById('denseGasCheckbox').checked;
+        if (denseGasChecked) {
+          const ceilingHeight = parseFloat(document.getElementById('ceilingHeight').value);
+          if (isNaN(ceilingHeight) || ceilingHeight <= 1.70) {
+           calc3Error.innerHTML = "&#9888; Ceiling height must be greater than the breathing height (1.70 m) for stratification to occur. With ceiling &le; 1.70 m, the entire room is the breathing zone - there is no dense-gas pooling effect. Try a height above 1.7 m (e.g. 2.4 m for a typical room), or uncheck Dense Gas Calculation.";
+            calc3Error.style.display = 'block'; return;
+          }
+          const lowLevelInput = parseFloat(document.getElementById('lowLevelLayerHeight').value);
+          const lowLevelLayerHeight = isNaN(lowLevelInput) ? 1.0 : lowLevelInput;
+          if (lowLevelLayerHeight <= 0 || lowLevelLayerHeight >= ceilingHeight) {
+            calc3Error.innerHTML = "&#9888; Lower mixing height must be greater than 0 m and lower than the ceiling height. Leave it blank to use the default 1.0 m lower mixing height.";
+            calc3Error.style.display = 'block'; return;
+          }
+          const breathingHeight = 1.70;
+          const floorArea = roomvolume / ceilingHeight;
+          const breathingZoneVolume = Math.min(floorArea * breathingHeight, roomvolume);
+          const lowLevelLayerVolume = Math.min(floorArea * lowLevelLayerHeight, roomvolume);
+          const denseVolumeFactor = roomvolume / breathingZoneVolume;
+          const lowLevelVolumeFactor = roomvolume / lowLevelLayerVolume;
+
+          const calculateZoneConcentration = (zoneVolume) => {
+            if (isSlowLeak) {
+              const denseQ = zoneVolume * ach;
+              const rawDenseConc = (leakRate / denseQ) * 100;
+              if (gasTypeVal === 'oxygen') {
+                return 20.9 + ((rawDenseConc / 100) * 79.1);
+              } else if (gasTypeVal === 'asphyxiant') {
+                return 20.9 * (1 - (leakRate / denseQ));
+              } else if (gasTypeVal === 'toxic') {
+                return (leakRate / zoneVolume) * (1 / ach) * 1000000;
+              } else {
+                return rawDenseConc;
+              }
+            }
+
+            if (gasTypeVal === 'oxygen') {
+              const displacegas = 0.21 * volgas;
+              return (((zoneVolume * 0.21) + volgas - displacegas) / zoneVolume) * 100;
+            } else if (gasTypeVal === 'asphyxiant') {
+              const cappedVolgas = Math.min(volgas, zoneVolume);
+              return ((zoneVolume - cappedVolgas) * 0.2095 / zoneVolume) * 100;
+            } else if (gasTypeVal === 'toxic') {
+              return (volgas / zoneVolume) * 1000000;
+            } else {
+              return (volgas / zoneVolume) * 100;
+            }
+          };
+
+          const normaliseZoneConcentration = (value) => {
+            let normalised = Math.round(value * 100) / 100;
+            if (normalised < 0) normalised = 0;
+            if (gasTypeVal === 'oxygen') {
+              if (normalised > 100) normalised = 100;
+            } else if (gasTypeVal === 'asphyxiant') {
+              if (normalised > 20.95) normalised = 20.95;
+            } else if (gasTypeVal !== 'toxic' && normalised > 100) {
+              normalised = 100;
+            }
+            return normalised;
+          };
+
+          const formatZoneValue = (value) => {
+            if (gasTypeVal === 'oxygen' || gasTypeVal === 'asphyxiant') {
+              return `O&#8322;: ${value.toFixed(2)}%`;
+            }
+            if (gasTypeVal === 'toxic') {
+              return `${value} ppm`;
+            }
+            return `${value}%`;
+          };
+
+          const zoneRiskStyle = (value) => {
+            let color = 'green';
+            if (gasTypeVal === 'oxygen') {
+              color = value > 23.5 ? 'red' : 'green';
+            } else if (gasTypeVal === 'asphyxiant') {
+              color = value < 18 ? 'red' : value <= 19.5 ? 'orange' : 'green';
+            } else if (gasTypeVal === 'carbon-dioxide') {
+              color = value > 0.5 ? 'red' : 'green';
+            } else if (gasTypeVal === 'flammable') {
+              color = value > 1 ? 'red' : 'orange';
+            } else if (gasTypeVal === 'toxic') {
+              color = 'orange';
+            }
+
+            if (color === 'red') return { bg: '#fff0f0', border: '#e05050', value: '#9b1c1c' };
+            if (color === 'orange') return { bg: '#fff8e8', border: '#e09020', value: '#7a5000' };
+            return { bg: '#f0fbf0', border: '#4cae4c', value: '#176c2f' };
+          };
+
+          const zoneCardHtml = (title, value, note) => {
+            const style = zoneRiskStyle(value);
+            return `<div style="padding:12px 14px; background:${style.bg}; border-left:4px solid ${style.border}; border-radius:6px;">
+              <div style="font-size:0.76rem; font-weight:700; text-transform:uppercase; letter-spacing:0.04em; color:#805000; margin-bottom:6px;">${title}</div>
+              <div style="font-size:0.78rem; color:#666;">Concentration estimate</div>
+              <div style="font-size:1.18rem; font-weight:700; color:${style.value}; margin-top:1px;">${formatZoneValue(value)}</div>
+              <div style="font-size:0.78rem; color:#666; margin-top:6px;">${note}</div>
+            </div>`;
+          };
+
+          const denseConc = normaliseZoneConcentration(calculateZoneConcentration(breathingZoneVolume));
+          const lowLevelConc = normaliseZoneConcentration(calculateZoneConcentration(lowLevelLayerVolume));
+          const denseConcDisplay = zoneCardHtml(
+            'Lower 1.70 m mixing case',
+            denseConc,
+            'Useful comparison for slightly denser gases or releases expected to settle below full-room height.'
+          );
+          const lowLevelConcDisplay = zoneCardHtml(
+            'Lower mixing height case',
+            lowLevelConc,
+            `Lower mixing height: ${lowLevelLayerHeight.toFixed(2)} m. Useful as a more severe check for moderately heavier, very dense, or cold releases.`
+          );
+          const slowLeakVentNote = isSlowLeak
+            ? `<div style="font-size:0.82rem; color:#7a5000; margin-top:6px;">Ventilation note: this still uses the room ACH. If supply/extract points do not mix or remove the low-level layer effectively, the real local concentration may be higher.</div>`
+            : '';
+
+          denseGasHtml = `<div style="margin-top:10px; padding:10px 14px; background:#fef9e7; border-left:4px solid #e09020; border-radius:4px; font-size:0.92rem; line-height:1.6;">
+            <div style="font-weight:600; color:#805000; margin-bottom:4px;">&#x26A0;&#xFE0F; Dense Gas Check</div>
+            <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(220px, 1fr)); gap:10px; margin-top:8px;">${denseConcDisplay}${lowLevelConcDisplay}</div>
+            ${slowLeakVentNote}
+          </div>`;
+          calculatedValues.denseGasHtml = denseGasHtml;
+          calculatedValues.denseConc = denseConc;
+          calculatedValues.breathingZoneVolume = breathingZoneVolume;
+          calculatedValues.denseVolumeFactor = denseVolumeFactor;
+          calculatedValues.lowLevelConc = lowLevelConc;
+          calculatedValues.lowLevelLayerHeight = lowLevelLayerHeight;
+          calculatedValues.lowLevelLayerVolume = lowLevelLayerVolume;
+          calculatedValues.lowLevelVolumeFactor = lowLevelVolumeFactor;
+        }
+
         if (gasTypeVal === "carbon-dioxide") {
           // CO₂ is heavier than air and accumulates in low areas.
           if (concgas > 0.5) {
@@ -3166,7 +3436,7 @@
           }
 
         } else if (gasTypeVal === "flammable") {
-          // Behaviour varies greatly by gas — some rise (H₂), some sink (propane), some mix.
+          // Behaviour varies greatly by gas - some rise (H₂), some sink (propane), some mix.
           message =
             "Please compare this to the <a href='https://www.engineeringtoolbox.com/explosive-concentration-limits-d_423.html'>LEL for your gas</a> to confirm whether detection is required.<br>" +
             "Detection is required if the calculated percentage exceeds 25% of the LEL.<br><br>" +
@@ -3175,7 +3445,7 @@
           messageColor = "orange";
 
         } else if (gasTypeVal === "toxic") {
-          // Toxic gases vary widely – emphasis on exposure pathways and ventilation.
+          // Toxic gases vary widely - emphasis on exposure pathways and ventilation.
           message =
             "Please compare this to the <a href='https://www.hse.gov.uk/pubns/priced/eh40.pdf'>WEL for your gas</a> (EH40). Detection is needed if the calculated value exceeds the WEL.<br><br>" +
             "Common WELs: Ammonia 25 ppm, Carbon Monoxide 20 ppm, Hydrogen Sulphide 5 ppm.<br><br>" +
@@ -3237,9 +3507,14 @@
           <strong>Screening note:</strong> This is a screening estimate to support risk assessment. Average room concentration may not reflect the most severe local exposure near the source, in low/high level spaces, or in poorly ventilated connected voids. Where significant risk remains, prioritise elimination, substitution, segregation, and ventilation before relying on detection.
         </div>`;
 
+        const primaryConcHtml = denseGasChecked
+          ? `<div style="margin-bottom:${message ? '10px' : '0'};">Room-average basis for detection recommendation: ${concDisplay}</div>`
+          : `<div style="margin-bottom:${message ? '10px' : '0'};">${concDisplay}</div>`;
+
         result2.innerHTML = `<div class="result-box-inner" style="background:${bgColour}; border-left-color:${borderColour};">
-        <div style="margin-bottom:${message ? '10px' : '0'};">${concDisplay}</div>
+        ${primaryConcHtml}
         ${message ? `<div style="color:${messageColor === 'orange' ? '#7a5000' : messageColor}; font-size:0.95rem; line-height:1.6;">${statusIcon} ${message}</div>` : ''}
+        ${denseGasHtml}
         ${timeToHazardHtml}
       </div>`;
         result2.style.display = 'block';
@@ -3288,7 +3563,7 @@
         } else if (gasTypeVal === 'asphyxiant') {
           if (bubbleConc > 20.95) bubbleConc = 20.95;
         } else if (gasTypeVal !== 'toxic') {
-          // CO₂, flammable — cap at 100%
+          // CO₂, flammable - cap at 100%
           if (bubbleConc > 100) bubbleConc = 100;
         }
 
@@ -3431,12 +3706,19 @@
       });
 
       document.getElementById('btnGenerateReport').addEventListener('click', () => {
+        // Save user's gas type selection before re-running calculations
+        const gasSelect = document.getElementById('gasType');
+        const savedGasType = gasSelect.value;
+
         // Ensure values are freshly calculated before generating the report
         const activeCalc = document.querySelector('input[name="calcOption"]:checked')?.value;
         if (activeCalc === 'calc2') document.getElementById('btnCalculate1')?.click();
         if (activeCalc === 'calc3') document.getElementById('btnCalculateVolume')?.click();
         if (activeCalc === 'calc4') document.getElementById('btnCalculateCryo')?.click();
         if (activeCalc === 'calc6') document.getElementById('btnCalculateDryIce')?.click();
+
+        // Restore user's gas type selection in case the re-run overrode it
+        gasSelect.value = savedGasType;
 
         document.getElementById('btnCalculate2').click();
 
@@ -3457,8 +3739,8 @@
           <div><h1>Gas Safety Calculation Report</h1><p style="margin:2px 0 0;font-size:13px;color:#555;">University of Nottingham Health &amp; Safety &middot; ${dateStr}</p></div>
         </div>
         <div style="background:#fff5f5; border:1px solid #f0c0c0; padding:14px; border-radius:6px; margin-top:16px;">
-          <p class="disclaimer" style="color:#b00; font-size:12px; margin-bottom:8px;"><strong>&#9888; IMPORTANT DISCLAIMER &dash; FOR INFORMATIONAL PURPOSES ONLY</strong></p>
-          <p class="disclaimer" style="font-size:11.5px; line-height:1.5; margin-bottom:10px;">Generated using the University of Nottingham Gas Safety Calculator. Methods are based on guidance from the British Compressed Gas Association. Results represent idealised screening estimates built on simplified assumptions including perfect mixing, stated room volume, stated ACH, and worst-case release scenarios. Assessing gas exposure is a highly complex field &dash; this calculator must not be treated as a substitute for a full risk assessment, competent professional judgement, or measured site data.</p>
+          <p class="disclaimer" style="color:#b00; font-size:12px; margin-bottom:8px;"><strong>&#9888; IMPORTANT DISCLAIMER - FOR INFORMATIONAL PURPOSES ONLY</strong></p>
+          <p class="disclaimer" style="font-size:11.5px; line-height:1.5; margin-bottom:10px;">Generated using the University of Nottingham Gas Safety Calculator. Methods are based on guidance from the British Compressed Gas Association. Results represent idealised screening estimates built on simplified assumptions including perfect mixing, stated room volume, stated ACH, and worst-case release scenarios. Assessing gas exposure is a highly complex field - this calculator must not be treated as a substitute for a full risk assessment, competent professional judgement, or measured site data.</p>
           <p class="disclaimer" style="font-size:11.5px; line-height:1.5; margin:0;"><strong>Do not use this report on its own to make life-safety, emergency response, room entry, re-entry, rescue, evacuation, or detector-placement decisions.</strong> If there is any doubt about the risk to people, specialist advice must always be sought. The University of Nottingham and its Health &amp; Safety Department do not accept liability for decisions made solely on the basis of this calculator's output.</p>
         </div>
       </div>`;
@@ -3505,7 +3787,7 @@
         </div></div>`;
         } else if (activeCalc === 'calc4') {
           reportContent += `<div class='section'><h2>Cryogenic Details</h2><div class="grid-container">
-          <div class="grid-item"><strong>Cryogen:</strong> ${calculatedValues.cryoType === 'LN2' ? 'Liquid Nitrogen' : 'Liquid Helium'}</div>
+          <div class="grid-item"><strong>Cryogen:</strong> ${calculatedValues.cryoType === 'LN2' ? 'Liquid Nitrogen' : calculatedValues.cryoType === 'LHe' ? 'Liquid Helium' : 'Liquid Carbon Dioxide'}</div>
           <div class="grid-item"><strong>Liquid Volume:</strong> ${calculatedValues.liquidVol} Litres</div>
           <div class="grid-item"><strong>Expansion Ratio:</strong> 1:${calculatedValues.expansionRatio}</div>
           <div class="grid-item"><strong>Gas Volume Generated:</strong> ${calculatedValues.gasVol.toFixed(3)} m&#179;</div>
@@ -3575,6 +3857,61 @@
             reportContent += calculatedValues.bubbleTthHtml;
           }
           reportContent += `</div>`;
+        }
+
+        // Dense Gas Breathing Zone section in report
+        if (calculatedValues.denseGasHtml) {
+          const denseReportConc = calculatedValues.gasType === 'toxic'
+            ? `${calculatedValues.denseConc} ppm`
+            : (calculatedValues.gasType === 'oxygen' || calculatedValues.gasType === 'asphyxiant')
+              ? `O&#8322;: ${calculatedValues.denseConc.toFixed(2)}%`
+              : `${calculatedValues.denseConc}%`;
+          const lowLevelReportConc = calculatedValues.gasType === 'toxic'
+            ? `${calculatedValues.lowLevelConc} ppm`
+            : (calculatedValues.gasType === 'oxygen' || calculatedValues.gasType === 'asphyxiant')
+              ? `O&#8322;: ${calculatedValues.lowLevelConc.toFixed(2)}%`
+              : `${calculatedValues.lowLevelConc}%`;
+          const denseVentReportNote = activeCalc === 'calc5'
+            ? `<p style='font-size:12.5px;color:#7a5000;margin:8px 0 0;'>Ventilation note: this still uses the room ACH. If supply/extract points do not mix or remove the low-level layer effectively, the real local concentration may be higher.</p>`
+            : '';
+          const reportZoneRiskStyle = (value) => {
+            let color = 'green';
+            if (gasTypeVal === 'oxygen') {
+              color = value > 23.5 ? 'red' : 'green';
+            } else if (gasTypeVal === 'asphyxiant') {
+              color = value < 18 ? 'red' : value <= 19.5 ? 'orange' : 'green';
+            } else if (gasTypeVal === 'carbon-dioxide') {
+              color = value > 0.5 ? 'red' : 'green';
+            } else if (gasTypeVal === 'flammable') {
+              color = value > 1 ? 'red' : 'orange';
+            } else if (gasTypeVal === 'toxic') {
+              color = 'orange';
+            }
+
+            if (color === 'red') return { bg: '#fff0f0', border: '#e05050', value: '#9b1c1c', label: '#8b1a1a' };
+            if (color === 'orange') return { bg: '#fff8e8', border: '#e09020', value: '#7a5000', label: '#805000' };
+            return { bg: '#f0fbf0', border: '#4cae4c', value: '#176c2f', label: '#176c2f' };
+          };
+          const reportDenseCardHtml = (title, value, valueText, note, extraStyle = '') => {
+            const style = reportZoneRiskStyle(value);
+            return `<div style="padding:12px 14px; background:${style.bg}; border-left:4px solid ${style.border}; ${extraStyle}">
+              <div style="font-size:12px; font-weight:700; text-transform:uppercase; letter-spacing:0.04em; color:${style.label}; margin-bottom:8px;">${title}</div>
+              <div style="font-size:12.5px; color:#666;">Concentration estimate</div>
+              <div style="font-size:18px; font-weight:700; color:${style.value}; margin-top:2px;">${valueText}</div>
+              <div style="font-size:12px; color:#666; margin-top:8px;">${note}</div>
+            </div>`;
+          };
+          reportContent += `<div class='section' style='border:2px solid #e09020;'>
+            <h2 style='color:#805000;border-bottom-color:#e09020;'>Dense Gas Check</h2>
+            <p style='font-size:13px;color:#555;margin-bottom:12px;'>For gases denser than air, the room-average concentration may underestimate local exposure. This check compares separate lower-zone mixing cases to full-room mixing; it does not describe a vertical concentration gradient. For gases only slightly denser than air, the lower 1.70 m case may be the more useful comparison. For very dense or cold releases, the lower mixing height case can be used as a more severe sensitivity check.</p>
+            <div style="padding:14px 16px; background:#fef9e7; border-left:4px solid #e09020; border-radius:4px; font-size:0.93rem; line-height:1.55;">
+              <div style="display:grid; grid-template-columns:1fr 1fr; gap:0; border:1px solid #f2d9a7; border-radius:6px; overflow:hidden; background:#fffdf5;">
+                ${reportDenseCardHtml('Lower 1.70 m mixing case', calculatedValues.denseConc, denseReportConc, 'Useful comparison for gases expected to settle below full-room height.')}
+                ${reportDenseCardHtml('Lower mixing height case', calculatedValues.lowLevelConc, lowLevelReportConc, `Lower mixing height: ${calculatedValues.lowLevelLayerHeight.toFixed(2)} m`, 'border-left:1px solid #f2d9a7;')}
+              </div>
+              ${denseVentReportNote}
+            </div>
+          </div>`;
         }
 
         // Time to Hazard section in report (room-level)
@@ -3650,7 +3987,7 @@
           
           <div style="background:#fff8e8; border-left:4px solid #e09020; padding:12px; font-size:13px; margin-top:12px;">
             <p style="margin:0 0 8px 0;"><strong>Placement Considerations:</strong> Detectors should be placed between the potential leak source and the personnel exposure area. Avoid placing sensors directly in the path of fresh air supply vents or in "dead zones" where air doesn't circulate.</p>
-            <p style="margin:0;"><strong>Cryogen Labs:</strong> When monitoring for liquid nitrogen leaks from dewars, sensors must be placed carefully to balance safety against false alarms caused by normal venting. Because the cold gas is extremely dense when initially released, detectors are typically mounted at between <strong>30 cm and 1 m from the floor</strong> (though this depends on specific room assessment, taking into account activities and risk perception of users of the lab). The lower end of this range is likely to alarm early in the event of a leak, but has a higher chance for false alarms, whereas 1 m is likely to alarm before an asphyxiation hazard is present, but provides a lesser time to respond, make safe, and escape.<br> <strong>For LHe leaks,</strong> sensors are generally placed on/near the ceiling as it boils off extremely quickly and rises rapidly. Consider the ability for the gas to escape into ceiling voids where panels or porous materials are used.</p>
+            <p style="margin:0;"><strong>Cryogen Labs:</strong> When monitoring for liquid nitrogen leaks from dewars, sensors must be placed carefully to balance safety against false alarms caused by normal venting. Because the cold gas is extremely dense when initially released, detectors are typically mounted at between <strong>30 cm and 1 m from the floor</strong> (though this depends on specific room assessment, taking into account activities and risk perception of users of the lab). The lower end of this range is likely to alarm early in the event of a leak, but has a higher chance for false alarms, whereas 1 m is likely to alarm before an asphyxiation hazard is present, but provides a lesser time to respond, make safe, and escape.<br> <strong>For LHe leaks,</strong> sensors are generally placed on/near the ceiling as it boils off extremely quickly and rises rapidly. Consider the ability for the gas to escape into ceiling voids where panels or porous materials are used.<br> <strong>For LCO&#8322; leaks,</strong> detectors should be mounted at low level (similar to LN&#8322;), as cold CO&#8322; gas is significantly denser than air and will pool at floor level. CO&#8322; also presents a toxic hazard in addition to its asphyxiant risk - ensure sensors are selected and calibrated for CO&#8322; detection.</p>
           </div>
         </div></div>`;
 
@@ -3740,7 +4077,7 @@
             <div class="estimator-note">This estimate is intended to support the existing Slow Leak calculation and follows the same screening-tool approach used elsewhere in the calculator.</div>
             ${warnings.map(text => `<div class="estimator-warning">${text}</div>`).join('')}
           `;
-        } else {
+        } else if (scenario === 'ln2-line') {
           const ln2Pressure = parseFloat(document.getElementById('advancedLn2Pressure').value);
           const holeDiameter = parseFloat(document.getElementById('advancedLn2Diameter').value);
 
@@ -3756,8 +4093,27 @@
             <p style="margin:0 0 10px 0;"><strong>Estimated Leak Rate:</strong> ${formatLeakRate(finalLeakRate)} m&#179;/hr</p>
             <p style="margin:0 0 8px 0;">Based on <strong>Q<sub>LN2,gas</sub> = 19.3 &times; D<sup>2</sup> &times; &radic;P<sub>gauge</sub></strong>, where
               D = ${holeDiameter.toFixed(2)} mm and P<sub>gauge</sub> = ${ln2Pressure.toFixed(2)} bar.</p>
-            <p style="margin:0 0 8px 0;">This gives the equivalent <strong>nitrogen gas hazard</strong> in m&#179;/hr for <strong>Oxygen Deficiency Hazard (ODH)</strong> screening, not the liquid flow rate.</p>
+            <p style="margin:0 0 8px 0;">This gives the equivalent <strong>nitrogen gas hazard</strong> in m&#179;/hr for <strong>Oxygen Deficiency Hazard</strong> screening, not the liquid flow rate.</p>
             <div class="estimator-note">Use only for liquid nitrogen line leaks where a rough gaseous release rate is needed for the Slow Leak calculation. Do not use for vessel rupture, pool formation, vent discharge, vacuum-jacket failure, or detailed cryogenic system design.</div>
+          `;
+        } else if (scenario === 'lco2-line') {
+          const lco2Pressure = parseFloat(document.getElementById('advancedLco2Pressure').value);
+          const holeDiameter = parseFloat(document.getElementById('advancedLco2Diameter').value);
+
+          if (isNaN(lco2Pressure) || lco2Pressure < 0 || isNaN(holeDiameter) || holeDiameter <= 0) {
+            advancedLeakError.innerHTML = "&#9888; Please enter valid values for Gauge Pressure and Equivalent Hole Diameter.";
+            advancedLeakError.style.display = 'block'; return;
+          }
+
+          const finalLeakRate = 13.1 * Math.pow(holeDiameter, 2) * Math.sqrt(lco2Pressure);
+          latestEstimatedLeakRate = finalLeakRate;
+
+          advancedLeakResult.innerHTML = `
+            <p style="margin:0 0 10px 0;"><strong>Estimated Leak Rate:</strong> ${formatLeakRate(finalLeakRate)} m&#179;/hr</p>
+            <p style="margin:0 0 8px 0;">Based on <strong>Q<sub>LCO2,gas</sub> = 13.1 &times; D<sup>2</sup> &times; &radic;P<sub>gauge</sub></strong>, where
+              D = ${holeDiameter.toFixed(2)} mm and P<sub>gauge</sub> = ${lco2Pressure.toFixed(2)} bar.</p>
+            <p style="margin:0 0 8px 0;">This gives the equivalent <strong>CO&#8322; gas hazard</strong> in m&#179;/hr for <strong>CO&#8322; enrichment hazard</strong> screening, not the liquid flow rate. Assumes complete, instantaneous gasification (conservative - some liquid may form dry ice snow).</p>
+            <div class="estimator-note">Use only for liquid CO&#8322; line leaks where a rough gaseous release rate is needed for the Slow Leak calculation. Do not use for vessel rupture, pool formation, vent discharge, vacuum-jacket failure, or detailed cryogenic system design.</div>
           `;
         }
 
