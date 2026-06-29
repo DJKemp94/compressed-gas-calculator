@@ -625,13 +625,12 @@
 
     .checkbox-label-with-info {
       display: flex;
-      align-items: flex-start;
+      align-items: center;
       gap: 6px;
-      flex-wrap: wrap;
     }
 
     .checkbox-label-with-info label {
-      flex: 1 1 240px;
+      flex: 0 1 auto;
     }
 
     /* BUTTONS */
@@ -1330,9 +1329,11 @@
     <div class="card" style="border:1px solid #f0c0c0; border-left:5px solid #b00; background:#fff5f5;">
       <div class="card-body" style="padding:14px 18px;">
         <p style="color:#8b1a1a; font-size:0.92rem; line-height:1.55; margin:0 0 8px 0;">
-          &#9888; <strong>Important:</strong> This calculator provides estimates for informational purposes only. It must
+          &#9888; <strong>Important:</strong> <br>
+		  		  <strong>The calculator must be used by competent persons in line with the written guidance/examples hosted on the University of Nottingham Health and Safety SharePoint page.</strong>
+		  <br>This calculator provides estimates for informational purposes only. It must
           not be used on its own to make emergency occupancy, re-entry, rescue, evacuation, or detector-placement
-          decisions. Assessing exposure to gas is a highly complex field - real-world conditions including gas
+          decisions. Assessing exposure to gas is a highly complex field, and real-world conditions including gas
           stratification, turbulent mixing, room geometry, temperature, and ventilation dynamics can differ significantly
           from the idealised models used here.
         </p>
@@ -1413,6 +1414,10 @@
           </table>
           <p style="font-size:0.82rem; color:var(--muted);">*Specific volume is the volume per kg of substance. See <a
               href="https://www.engineeringtoolbox.com/" target="_blank" rel="noopener">Engineering Toolbox</a>.</p>
+          <div
+            style="background:#fff8e8; border-left:4px solid #e09020; padding:12px 14px; font-size:0.86rem; line-height:1.6; margin-bottom:12px;">
+            <strong>Accuracy tip:</strong> Where possible, obtain the actual gas volume directly from the cylinder manufacturer or supplier. Manufacturer data will account for gas non-ideality (compressibility factors, real gas behaviour) and is more accurate than calculations based on ideal gas assumptions.
+          </div>
           <h3 style="color:var(--uon-navy); font-size:1rem; margin-bottom:8px;">Understanding results:</h3>
           <ul style="font-size:0.9rem; line-height:1.7; padding-left:20px; margin-bottom:12px;">
             <li><strong>Room Concentration:</strong> The overall gas concentration (or remaining O&#8322; level)
@@ -1422,6 +1427,7 @@
               indicates the risk to a person standing near the gas.</li>
             <li><strong>Time to Hazard</strong> (slow leak only): How long it would take for conditions to reach
               hazardous thresholds if all ventilation fails (0 ACH worst-case).</li>
+            <li><strong>Dense Gas (advanced):</strong> When enabled, this estimates the gas concentration within the room volume below your specified stratification height. It is intended for gases denser than air that may collect at low level before fully mixing with the room air. The result is an alternative mixing assumption, not a prediction of a gas layer height.</li>
           </ul>
           <div
             style="background:var(--uon-fog); padding:12px 14px; border-radius:8px; font-size:0.86rem; line-height:1.6; margin-bottom:12px;">
@@ -2365,21 +2371,22 @@
                 <div class="checkbox-row" style="margin-top:8px;" id="denseGasCheckboxRow">
                   <input type="checkbox" id="denseGasCheckbox">
                   <div class="checkbox-label-with-info">
-                    <label for="denseGasCheckbox">Dense Gas Check</label>
+                    <label for="denseGasCheckbox">Dense Gas (advanced)</label>
                     <button type="button" id="denseGasInfoBtn" class="info-btn info-btn-inline" aria-expanded="false" aria-controls="denseGasInfoPanel" title="When should I use this?">i</button>
                   </div>
                 </div>
                 <div id="denseGasInfoPanel" class="estimator-help" style="display:none; margin-top:8px;">
                   <p style="margin:0 0 8px 0;"><strong>When should I leave this unticked?</strong><br>Leave this unticked when the gas is expected to mix normally through the room, or when it is lighter than air. This usually applies to gases such as nitrogen, helium, hydrogen, methane, carbon monoxide, and well-ventilated rooms with good air movement.</p>
-                  <p style="margin:0 0 8px 0;"><strong>When should I tick this?</strong><br>Tick this when the gas could collect low down before it fully mixes with the room air. This is more likely for heavier gases such as CO&#8322;, argon, propane/LPG, sulphur dioxide, SF&#8326;, dry ice, liquid CO&#8322;, cold gas releases, basements, pits, trenches, still rooms, or rooms with poor low-level ventilation.</p>
-                  <p style="margin:0;"><strong>How should I read the two results?</strong><br>Use the lower 1.7 m case as a general lower-zone check. Use the lower mixing height case when the gas is very heavy, cold, or there are low-level spaces where gas could collect. These are not height-by-height readings; they are alternative mixing assumptions.</p>
+                  <p style="margin:0 0 8px 0;"><strong>When should I tick this?</strong><br>Tick this when the gas could collect low down before it fully mixes with the room air, and where you might be expected to be working in this zone. This is more likely for heavier gases such as CO&#8322;, argon, propane/LPG, sulphur dioxide, SF&#8326;, cold gas releases, and applies to situations where you might be working near or below ground, like in basements, pits, trenches, or rooms with poor low-level ventilation.</p>
+                  <p style="margin:0;"><strong>How should I read the result?</strong><br>The result shows the estimated gas concentration within the room volume below your specified stratification height. This is not a height-by-height reading; it is an alternative mixing assumption for gases that may collect at low level.</p>
+                  <p style="margin:8px 0 0;"><strong>Is stratification permanent?</strong><br>No. Over time, gases will equilibrate and mix throughout the room via diffusion, convection, and ventilation. Stratification is typically a temporary condition following a release, not a permanent state.<br> Some scenarios can suppress the equilibration of the gas throughout the area, namely if leaks of heavy gases are continuous, if there are significant temperature gradients across the room, or if the gas collects in very deep, poorly ventilated pits.</p>
                 </div>
                 <div id="ceilingHeightRow" style="display:none; margin-top:10px;">
                   <label for="ceilingHeight">Ceiling Height (m)</label>
                   <input type="number" id="ceilingHeight" placeholder="e.g. 2.4" min="1.71" step="0.1" style="max-width:200px;">
-                  <label for="lowLevelLayerHeight" style="margin-top:10px;">Lower mixing height (m)</label>
+                  <label for="lowLevelLayerHeight" style="margin-top:10px;">Expected Gas Stratification height (m)</label>
                   <input type="number" id="lowLevelLayerHeight" placeholder="1.0" min="0.1" step="0.1" style="max-width:200px;">
-                  <div style="font-size:0.78rem; color:#888; margin-top:3px;">Optional. Defaults to 1.0 m. This value estimates the concentration if the gas were mixed only within the room volume below the height entered. It does not predict the real height of a gas layer. Use a lower value where gas may collect close to the floor, such as in pits, trenches, floor-level work, dry ice, liquid CO&#8322;, or very cold/heavy gas releases.</div>
+                  <div style="font-size:0.78rem; color:#888; margin-top:3px;">Optional. Defaults to 1.0 m. Enter the height at which you expect gas to stratify. The calculator will estimate the concentration within the room volume below this height. Use a lower value where gas may collect close to the floor, such as in pits, trenches, floor-level work, or very cold/heavy gas releases.</div>
                 </div>
               </div>
             </div>
@@ -3238,8 +3245,8 @@
         let message = "", messageColor = "", concDisplay = "";
 
         if (gasTypeVal === "oxygen") {
-          if (isSlowLeak) concgas = 20.9 + ((concgas / 100) * 79.1);
-          else { const displacegas = 0.21 * volgas; concgas = (((roomvolume * 0.21) + volgas - displacegas) / roomvolume) * 100; }
+          if (isSlowLeak) concgas = 20.95 + ((concgas / 100) * 79.05);
+          else { const displacegas = 0.2095 * volgas; concgas = (((roomvolume * 0.2095) + volgas - displacegas) / roomvolume) * 100; }
           concgas = Math.round(concgas * 100) / 100;
           if (concgas > 100) concgas = 100;
           if (concgas < 0) concgas = 0;
@@ -3249,7 +3256,7 @@
           if (concgas < 0) concgas = 0;
           concDisplay = `Gas concentration: <strong>${concgas} ppm</strong>`;
         } else if (gasTypeVal === "asphyxiant") {
-          concgas = isSlowLeak ? 20.9 * (1 - (leakRate / Q)) : ((roomvolume - volgas) * 0.2095 / roomvolume) * 100;
+          concgas = isSlowLeak ? 20.95 * (1 - (leakRate / Q)) : ((roomvolume - volgas) * 0.2095 / roomvolume) * 100;
           concgas = Math.round(concgas * 100) / 100;
           if (concgas < 0) concgas = 0;
           if (concgas > 20.95) concgas = 20.95;
@@ -3264,9 +3271,6 @@
         // ── Dense Gas Breathing Zone Calculation ──
         let denseGasHtml = '';
         delete calculatedValues.denseGasHtml;
-        delete calculatedValues.denseConc;
-        delete calculatedValues.breathingZoneVolume;
-        delete calculatedValues.denseVolumeFactor;
         delete calculatedValues.lowLevelConc;
         delete calculatedValues.lowLevelLayerHeight;
         delete calculatedValues.lowLevelLayerVolume;
@@ -3281,14 +3285,11 @@
           const lowLevelInput = parseFloat(document.getElementById('lowLevelLayerHeight').value);
           const lowLevelLayerHeight = isNaN(lowLevelInput) ? 1.0 : lowLevelInput;
           if (lowLevelLayerHeight <= 0 || lowLevelLayerHeight >= ceilingHeight) {
-            calc3Error.innerHTML = "&#9888; Lower mixing height must be greater than 0 m and lower than the ceiling height. Leave it blank to use the default 1.0 m lower mixing height.";
+            calc3Error.innerHTML = "&#9888; Expected Gas Stratification height must be greater than 0 m and lower than the ceiling height. Leave it blank to use the default 1.0 m.";
             calc3Error.style.display = 'block'; return;
           }
-          const breathingHeight = 1.70;
           const floorArea = roomvolume / ceilingHeight;
-          const breathingZoneVolume = Math.min(floorArea * breathingHeight, roomvolume);
           const lowLevelLayerVolume = Math.min(floorArea * lowLevelLayerHeight, roomvolume);
-          const denseVolumeFactor = roomvolume / breathingZoneVolume;
           const lowLevelVolumeFactor = roomvolume / lowLevelLayerVolume;
 
           const calculateZoneConcentration = (zoneVolume) => {
@@ -3296,9 +3297,9 @@
               const denseQ = zoneVolume * ach;
               const rawDenseConc = (leakRate / denseQ) * 100;
               if (gasTypeVal === 'oxygen') {
-                return 20.9 + ((rawDenseConc / 100) * 79.1);
+                return 20.95 + ((rawDenseConc / 100) * 79.05);
               } else if (gasTypeVal === 'asphyxiant') {
-                return 20.9 * (1 - (leakRate / denseQ));
+                return 20.95 * (1 - (leakRate / denseQ));
               } else if (gasTypeVal === 'toxic') {
                 return (leakRate / zoneVolume) * (1 / ach) * 1000000;
               } else {
@@ -3307,8 +3308,8 @@
             }
 
             if (gasTypeVal === 'oxygen') {
-              const displacegas = 0.21 * volgas;
-              return (((zoneVolume * 0.21) + volgas - displacegas) / zoneVolume) * 100;
+              const displacegas = 0.2095 * volgas;
+              return (((zoneVolume * 0.2095) + volgas - displacegas) / zoneVolume) * 100;
             } else if (gasTypeVal === 'asphyxiant') {
               const cappedVolgas = Math.min(volgas, zoneVolume);
               return ((zoneVolume - cappedVolgas) * 0.2095 / zoneVolume) * 100;
@@ -3371,31 +3372,21 @@
             </div>`;
           };
 
-          const denseConc = normaliseZoneConcentration(calculateZoneConcentration(breathingZoneVolume));
           const lowLevelConc = normaliseZoneConcentration(calculateZoneConcentration(lowLevelLayerVolume));
-          const denseConcDisplay = zoneCardHtml(
-            'Lower 1.70 m mixing case',
-            denseConc,
-            'Useful comparison for slightly denser gases or releases expected to settle below full-room height.'
-          );
-          const lowLevelConcDisplay = zoneCardHtml(
-            'Lower mixing height case',
-            lowLevelConc,
-            `Lower mixing height: ${lowLevelLayerHeight.toFixed(2)} m. Useful as a more severe check for moderately heavier, very dense, or cold releases.`
-          );
+          const lowLevelStyle = zoneRiskStyle(lowLevelConc);
           const slowLeakVentNote = isSlowLeak
             ? `<div style="font-size:0.82rem; color:#7a5000; margin-top:6px;">Ventilation note: this still uses the room ACH. If supply/extract points do not mix or remove the low-level layer effectively, the real local concentration may be higher.</div>`
             : '';
 
           denseGasHtml = `<div style="margin-top:10px; padding:10px 14px; background:#fef9e7; border-left:4px solid #e09020; border-radius:4px; font-size:0.92rem; line-height:1.6;">
-            <div style="font-weight:600; color:#805000; margin-bottom:4px;">&#x26A0;&#xFE0F; Dense Gas Check</div>
-            <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(220px, 1fr)); gap:10px; margin-top:8px;">${denseConcDisplay}${lowLevelConcDisplay}</div>
+            <div style="font-weight:600; color:#805000; margin-bottom:4px;">&#x26A0;&#xFE0F; Dense Gas (advanced)</div>
+            <div style="font-size:0.76rem; font-weight:700; text-transform:uppercase; letter-spacing:0.04em; color:#805000; margin-top:8px;">Expected Gas Stratification</div>
+            <div style="font-size:0.78rem; color:#666;">Concentration estimate</div>
+            <div style="font-size:1.18rem; font-weight:700; color:${lowLevelStyle.value}; margin-top:1px;">${formatZoneValue(lowLevelConc)}</div>
+            <div style="font-size:0.78rem; color:#666; margin-top:6px;">Stratification height: ${lowLevelLayerHeight.toFixed(2)} m.</div>
             ${slowLeakVentNote}
           </div>`;
           calculatedValues.denseGasHtml = denseGasHtml;
-          calculatedValues.denseConc = denseConc;
-          calculatedValues.breathingZoneVolume = breathingZoneVolume;
-          calculatedValues.denseVolumeFactor = denseVolumeFactor;
           calculatedValues.lowLevelConc = lowLevelConc;
           calculatedValues.lowLevelLayerHeight = lowLevelLayerHeight;
           calculatedValues.lowLevelLayerVolume = lowLevelLayerVolume;
@@ -3471,8 +3462,8 @@
           };
           let tthLines = [];
           if (gasTypeVal === 'asphyxiant') {
-            const t195 = (roomvolume / leakRate) * Math.log(20.9 / 19.5);
-            const t18 = (roomvolume / leakRate) * Math.log(20.9 / 18);
+            const t195 = (roomvolume / leakRate) * Math.log(20.95 / 19.5);
+            const t18 = (roomvolume / leakRate) * Math.log(20.95 / 18);
             const ft195 = formatTime(t195); const ft18 = formatTime(t18);
             if (ft195) tthLines.push(`\u23F1 <strong>Time to 19.5% O\u2082</strong> (warning): <strong>${ft195}</strong>`);
             if (ft18) tthLines.push(`\u23F1 <strong>Time to 18% O\u2082</strong> (danger): <strong>${ft18}</strong>`);
@@ -3483,7 +3474,7 @@
             if (ft05) tthLines.push(`\u23F1 <strong>Time to 0.5% CO\u2082</strong> (detection): <strong>${ft05}</strong>`);
             if (ft4) tthLines.push(`\u23F1 <strong>Time to 4% CO\u2082</strong> (IDLH): <strong>${ft4}</strong>`);
           } else if (gasTypeVal === 'oxygen') {
-            const t235 = -(roomvolume / leakRate) * Math.log((100 - 23.5) / (100 - 20.9));
+            const t235 = -(roomvolume / leakRate) * Math.log((100 - 23.5) / (100 - 20.95));
             const ft235 = formatTime(t235);
             if (ft235) tthLines.push(`\u23F1 <strong>Time to 23.5% O\u2082</strong> (enrichment): <strong>${ft235}</strong>`);
           } else if (gasTypeVal === 'flammable') {
@@ -3533,9 +3524,9 @@
           const bubbleQ = BUBBLE_VOL * ach;
           const bubbleLeakConc = (leakRate / bubbleQ) * 100;
           if (gasTypeVal === 'oxygen') {
-            bubbleConc = 20.9 + ((bubbleLeakConc / 100) * 79.1);
+            bubbleConc = 20.95 + ((bubbleLeakConc / 100) * 79.05);
           } else if (gasTypeVal === 'asphyxiant') {
-            bubbleConc = 20.9 * (1 - (leakRate / bubbleQ));
+            bubbleConc = 20.95 * (1 - (leakRate / bubbleQ));
           } else if (gasTypeVal === 'toxic') {
             bubbleConc = Math.round(((leakRate / BUBBLE_VOL) * (1 / ach) * 1000000) * 100) / 100;
           } else {
@@ -3544,8 +3535,8 @@
         } else {
           // Instantaneous release: all gas fills the 12 m³ bubble
           if (gasTypeVal === 'oxygen') {
-            const displaceB = 0.21 * volgas;
-            bubbleConc = (((BUBBLE_VOL * 0.21) + volgas - displaceB) / BUBBLE_VOL) * 100;
+            const displaceB = 0.2095 * volgas;
+            bubbleConc = (((BUBBLE_VOL * 0.2095) + volgas - displaceB) / BUBBLE_VOL) * 100;
           } else if (gasTypeVal === 'asphyxiant') {
             const effectiveVol = Math.min(volgas, BUBBLE_VOL);
             bubbleConc = ((BUBBLE_VOL - effectiveVol) * 0.2095 / BUBBLE_VOL) * 100;
@@ -3641,8 +3632,8 @@
           };
           let bTthLines = [];
           if (gasTypeVal === 'asphyxiant') {
-            const t195 = (BUBBLE_VOL / leakRate) * Math.log(20.9 / 19.5);
-            const t18 = (BUBBLE_VOL / leakRate) * Math.log(20.9 / 18);
+            const t195 = (BUBBLE_VOL / leakRate) * Math.log(20.95 / 19.5);
+            const t18 = (BUBBLE_VOL / leakRate) * Math.log(20.95 / 18);
             const ft195 = formatTime(t195); const ft18 = formatTime(t18);
             if (ft195) bTthLines.push(`\u23F1 <strong>Time to 19.5% O\u2082</strong> (warning): <strong>${ft195}</strong>`);
             if (ft18) bTthLines.push(`\u23F1 <strong>Time to 18% O\u2082</strong> (danger): <strong>${ft18}</strong>`);
@@ -3653,7 +3644,7 @@
             if (ft05) bTthLines.push(`\u23F1 <strong>Time to 0.5% CO\u2082</strong> (detection): <strong>${ft05}</strong>`);
             if (ft4) bTthLines.push(`\u23F1 <strong>Time to 4% CO\u2082</strong> (IDLH): <strong>${ft4}</strong>`);
           } else if (gasTypeVal === 'oxygen') {
-            const t235 = -(BUBBLE_VOL / leakRate) * Math.log((100 - 23.5) / (100 - 20.9));
+            const t235 = -(BUBBLE_VOL / leakRate) * Math.log((100 - 23.5) / (100 - 20.95));
             const ft235 = formatTime(t235);
             if (ft235) bTthLines.push(`\u23F1 <strong>Time to 23.5% O\u2082</strong> (enrichment): <strong>${ft235}</strong>`);
           } else if (gasTypeVal === 'flammable') {
@@ -3755,7 +3746,14 @@
         }
 
         reportContent += `<div class='section'><h2>Gas Details</h2><div class="grid-container">`;
-        reportContent += `<div class="grid-item"><strong>Gas Type:</strong> ${gasTypeVal}</div>`;
+        const gasTypeDisplayNames = {
+          'asphyxiant': 'Asphyxiant (O₂ Depletion)',
+          'carbon-dioxide': 'Carbon Dioxide (Enrichment)',
+          'oxygen': 'Oxygen (Enrichment)',
+          'flammable': 'Flammable',
+          'toxic': 'Toxic'
+        };
+        reportContent += `<div class="grid-item"><strong>Gas Type:</strong> ${gasTypeDisplayNames[gasTypeVal] || gasTypeVal}</div>`;
         if (volumeGasInput.value) reportContent += `<div class="grid-item"><strong>Total Gas Volume:</strong> ${volumeGasInput.value} m&#179;</div>`;
         reportContent += `</div></div>`;
 
@@ -3861,11 +3859,6 @@
 
         // Dense Gas Breathing Zone section in report
         if (calculatedValues.denseGasHtml) {
-          const denseReportConc = calculatedValues.gasType === 'toxic'
-            ? `${calculatedValues.denseConc} ppm`
-            : (calculatedValues.gasType === 'oxygen' || calculatedValues.gasType === 'asphyxiant')
-              ? `O&#8322;: ${calculatedValues.denseConc.toFixed(2)}%`
-              : `${calculatedValues.denseConc}%`;
           const lowLevelReportConc = calculatedValues.gasType === 'toxic'
             ? `${calculatedValues.lowLevelConc} ppm`
             : (calculatedValues.gasType === 'oxygen' || calculatedValues.gasType === 'asphyxiant')
@@ -3892,25 +3885,15 @@
             if (color === 'orange') return { bg: '#fff8e8', border: '#e09020', value: '#7a5000', label: '#805000' };
             return { bg: '#f0fbf0', border: '#4cae4c', value: '#176c2f', label: '#176c2f' };
           };
-          const reportDenseCardHtml = (title, value, valueText, note, extraStyle = '') => {
-            const style = reportZoneRiskStyle(value);
-            return `<div style="padding:12px 14px; background:${style.bg}; border-left:4px solid ${style.border}; ${extraStyle}">
-              <div style="font-size:12px; font-weight:700; text-transform:uppercase; letter-spacing:0.04em; color:${style.label}; margin-bottom:8px;">${title}</div>
-              <div style="font-size:12.5px; color:#666;">Concentration estimate</div>
-              <div style="font-size:18px; font-weight:700; color:${style.value}; margin-top:2px;">${valueText}</div>
-              <div style="font-size:12px; color:#666; margin-top:8px;">${note}</div>
-            </div>`;
-          };
+          const lowLevelStyle = reportZoneRiskStyle(calculatedValues.lowLevelConc);
           reportContent += `<div class='section' style='border:2px solid #e09020;'>
-            <h2 style='color:#805000;border-bottom-color:#e09020;'>Dense Gas Check</h2>
-            <p style='font-size:13px;color:#555;margin-bottom:12px;'>For gases denser than air, the room-average concentration may underestimate local exposure. This check compares separate lower-zone mixing cases to full-room mixing; it does not describe a vertical concentration gradient. For gases only slightly denser than air, the lower 1.70 m case may be the more useful comparison. For very dense or cold releases, the lower mixing height case can be used as a more severe sensitivity check.</p>
-            <div style="padding:14px 16px; background:#fef9e7; border-left:4px solid #e09020; border-radius:4px; font-size:0.93rem; line-height:1.55;">
-              <div style="display:grid; grid-template-columns:1fr 1fr; gap:0; border:1px solid #f2d9a7; border-radius:6px; overflow:hidden; background:#fffdf5;">
-                ${reportDenseCardHtml('Lower 1.70 m mixing case', calculatedValues.denseConc, denseReportConc, 'Useful comparison for gases expected to settle below full-room height.')}
-                ${reportDenseCardHtml('Lower mixing height case', calculatedValues.lowLevelConc, lowLevelReportConc, `Lower mixing height: ${calculatedValues.lowLevelLayerHeight.toFixed(2)} m`, 'border-left:1px solid #f2d9a7;')}
-              </div>
-              ${denseVentReportNote}
-            </div>
+            <h2 style='color:#805000;border-bottom-color:#e09020;'>Dense Gas (advanced)</h2>
+            <p style='font-size:13px;color:#555;margin-bottom:12px;'>For gases denser than air, the room-average concentration may underestimate local exposure. This result shows the estimated concentration within the room volume below your specified stratification height. It does not describe a vertical concentration gradient.<br><br> You should be aware that gas stratification is a transient effect, and that the gas will equilibrate over the volume of the room as time passes.</p>
+            <div style="font-size:12px; font-weight:700; text-transform:uppercase; letter-spacing:0.04em; color:#805000; margin-bottom:4px;">Expected Gas Stratification</div>
+            <div style="font-size:12.5px; color:#666;">Concentration estimate</div>
+            <div style="font-size:18px; font-weight:700; color:${lowLevelStyle.value}; margin-top:2px;">${lowLevelReportConc}</div>
+            <div style="font-size:12px; color:#666; margin-top:8px;">Stratification height: ${calculatedValues.lowLevelLayerHeight.toFixed(2)} m</div>
+            ${denseVentReportNote}
           </div>`;
         }
 
@@ -3930,12 +3913,12 @@
         else if (activeCalc === 'calc6') reportContent += `<p><strong>Gas Volume:</strong> V<sub>gas</sub> = m<sub>dry ice</sub> &times; 0.54</p>`;
         else if (activeCalc === 'calc5') {
           reportContent += `<p><strong>Ventilation Rate:</strong> Q = V<sub>room</sub> &times; ACH</p>`;
-          if (gasTypeVal === 'oxygen') reportContent += `<p><strong>O&#8322; Calc:</strong> O&#8322;% = 20.9 + (79.1 &times; (L / Q))</p>`;
-          else if (gasTypeVal === 'asphyxiant') reportContent += `<p><strong>O&#8322; Calc:</strong> O&#8322;% = 20.9 &times; (1 &minus; (L / Q))</p>`;
+          if (gasTypeVal === 'oxygen') reportContent += `<p><strong>O&#8322; Calc:</strong> O&#8322;% = 20.95 + (79.05 &times; (L / Q))</p>`;
+          else if (gasTypeVal === 'asphyxiant') reportContent += `<p><strong>O&#8322; Calc:</strong> O&#8322;% = 20.95 &times; (1 &minus; (L / Q))</p>`;
           else if (gasTypeVal === 'toxic') reportContent += `<p><strong>Concentration (ppm):</strong> C<sub>ppm</sub> = (L / Q) &times; 1,000,000</p>`;
           else reportContent += `<p><strong>Concentration (%):</strong> C% = (L / Q) &times; 100</p>`;
         } else if (gasTypeVal === "oxygen") {
-          reportContent += `<p><strong>O&#8322; Calc:</strong> O&#8322;% = (((V<sub>room</sub> &times; 0.21) + V<sub>gas</sub> &minus; (0.21 &times; V<sub>gas</sub>)) / V<sub>room</sub>) &times; 100</p>`;
+          reportContent += `<p><strong>O&#8322; Calc:</strong> O&#8322;% = (((V<sub>room</sub> &times; 0.2095) + V<sub>gas</sub> &minus; (0.2095 &times; V<sub>gas</sub>)) / V<sub>room</sub>) &times; 100</p>`;
         } else if (gasTypeVal === "asphyxiant") {
           reportContent += `<p><strong>O&#8322; Calc:</strong> O&#8322;% = (((V<sub>room</sub> &minus; V<sub>gas</sub>) &times; 0.2095) / V<sub>room</sub>) &times; 100</p>`;
         } else if (gasTypeVal === "toxic") {
