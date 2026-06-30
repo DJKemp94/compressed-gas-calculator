@@ -3481,6 +3481,19 @@
         delete calculatedValues.lowLevelLayerHeight;
         delete calculatedValues.lowLevelLayerVolume;
         delete calculatedValues.lowLevelVolumeFactor;
+        delete calculatedValues.denseBarLeftPos;
+        delete calculatedValues.denseBarRightPos;
+        delete calculatedValues.denseBarLeftLabel;
+        delete calculatedValues.denseBarRightLabel;
+        delete calculatedValues.denseBarLeftTitle;
+        delete calculatedValues.denseBarRightTitle;
+        delete calculatedValues.denseBarLeftColor;
+        delete calculatedValues.denseBarRightColor;
+        delete calculatedValues.denseBarGradient;
+        delete calculatedValues.denseAxisLow;
+        delete calculatedValues.denseAxisHigh;
+        delete calculatedValues.denseBarLeftCase;
+        delete calculatedValues.denseBarRightCase;
         const denseGasChecked = document.getElementById('denseGasCheckbox').checked;
         if (denseGasChecked) {
           const ceilingHeight = parseFloat(document.getElementById('ceilingHeight').value);
@@ -3739,6 +3752,19 @@
           calculatedValues.lowLevelLayerHeight = lowLevelLayerHeight;
           calculatedValues.lowLevelLayerVolume = lowLevelLayerVolume;
           calculatedValues.lowLevelVolumeFactor = lowLevelVolumeFactor;
+          calculatedValues.denseBarLeftPos = leftPos;
+          calculatedValues.denseBarRightPos = rightPos;
+          calculatedValues.denseBarLeftLabel = leftLabel;
+          calculatedValues.denseBarRightLabel = rightLabel;
+          calculatedValues.denseBarLeftTitle = leftTitle;
+          calculatedValues.denseBarRightTitle = rightTitle;
+          calculatedValues.denseBarLeftColor = leftStyle.value;
+          calculatedValues.denseBarRightColor = rightStyle.value;
+          calculatedValues.denseBarGradient = barGradient;
+          calculatedValues.denseAxisLow = axisLabels.low;
+          calculatedValues.denseAxisHigh = axisLabels.high;
+          calculatedValues.denseBarLeftCase = leftCase;
+          calculatedValues.denseBarRightCase = rightCase;
         }
 
         if (gasTypeVal === "carbon-dioxide") {
@@ -4207,41 +4233,40 @@
 
         // Dense Gas Breathing Zone section in report
         if (calculatedValues.denseGasHtml) {
-          const lowLevelReportConc = calculatedValues.gasType === 'toxic'
-            ? `${calculatedValues.lowLevelConc} ppm`
-            : (calculatedValues.gasType === 'oxygen' || calculatedValues.gasType === 'asphyxiant')
-              ? `O&#8322;: ${calculatedValues.lowLevelConc.toFixed(2)}%`
-              : `${calculatedValues.lowLevelConc}%`;
           const denseVentReportNote = activeCalc === 'calc5'
             ? `<p style='font-size:12.5px;color:#7a5000;margin:8px 0 0;'>Ventilation note: this still uses the room ACH. If supply/extract points do not mix or remove the low-level layer effectively, the real local concentration may be higher.</p>`
             : '';
-          const reportZoneRiskStyle = (value) => {
-            let color = 'green';
-            if (gasTypeVal === 'oxygen') {
-              color = value > 23.5 ? 'red' : 'green';
-            } else if (gasTypeVal === 'asphyxiant') {
-              color = value < 18 ? 'red' : value <= 19.5 ? 'orange' : 'green';
-            } else if (gasTypeVal === 'carbon-dioxide') {
-              color = value > 0.5 ? 'red' : 'green';
-            } else if (gasTypeVal === 'flammable') {
-              color = 'neutral';
-            } else if (gasTypeVal === 'toxic') {
-              color = 'neutral';
-            }
-
-            if (color === 'red') return { bg: '#fff0f0', border: '#e05050', value: '#9b1c1c', label: '#8b1a1a' };
-            if (color === 'orange') return { bg: '#fff8e8', border: '#e09020', value: '#7a5000', label: '#805000' };
-            if (color === 'neutral') return { bg: '#f8fafc', border: '#64748b', value: '#334155', label: '#334155' };
-            return { bg: '#f0fbf0', border: '#4cae4c', value: '#176c2f', label: '#176c2f' };
-          };
-          const lowLevelStyle = reportZoneRiskStyle(calculatedValues.lowLevelConc);
+          const rL = calculatedValues.denseBarLeftPos;
+          const rR = calculatedValues.denseBarRightPos;
           reportContent += `<div class='section' style='border:2px solid #e09020;'>
             <h2 style='color:#805000;border-bottom-color:#e09020;'>Dense Gas (advanced)</h2>
             <p style='font-size:13px;color:#555;margin-bottom:12px;'>For gases denser than air, the room-average concentration may underestimate local exposure. This result shows the estimated concentration within the room volume below your specified stratification height. It does not describe a vertical concentration gradient.<br><br> You should be aware that gas stratification is a transient effect, and that the gas will equilibrate over the volume of the room as time passes.</p>
-            <div style="font-size:12px; font-weight:700; text-transform:uppercase; letter-spacing:0.04em; color:#805000; margin-bottom:4px;">Expected Gas Stratification</div>
-            <div style="font-size:12.5px; color:#666;">Concentration estimate</div>
-            <div style="font-size:18px; font-weight:700; color:${lowLevelStyle.value}; margin-top:2px;">${lowLevelReportConc}</div>
-            <div style="font-size:12px; color:#666; margin-top:8px;">Stratification height: ${calculatedValues.lowLevelLayerHeight.toFixed(2)} m</div>
+            <div style="position:relative; margin:16px 0 6px 0;">
+              <div style="display:flex; justify-content:space-between; margin-bottom:6px;">
+                <div style="font-size:11px; font-weight:700; color:#334155;">${calculatedValues.denseAxisLow}</div>
+                <div style="font-size:11px; font-weight:700; color:#334155;">${calculatedValues.denseAxisHigh}</div>
+              </div>
+              <div style="position:relative; height:12px; border-radius:6px; background:${calculatedValues.denseBarGradient};">
+                <div style="position:absolute; top:50%; transform:translate(-50%,-50%); left:${rL}%; min-width:30px; height:18px; border-radius:9px; border:2px solid #fff; background:${calculatedValues.denseBarLeftColor}; display:flex; align-items:center; justify-content:center; font-size:10px; font-weight:700; color:#fff; padding:0 3px; box-shadow:0 1px 3px rgba(0,0,0,0.3);">${calculatedValues.denseBarLeftCase}</div>
+                <div style="position:absolute; top:50%; transform:translate(-50%,-50%); left:${rR}%; min-width:30px; height:18px; border-radius:9px; border:2px solid #fff; background:${calculatedValues.denseBarRightColor}; display:flex; align-items:center; justify-content:center; font-size:10px; font-weight:700; color:#fff; padding:0 3px; box-shadow:0 1px 3px rgba(0,0,0,0.3);">${calculatedValues.denseBarRightCase}</div>
+              </div>
+            </div>
+            <div style="position:relative; margin-top:6px; min-height:42px;">
+              <div style="position:absolute; top:0; left:${rL}%; width:0; height:28px; border-left:1.5px dashed #94a3b8;"></div>
+              <div style="position:absolute; top:0; left:${rR}%; width:0; height:28px; border-left:1.5px dashed #94a3b8;"></div>
+              <div style="position:absolute; top:30px; left:${(rL + rR) / 2}%; transform:translateX(-50%); font-size:11px; font-weight:600; color:#475569; white-space:nowrap;">Real exposure will be between the marked values</div>
+            </div>
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-top:4px;">
+              <div style="background:rgba(255,255,255,0.72); border:1px solid rgba(100,116,139,0.22); border-left:4px solid ${calculatedValues.denseBarLeftColor}; border-radius:4px; padding:6px 8px;">
+                <div style="color:#475569; font-size:10px; font-weight:700; letter-spacing:0.04em;">${calculatedValues.denseBarLeftTitle}</div>
+                <div style="font-size:14px; font-weight:700; color:${calculatedValues.denseBarLeftColor}; margin-top:2px;">${calculatedValues.denseBarLeftLabel}</div>
+              </div>
+              <div style="background:rgba(255,255,255,0.72); border:1px solid rgba(100,116,139,0.22); border-left:4px solid ${calculatedValues.denseBarRightColor}; border-radius:4px; padding:6px 8px;">
+                <div style="color:#475569; font-size:10px; font-weight:700; letter-spacing:0.04em;">${calculatedValues.denseBarRightTitle}</div>
+                <div style="font-size:14px; font-weight:700; color:${calculatedValues.denseBarRightColor}; margin-top:2px;">${calculatedValues.denseBarRightLabel}</div>
+              </div>
+            </div>
+            <p style='font-size:12px;color:#666;margin:10px 0 0;'>Stratification height: ${calculatedValues.lowLevelLayerHeight.toFixed(2)} m</p>
             ${denseVentReportNote}
           </div>`;
         }
