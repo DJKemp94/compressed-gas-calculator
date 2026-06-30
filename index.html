@@ -2575,7 +2575,13 @@
                 <div id="ceilingHeightRow" style="display:none; margin-top:10px;">
                   <label for="ceilingHeight">Ceiling Height (m)</label>
                   <input type="number" id="ceilingHeight" placeholder="e.g. 2.4" min="1.71" step="0.1" style="max-width:200px;">
-                  <label for="lowLevelLayerHeight" style="margin-top:10px;">Expected Gas Stratification height (m)</label>
+                  <div class="checkbox-label-with-info" style="margin-top:10px;">
+                    <label for="lowLevelLayerHeight">Expected Gas Stratification height (m)</label>
+                    <button type="button" id="stratInfoBtn" class="info-btn info-btn-inline" aria-expanded="false" aria-controls="stratInfoPanel" title="What is gas stratification?">i</button>
+                  </div>
+                  <div id="stratInfoPanel" class="estimator-help" style="display:none; margin-top:8px; margin-bottom:6px;">
+                    <p style="margin:0;"><strong>What is gas stratification?</strong><br>Stratification is when a gas forms a distinct layer at low level because it is denser than air. Instead of mixing evenly throughout the room, the gas "pools" near the floor, creating a zone of higher concentration at breathing or working height.</p>
+                  </div>
                   <input type="number" id="lowLevelLayerHeight" placeholder="1.0" min="0.1" step="0.1" style="max-width:200px;">
                   <div style="font-size:0.78rem; color:#888; margin-top:3px;">Optional. Defaults to 1.0 m. Enter the height at which you expect gas to stratify. The calculator will estimate the concentration within the room volume below this height. Use a lower value where gas may collect close to the floor, such as in pits, trenches, floor-level work, or very cold/heavy gas releases.</div>
                 </div>
@@ -3170,6 +3176,13 @@
         document.getElementById('denseGasInfoBtn').setAttribute('aria-expanded', String(!isOpen));
       });
 
+      document.getElementById('stratInfoBtn').addEventListener('click', () => {
+        const panel = document.getElementById('stratInfoPanel');
+        const isOpen = getComputedStyle(panel).display !== 'none';
+        panel.style.display = isOpen ? 'none' : 'block';
+        document.getElementById('stratInfoBtn').setAttribute('aria-expanded', String(!isOpen));
+      });
+
       const recalculateDenseGasIfReady = () => {
         if (document.getElementById('denseGasCheckbox').checked &&
             hasCalculatedRoomResult()) {
@@ -3230,6 +3243,8 @@
         document.getElementById('denseGasCheckbox').checked = false;
         document.getElementById('denseGasInfoPanel').style.display = 'none';
         document.getElementById('denseGasInfoBtn').setAttribute('aria-expanded', 'false');
+        document.getElementById('stratInfoPanel').style.display = 'none';
+        document.getElementById('stratInfoBtn').setAttribute('aria-expanded', 'false');
         document.getElementById('ceilingHeightRow').style.display = 'none';
         document.getElementById('ceilingHeight').value = '';
         document.getElementById('lowLevelLayerHeight').value = '';
