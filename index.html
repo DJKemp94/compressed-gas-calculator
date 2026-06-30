@@ -873,6 +873,197 @@
       border-top: none;
     }
 
+    /* EXPOSURE RANGE VISUALIZATION */
+    .exposure-range-container {
+      margin-top: 12px;
+      padding: 16px;
+      background: #fef9e7;
+      border-left: 4px solid #e09020;
+      border-radius: 6px;
+    }
+
+    .exposure-range-header {
+      font-weight: 600;
+      color: #805000;
+      margin-bottom: 4px;
+      font-size: 0.95rem;
+    }
+
+    .exposure-range-subheader {
+      font-size: 0.78rem;
+      color: #666;
+      margin-bottom: 12px;
+      line-height: 1.5;
+    }
+
+    .exposure-range-bar-wrapper {
+      position: relative;
+      margin: 20px 0 30px 0;
+      overflow: visible;
+    }
+
+    .exposure-range-labels {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 8px;
+    }
+
+    .exposure-range-label {
+      font-size: 0.72rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      text-align: center;
+      max-width: 48%;
+    }
+
+    .exposure-range-label.worst-case {
+      color: #9b1c1c;
+    }
+
+    .exposure-range-label.best-case {
+      color: #176c2f;
+    }
+
+    .exposure-range-bar {
+      position: relative;
+      height: 14px;
+      border-radius: 7px;
+      background: #ccc;
+      box-shadow: inset 0 2px 4px rgba(0,0,0,0.15);
+      overflow: visible;
+    }
+
+    .exposure-range-marker {
+      position: absolute;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      min-width: 36px;
+      height: 24px;
+      border-radius: 12px;
+      border: 2px solid white;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+      z-index: 2;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.6rem;
+      font-weight: 700;
+      color: white;
+      text-shadow: 0 1px 2px rgba(0,0,0,0.5);
+      padding: 0 5px;
+    }
+
+    .exposure-range-summary {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+      margin-top: 14px;
+    }
+
+    .exposure-range-summary-item {
+      background: rgba(255, 255, 255, 0.72);
+      border: 1px solid rgba(100, 116, 139, 0.22);
+      border-left: 4px solid currentColor;
+      border-radius: 6px;
+      padding: 8px 10px;
+      min-width: 0;
+    }
+
+    .exposure-range-summary-label {
+      color: #475569;
+      font-size: 0.68rem;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      line-height: 1.25;
+      text-transform: uppercase;
+    }
+
+    .exposure-range-summary-value {
+      font-size: 1.05rem;
+      font-weight: 700;
+      line-height: 1.25;
+      margin-top: 2px;
+      overflow-wrap: anywhere;
+    }
+
+    @media (max-width: 620px) {
+      .exposure-range-summary {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .exposure-range-connector {
+      position: relative;
+      margin-top: 6px;
+      min-height: 48px;
+    }
+
+    .exposure-range-connector-line {
+      position: absolute;
+      top: 0;
+      width: 0;
+      height: 34px;
+      border-left: 2px dashed #94a3b8;
+    }
+
+    .exposure-range-connector-text {
+      position: absolute;
+      top: 36px;
+      transform: translateX(-50%);
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: #475569;
+      white-space: nowrap;
+      pointer-events: none;
+    }
+
+    .explanation-panels {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 12px;
+      margin-top: 16px;
+      padding-top: 16px;
+      border-top: 1px solid #e0d8c0;
+    }
+
+    @media (max-width: 620px) {
+      .explanation-panels {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .explanation-panel {
+      padding: 12px 14px;
+      background: #fff;
+      border-radius: 8px;
+      border: 1px solid #d0c8b0;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+    }
+
+    .explanation-panel-title {
+      font-size: 0.78rem;
+      font-weight: 700;
+      color: #805000;
+      margin-bottom: 6px;
+    }
+
+    .explanation-panel-text {
+      font-size: 0.76rem;
+      color: #555;
+      line-height: 1.7;
+    }
+
+    .explanation-panel-icon {
+      width: 100%;
+      height: 60px;
+      margin-bottom: 8px;
+      border-radius: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
     /* ERRORS */
     .error-msg {
       display: none;
@@ -3343,7 +3534,7 @@
             return `${value}%`;
           };
 
-          const zoneRiskStyle = (value) => {
+          const zoneRiskMeta = (value) => {
             let color = 'green';
             if (gasTypeVal === 'oxygen') {
               color = value > 23.5 ? 'red' : 'green';
@@ -3352,14 +3543,86 @@
             } else if (gasTypeVal === 'carbon-dioxide') {
               color = value > 0.5 ? 'red' : 'green';
             } else if (gasTypeVal === 'flammable') {
-              color = value > 1 ? 'red' : 'orange';
+              color = 'neutral';
             } else if (gasTypeVal === 'toxic') {
-              color = 'orange';
+              color = 'neutral';
             }
 
-            if (color === 'red') return { bg: '#fff0f0', border: '#e05050', value: '#9b1c1c' };
-            if (color === 'orange') return { bg: '#fff8e8', border: '#e09020', value: '#7a5000' };
-            return { bg: '#f0fbf0', border: '#4cae4c', value: '#176c2f' };
+            if (color === 'red') return { level: color, bg: '#fff0f0', border: '#e05050', value: '#9b1c1c' };
+            if (color === 'orange') return { level: color, bg: '#fff8e8', border: '#e09020', value: '#7a5000' };
+            if (color === 'neutral') return { level: color, bg: '#f8fafc', border: '#64748b', value: '#334155' };
+            return { level: color, bg: '#f0fbf0', border: '#4cae4c', value: '#176c2f' };
+          };
+
+          const zoneRiskStyle = (value) => zoneRiskMeta(value);
+
+          const clampPercent = (value) => Math.max(2, Math.min(98, value));
+          const getDenseAxis = () => {
+            const observedMax = Math.max(worstCase, bestCase, 0);
+            if (gasTypeVal === 'oxygen') {
+              return { min: 20.95, max: Math.max(25, observedMax), safeHigh: 23.5 };
+            }
+            if (gasTypeVal === 'asphyxiant') {
+              return { min: Math.min(16, worstCase, bestCase), max: 20.95, dangerHigh: 18, warningHigh: 19.5 };
+            }
+            if (gasTypeVal === 'carbon-dioxide') {
+              return { min: 0, max: Math.max(1, observedMax), dangerAt: 0.5 };
+            }
+            if (gasTypeVal === 'flammable') {
+              return { min: 0, max: Math.max(observedMax, observedMax * 1.15, 1) };
+            }
+            return { min: 0, max: Math.max(observedMax, observedMax * 1.15, 1) };
+          };
+
+          const getAxisPosition = (value, axis) => {
+            const span = axis.max - axis.min || 1;
+            return clampPercent(((value - axis.min) / span) * 100);
+          };
+
+          const getBandStop = (value, axis) => `${getAxisPosition(value, axis).toFixed(2)}%`;
+
+          const getDenseBarGradient = (axis) => {
+            if (gasTypeVal === 'oxygen') {
+              const safeHigh = getBandStop(axis.safeHigh, axis);
+              return `linear-gradient(to right,
+                #27ae60 0%,
+                #27ae60 ${safeHigh},
+                #c0392b ${safeHigh},
+                #c0392b 100%)`;
+            }
+            if (gasTypeVal === 'asphyxiant') {
+              const dangerHigh = getBandStop(axis.dangerHigh, axis);
+              const warningHigh = getBandStop(axis.warningHigh, axis);
+              return `linear-gradient(to right,
+                #c0392b 0%,
+                #c0392b ${dangerHigh},
+                #e67e22 ${dangerHigh},
+                #e67e22 ${warningHigh},
+                #27ae60 ${warningHigh},
+                #27ae60 100%)`;
+            }
+            if (gasTypeVal === 'carbon-dioxide') {
+              const dangerAt = getBandStop(axis.dangerAt, axis);
+              return `linear-gradient(to right,
+                #27ae60 0%,
+                #27ae60 ${dangerAt},
+                #c0392b ${dangerAt},
+                #c0392b 100%)`;
+            }
+            if (gasTypeVal === 'flammable') {
+              return 'linear-gradient(to right, #e5e7eb 0%, #cbd5e1 100%)';
+            }
+            return 'linear-gradient(to right, #e5e7eb 0%, #64748b 100%)';
+          };
+
+          const getDenseAxisLabels = () => {
+            if (gasTypeVal === 'oxygen') {
+              return { low: 'Normal O\u2082', high: 'O\u2082 enriched' };
+            }
+            if (gasTypeVal === 'asphyxiant') {
+              return { low: 'Lower O\u2082', high: 'Normal O\u2082' };
+            }
+            return { low: 'Lower concentration', high: 'Higher concentration' };
           };
 
           const zoneCardHtml = (title, value, note) => {
@@ -3374,16 +3637,86 @@
 
           const lowLevelConc = normaliseZoneConcentration(calculateZoneConcentration(lowLevelLayerVolume));
           const lowLevelStyle = zoneRiskStyle(lowLevelConc);
+          const roomStyle = zoneRiskStyle(concgas);
           const slowLeakVentNote = isSlowLeak
             ? `<div style="font-size:0.82rem; color:#7a5000; margin-top:6px;">Ventilation note: this still uses the room ACH. If supply/extract points do not mix or remove the low-level layer effectively, the real local concentration may be higher.</div>`
             : '';
 
-          denseGasHtml = `<div style="margin-top:10px; padding:10px 14px; background:#fef9e7; border-left:4px solid #e09020; border-radius:4px; font-size:0.92rem; line-height:1.6;">
-            <div style="font-weight:600; color:#805000; margin-bottom:4px;">&#x26A0;&#xFE0F; Dense Gas (advanced)</div>
-            <div style="font-size:0.76rem; font-weight:700; text-transform:uppercase; letter-spacing:0.04em; color:#805000; margin-top:8px;">Expected Gas Stratification</div>
-            <div style="font-size:0.78rem; color:#666;">Concentration estimate</div>
-            <div style="font-size:1.18rem; font-weight:700; color:${lowLevelStyle.value}; margin-top:1px;">${formatZoneValue(lowLevelConc)}</div>
-            <div style="font-size:0.78rem; color:#666; margin-top:6px;">Stratification height: ${lowLevelLayerHeight.toFixed(2)} m.</div>
+          // Values
+          const worstCase = lowLevelConc;
+          const bestCase = concgas;
+          const worstLabel = formatZoneValue(worstCase);
+          const bestLabel = formatZoneValue(bestCase);
+
+          const denseAxis = getDenseAxis();
+          const worstPos = getAxisPosition(worstCase, denseAxis);
+          const bestPos = getAxisPosition(bestCase, denseAxis);
+
+          // Ensure display order matches bar position: left item = left marker, right item = right marker
+          const swapped = worstPos > bestPos;
+          const leftLabel = swapped ? bestLabel : worstLabel;
+          const rightLabel = swapped ? worstLabel : bestLabel;
+          const leftTitle = swapped ? 'Room average (best case)' : 'Stratified (worst case)';
+          const rightTitle = swapped ? 'Stratified (worst case)' : 'Room average (best case)';
+          const leftStyle = swapped ? roomStyle : lowLevelStyle;
+          const rightStyle = swapped ? lowLevelStyle : roomStyle;
+          const leftPos = swapped ? bestPos : worstPos;
+          const rightPos = swapped ? worstPos : bestPos;
+          const leftCase = swapped ? bestCase : worstCase;
+          const rightCase = swapped ? worstCase : bestCase;
+
+          // Determine risk level for header color
+          const overallRisk = zoneRiskMeta(worstCase).level;
+          const headerBg = overallRisk === 'red' ? '#fff0f0' : overallRisk === 'orange' ? '#fff8e8' : overallRisk === 'neutral' ? '#f8fafc' : '#f0fbf0';
+          const headerBorder = overallRisk === 'red' ? '#e05050' : overallRisk === 'orange' ? '#e09020' : overallRisk === 'neutral' ? '#64748b' : '#4cae4c';
+
+          const barGradient = getDenseBarGradient(denseAxis);
+          const axisLabels = getDenseAxisLabels();
+
+          denseGasHtml = `<div class="exposure-range-container" style="background:${headerBg}; border-left-color:${headerBorder};">
+            <div class="exposure-range-header">&#x26A0;&#xFE0F; Dense Gas (advanced) - Estimated Exposure Range</div>
+            <div class="exposure-range-subheader">Your actual exposure will be between these two values. Gas stratifies initially and then mixes over time. The real risk lies somewhere between the worst-case and best-case scenarios shown below.</div>
+            
+            <div class="exposure-range-bar-wrapper">
+              <div class="exposure-range-labels">
+                <div class="exposure-range-label" style="color:#334155;">${axisLabels.low}</div>
+                <div class="exposure-range-label" style="color:#334155;">${axisLabels.high}</div>
+              </div>
+              <div class="exposure-range-bar" style="background:${barGradient};">
+                <div class="exposure-range-marker" style="left:${leftPos}%; background:${leftStyle.value};">${leftCase}</div>
+                <div class="exposure-range-marker" style="left:${rightPos}%; background:${rightStyle.value};">${rightCase}</div>
+              </div>
+              <div class="exposure-range-connector">
+                <div class="exposure-range-connector-line" style="left:${leftPos}%;"></div>
+                <div class="exposure-range-connector-line" style="left:${rightPos}%;"></div>
+                <div class="exposure-range-connector-text" style="left:${(leftPos + rightPos) / 2}%;">Real exposure will be between the marked values</div>
+              </div>
+              <div class="exposure-range-summary">
+                <div class="exposure-range-summary-item" style="color:${leftStyle.value};">
+                  <div class="exposure-range-summary-label">${leftTitle}</div>
+                  <div class="exposure-range-summary-value">${leftLabel}</div>
+                </div>
+                <div class="exposure-range-summary-item" style="color:${rightStyle.value};">
+                  <div class="exposure-range-summary-label">${rightTitle}</div>
+                  <div class="exposure-range-summary-value">${rightLabel}</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="explanation-panels">
+              <div class="explanation-panel">
+                <div class="explanation-panel-title">1. Initial release</div>
+                <div class="explanation-panel-text">Gas is denser than air and stratifies near the floor.<br><br>Concentration at ${lowLevelLayerHeight.toFixed(2)} metres:<br><strong>${worstLabel}</strong></div>
+              </div>
+              <div class="explanation-panel">
+                <div class="explanation-panel-title">2. Over time</div>
+                <div class="explanation-panel-text">Turbulence and ventilation mix the gas through the space.<br><br>Concentration at ${lowLevelLayerHeight.toFixed(2)} metres:<br><strong>Between ${worstLabel} and ${bestLabel}</strong></div>
+              </div>
+              <div class="explanation-panel">
+                <div class="explanation-panel-title">3. Fully mixed</div>
+                <div class="explanation-panel-text">Gas becomes evenly distributed throughout the room.<br><br>Concentration at ${lowLevelLayerHeight.toFixed(2)} metres:<br><strong>${bestLabel}</strong></div>
+              </div>
+            </div>
             ${slowLeakVentNote}
           </div>`;
           calculatedValues.denseGasHtml = denseGasHtml;
@@ -3876,13 +4209,14 @@
             } else if (gasTypeVal === 'carbon-dioxide') {
               color = value > 0.5 ? 'red' : 'green';
             } else if (gasTypeVal === 'flammable') {
-              color = value > 1 ? 'red' : 'orange';
+              color = 'neutral';
             } else if (gasTypeVal === 'toxic') {
-              color = 'orange';
+              color = 'neutral';
             }
 
             if (color === 'red') return { bg: '#fff0f0', border: '#e05050', value: '#9b1c1c', label: '#8b1a1a' };
             if (color === 'orange') return { bg: '#fff8e8', border: '#e09020', value: '#7a5000', label: '#805000' };
+            if (color === 'neutral') return { bg: '#f8fafc', border: '#64748b', value: '#334155', label: '#334155' };
             return { bg: '#f0fbf0', border: '#4cae4c', value: '#176c2f', label: '#176c2f' };
           };
           const lowLevelStyle = reportZoneRiskStyle(calculatedValues.lowLevelConc);
